@@ -1,78 +1,48 @@
 "use client";
 
 import { useState } from "react";
+import {
+  ADDONS,
+  computeTotal,
+  MOUNTS,
+  TIERS,
+  type Mount,
+  type Tier,
+} from "@/lib/build";
 import { Eyebrow } from "./Eyebrow";
-
-type Tier = "BASE" | "PRO";
-type Mount = "CART" | "TRAILER" | "STATIONARY" | "PELICAN CASE";
-
-const TIERS: Record<Tier, { price: number; label: string; desc: string }> = {
-  BASE: {
-    price: 4990,
-    label: "Sitepulse — Base",
-    desc: "1.54 kWh LFP · Starlink Mini · DLE 170 hybrid",
-  },
-  PRO: {
-    price: 5790,
-    label: "Sitepulse — Pro",
-    desc: "+ direct DC Starlink feed + redundant cellular failover + extended telemetry",
-  },
-};
-
-const MOUNTS: ReadonlyArray<Mount> = [
-  "CART",
-  "TRAILER",
-  "STATIONARY",
-  "PELICAN CASE",
-];
-
-type Addon = {
-  id: string;
-  label: string;
-  price: number;
-  desc: string;
-};
-
-const ADDONS: ReadonlyArray<Addon> = [
-  {
-    id: "solar",
-    label: "600 W folding solar array",
-    price: 880,
-    desc: "Two 300 W bifacial panels + MPPT cabling — cuts engine duty further",
-  },
-  {
-    id: "trailer",
-    label: "Heated battery jacket",
-    price: 240,
-    desc: "Active heaters for sub-zero starts down to −20 °C",
-  },
-  {
-    id: "extra",
-    label: "Extended fuel kit",
-    price: 1240,
-    desc: "Larger external tank + dual quick-disconnect for months between fills",
-  },
-  {
-    id: "evkit",
-    label: "EV-Backup Kit",
-    price: 680,
-    desc: "32 A portable Level 2 EVSE (J1772 + NACS adapter) + grounding rod — turns the unit into an emergency EV charger.",
-  },
-];
 
 export function Configurator() {
   const [tier, setTier] = useState<Tier>("BASE");
   const [mount, setMount] = useState<Mount>("CART");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [reserving, setReserving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggle = (id: string) =>
     setSelected((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  const addonsTotal = ADDONS.reduce(
-    (sum, a) => sum + (selected[a.id] ? a.price : 0),
-    0,
-  );
-  const total = TIERS[tier].price + addonsTotal;
+  const selectedAddonIds = ADDONS.filter((a) => selected[a.id]).map((a) => a.id);
+  const total = computeTotal(tier, selectedAddonIds);
+
+  const reserve = async () => {
+    setError(null);
+    setReserving(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier, mount, addonIds: selectedAddonIds }),
+      });
+      const data: { url?: string; error?: string } = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || `Reservation failed (${res.status})`);
+      }
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Reservation failed");
+      setReserving(false);
+    }
+  };
 
   return (
     <section
@@ -170,7 +140,11 @@ export function Configurator() {
                             background: on ? "var(--hi)" : "transparent",
                           }}
                         >
-                          {on && <span style={{ color: "#000", fontSize: 14 }}>✓</span>}
+                          {on && (
+                            <span style={{ color: "#000", fontSize: 14 }}>
+                              ✓
+                            </span>
+                          )}
                         </div>
                         <div className="min-w-0">
                           <div className="text-[16px] font-semibold">
@@ -281,9 +255,20 @@ export function Configurator() {
                 </div>
               </div>
 
-              <a href="#" className="btn btn-cy w-full justify-center mt-8">
-                RESERVE THIS BUILD <span>→</span>
-              </a>
+              <button
+                type="button"
+                onClick={reserve}
+                disabled={reserving}
+                className="btn btn-cy w-full justify-center mt-8 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {reserving ? "REDIRECTING…" : "RESERVE THIS BUILD"}{" "}
+                {!reserving && <span>→</span>}
+              </button>
+              {error && (
+                <div className="mt-4 mono text-[10px] tracking-[.12em] uppercase text-red-400 text-center">
+                  {error}
+                </div>
+              )}
               <div className="mt-4 mono text-[10px] tracking-[.16em] text-zinc-500 uppercase text-center">
                 Refundable · No build slot held without reservation
               </div>
