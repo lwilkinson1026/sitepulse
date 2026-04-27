@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sitepulse — EV Backup Charging</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --bg:#000000;
+    --paper:#FFFFFF;
+    --ink:#000000;
+    --mute:#A1A1AA;
+    --line:rgba(255,255,255,.08);
+    --line-strong:rgba(255,255,255,.18);
+    --hi:#FFFFFF;          /* white accent */
+    --hi-dim:rgba(255,255,255,.10);
+    --run:rgba(255,255,255,.85);
+    --warn:rgba(255,255,255,.85);
+  }
+  html,body{background:var(--bg);color:var(--paper);}
+  body{
+    font-family:'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings:"ss01","cv11";
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .display{font-family:'Inter',sans-serif;letter-spacing:-.035em;font-weight:800;}
+  .display-x{font-family:'Inter',sans-serif;letter-spacing:-.045em;font-weight:900;}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-feature-settings:"zero","ss01";}
+
+  /* hairlines */
+  .hr{border-color:var(--line);}
+  .hr-s{border-color:var(--line-strong);}
+
+  /* selection */
+  ::selection{background:var(--hi);color:#000;}
+
+  /* === Starfield === */
+  .stars{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.5) 50%, transparent 51%),
+      radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,.3) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 40% 80%, rgba(255,255,255,.45) 50%, transparent 51%),
+      radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,.4) 50%, transparent 51%),
+      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,.3) 50%, transparent 51%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,.5) 50%, transparent 51%),
+      radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,.35) 50%, transparent 51%),
+      radial-gradient(1px 1px at 90% 85%, rgba(255,255,255,.4) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 25% 55%, rgba(255,255,255,.45) 50%, transparent 51%),
+      radial-gradient(1px 1px at 55% 75%, rgba(255,255,255,.3) 50%, transparent 51%),
+      radial-gradient(1px 1px at 75% 90%, rgba(255,255,255,.4) 50%, transparent 51%),
+      radial-gradient(1px 1px at 5% 45%, rgba(255,255,255,.35) 50%, transparent 51%);
+    background-size: 100% 100%;
+  }
+  .stars::after{
+    content:"";position:absolute;inset:0;
+    background-image:
+      radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,.4), transparent 60%),
+      radial-gradient(1px 1px at 65% 25%, rgba(255,255,255,.3), transparent 60%),
+      radial-gradient(2px 2px at 45% 50%, rgba(255,255,255,.18), transparent 60%),
+      radial-gradient(1px 1px at 30% 95%, rgba(255,255,255,.4), transparent 60%),
+      radial-gradient(1.5px 1.5px at 88% 40%, rgba(255,255,255,.3), transparent 60%);
+    background-size: 100% 100%;
+  }
+
+  /* faint grid */
+  .grid-bg{
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 96px 96px;
+  }
+
+  /* nebula glow blob */
+  .nebula{
+    position:absolute;border-radius:50%;
+    filter:blur(120px);opacity:.45;pointer-events:none;
+    background:radial-gradient(circle, rgba(255,255,255,.18), rgba(255,255,255,0) 65%);
+  }
+
+  /* live pulse dot */
+  @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(63,227,138,.55)}80%{box-shadow:0 0 0 8px rgba(63,227,138,0)}100%{box-shadow:0 0 0 0 rgba(63,227,138,0)}}
+  .pulse-dot{position:relative;display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--run);animation:pulse-ring 1.6s ease-out infinite}
+
+  /* marquee */
+  @keyframes scroll-x{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .marquee-track{animation:scroll-x 50s linear infinite;width:max-content}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:.5rem;height:48px;padding:0 22px;
+    font-weight:600;letter-spacing:.01em;font-size:14px;
+    transition:all .25s ease;}
+  .btn-cy{background:var(--hi);color:#000;
+    box-shadow:0 0 0 0 rgba(255,255,255,0);}
+  .btn-cy:hover{box-shadow:0 0 28px rgba(255,255,255,.20), inset 0 0 0 1px rgba(255,255,255,.15);
+    filter:brightness(1.08);transform:translateY(-1px);}
+  .btn-ghost{border:1px solid rgba(255,255,255,.18);color:#fff;background:transparent;}
+  .btn-ghost:hover{border-color:var(--hi);color:var(--hi);box-shadow:0 0 24px rgba(255,255,255,.10);}
+
+  /* link underline */
+  .ulink{position:relative}
+  .ulink::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s}
+  .ulink:hover::after{transform:scaleX(1)}
+  .ulink:hover{color:var(--hi)}
+
+  /* meter bar animation */
+  @keyframes meter{0%{transform:scaleX(.2)}50%{transform:scaleX(.95)}100%{transform:scaleX(.6)}}
+  .meter-fill{transform-origin:left center;animation:meter 4s ease-in-out infinite}
+
+  /* cyan glow utilities */
+  .glow-cy{box-shadow:0 0 60px rgba(255,255,255,.10);}
+  .text-glow{text-shadow:0 0 28px rgba(255,255,255,.18);}
+
+  /* radio segmented */
+  .seg{display:inline-flex;border:1px solid rgba(255,255,255,.16);border-radius:0;overflow:hidden}
+  .seg button{padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#A1A1AA;letter-spacing:.1em;text-transform:uppercase}
+  .seg button[aria-pressed="true"]{background:var(--hi);color:#000}
+
+  /* configurator option */
+  .opt{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);transition:all .2s}
+  .opt[data-on="true"]{border-color:var(--hi);background:rgba(255,255,255,.06);box-shadow:0 0 0 1px var(--hi);}
+  .opt:hover{border-color:rgba(255,255,255,.25)}
+
+  /* hover lift */
+  .lift{transition:transform .3s ease, border-color .3s ease, background .3s ease}
+  .lift:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.25);}
+
+  /* nowrap helper for marquee */
+  .nowrap{white-space:nowrap}
+
+  /* orbit ring decoration */
+  .orbit{
+    position:absolute;border:1px solid rgba(255,255,255,.10);border-radius:50%;
+    pointer-events:none;
+  }
+  .orbit::before{
+    content:"";position:absolute;width:6px;height:6px;border-radius:99px;
+    background:var(--hi);box-shadow:0 0 14px rgba(255,255,255,.45);
+    top:-3px;left:50%;
+  }
+
+  /* spec table */
+  .spec-row td, .spec-row th { transition: background .2s ease; }
+  .spec-row:hover td, .spec-row:hover th { background: rgba(255,255,255,.04); }
+
+  /* hide scrollbar in marquee */
+  .nowrap{white-space:nowrap}
+
+  /* placeholder image style */
+  .placeholder-img{
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 8px, transparent 8px 16px),
+      #0A0B0D;
+  }
+
+  /* === EV slider === */
+  .ev-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;background:rgba(255,255,255,.12);outline:none;border:0;}
+  .ev-slider::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:18px;height:18px;background:var(--hi);border:0;cursor:pointer;border-radius:0;box-shadow:0 0 0 4px rgba(255,255,255,.10);}
+  .ev-slider::-moz-range-thumb{width:18px;height:18px;background:var(--hi);border:0;cursor:pointer;border-radius:0;box-shadow:0 0 0 4px rgba(255,255,255,.10);}
+
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+// tweaks-panel.jsx
+
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel"
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">{children}</div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function TweakColor({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <input type="color" className="twk-swatch" value={value}
+             onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+
+// ev.jsx
+// ev.jsx — EV Backup Charging page
+// Reuses the same design language as the main landing.
+// Hosted in "Sitepulse — EV Backup.html" alongside the main file.
+
+const { useState, useMemo, useEffect } = React;
+
+const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "evRange": 40,
+  "efficiency": 3.7,
+  "showHud": true,
+  "accent": "#FFFFFF"
+}/*EDITMODE-END*/;
+
+/* =================== HEADER =================== */
+function Header(){
+  const links = [
+    ["Overview","Sitepulse Landing.html"], ["EV Backup","#top"],
+    ["The Math","#math"], ["Scenarios","#scenarios"], ["What You Need","#kit"]
+  ];
+  return (
+    <header className="fixed top-0 inset-x-0 z-40 border-b" style={{borderColor:'var(--line)', backdropFilter:'blur(14px)', background:'rgba(0,0,0,.65)'}}>
+      <div className="max-w-[1440px] mx-auto px-8 h-[68px] flex items-center justify-between">
+        <a href="Sitepulse Landing.html" className="flex items-center gap-3">
+          <span className="font-bold tracking-[.06em] text-[16px]">SITEPULSE</span>
+          <span className="mono text-[10px] tracking-[.2em] uppercase text-zinc-500 hidden md:inline">/ EV BACKUP</span>
+        </a>
+        <nav className="hidden md:flex items-center gap-9">
+          {links.map(([t,h]) => (
+            <a key={t} href={h} className={`text-[13px] hover:text-white transition-colors uppercase tracking-[.08em] font-medium ${h==="#top"?"text-white":"text-zinc-400"}`}>{t}</a>
+          ))}
+        </nav>
+        <a href="Sitepulse Landing.html#config" className="btn btn-cy">RESERVE <span className="opacity-70">→</span></a>
+      </div>
+    </header>
+  );
+}
+
+/* =================== HERO =================== */
+function Eyebrow({num,label}){
+  return (
+    <div className="flex items-center gap-3 mono text-[11px] uppercase tracking-[.22em] text-zinc-500">
+      <span className="text-[var(--hi)]">{num}</span>
+      <span className="w-8 h-px bg-[var(--line-strong)]"/>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function Hero({tweaks, setTweak}){
+  // Live calculator
+  const miles = tweaks.evRange;
+  const eff = tweaks.efficiency; // mi / kWh
+  const NET_KW = 9.0; // net to vehicle
+  const FUEL_GPH = 1.75; // avg high-load
+
+  const kWhNeeded = miles / eff;
+  const hours = kWhNeeded / NET_KW;
+  const minutes = Math.round(hours * 60);
+  const fuelGal = (hours * FUEL_GPH);
+
+  return (
+    <section id="top" className="relative pt-[68px] overflow-hidden" style={{minHeight:'100vh'}}>
+      <div className="absolute inset-0 grid-bg opacity-50"/>
+      <div className="stars opacity-40"/>
+      <div className="nebula" style={{width:780, height:780, right:'-200px', top:'-100px', opacity:.3}} />
+      <div className="relative max-w-[1440px] mx-auto px-8 pt-16 pb-24">
+        <Eyebrow num="00" label="EV BACKUP CHARGING · SECONDARY USE-CASE" />
+        <h1 className="display-x mt-6 leading-[.92] tracking-[-.05em]" style={{fontSize:'clamp(56px, 9.5vw, 132px)'}}>
+          Get-home power<br/>for an EV.
+        </h1>
+        <p className="mt-10 max-w-[680px] text-[17px] leading-[1.65] text-zinc-400">
+          The DLE 170 paired with a high-output starter generator delivers up to <span className="text-white">10–12&nbsp;kW</span> on demand — Level 2 charging speeds, in a 90-lb box on the back of your truck. Run out of charge twenty miles from town? Plug in. Be moving in under an hour.
+        </p>
+
+        {/* CALCULATOR */}
+        <div className="mt-16 border" style={{borderColor:'var(--line-strong)'}}>
+          <div className="grid grid-cols-1 lg:grid-cols-12">
+            {/* Left: input */}
+            <div className="lg:col-span-5 p-10 border-b lg:border-b-0 lg:border-r" style={{borderColor:'var(--line-strong)'}}>
+              <div className="mono text-[11px] uppercase tracking-[.22em] text-zinc-500">RESCUE CALCULATOR</div>
+              <div className="mt-6">
+                <div className="flex items-baseline justify-between">
+                  <label className="mono text-[12px] uppercase tracking-[.18em] text-zinc-300">Miles needed</label>
+                  <div className="display-x text-[44px] tracking-[-.04em] leading-none">{miles}<span className="text-[18px] text-zinc-500 ml-2 mono tracking-[.1em]">MI</span></div>
+                </div>
+                <input type="range" min="5" max="120" step="5" value={miles}
+                  onChange={e => setTweak('evRange', parseInt(e.target.value))}
+                  className="mt-5 w-full ev-slider" />
+                <div className="mt-3 mono text-[10px] uppercase tracking-[.18em] text-zinc-500 flex justify-between">
+                  <span>5</span><span>nearest town</span><span>full buffer</span><span>120</span>
+                </div>
+              </div>
+              <div className="mt-10">
+                <div className="flex items-baseline justify-between">
+                  <label className="mono text-[12px] uppercase tracking-[.18em] text-zinc-300">EV efficiency</label>
+                  <div className="display text-[24px] tracking-[-.02em]">{eff.toFixed(1)}<span className="text-[14px] text-zinc-500 ml-2 mono tracking-[.1em]">MI/KWH</span></div>
+                </div>
+                <div className="mt-5 seg">
+                  {[
+                    {v:3.5, l:"Truck / SUV"},
+                    {v:3.7, l:"Crossover"},
+                    {v:4.0, l:"Sedan"},
+                    {v:4.3, l:"Efficient"},
+                  ].map(o => (
+                    <button key={o.v} onClick={()=>setTweak('efficiency', o.v)}
+                      aria-pressed={Math.abs(eff-o.v)<.05}>{o.l}</button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* Right: output */}
+            <div className="lg:col-span-7 p-10 relative">
+              <div className="mono text-[11px] uppercase tracking-[.22em] text-zinc-500">RESULT</div>
+              <div className="mt-6 grid grid-cols-2 gap-8">
+                <div>
+                  <div className="display-x leading-none tracking-[-.05em]" style={{fontSize:'clamp(56px,9vw,108px)'}}>
+                    {minutes}
+                    <span className="text-[20px] text-zinc-500 mono tracking-[.1em] ml-2">MIN</span>
+                  </div>
+                  <div className="mt-4 mono text-[11px] uppercase tracking-[.18em] text-zinc-500">Charge time at 9 kW net</div>
+                </div>
+                <div>
+                  <div className="display-x leading-none tracking-[-.05em]" style={{fontSize:'clamp(56px,9vw,108px)'}}>
+                    {fuelGal.toFixed(1)}
+                    <span className="text-[20px] text-zinc-500 mono tracking-[.1em] ml-2">GAL</span>
+                  </div>
+                  <div className="mt-4 mono text-[11px] uppercase tracking-[.18em] text-zinc-500">Gasoline consumed</div>
+                </div>
+              </div>
+
+              {/* Bar visualization */}
+              <div className="mt-12">
+                <div className="mono text-[10px] uppercase tracking-[.18em] text-zinc-500 flex justify-between">
+                  <span>kWh delivered</span>
+                  <span className="text-zinc-300">{kWhNeeded.toFixed(1)} kWh</span>
+                </div>
+                <div className="mt-2 h-[6px] bg-white/10">
+                  <div className="h-full bg-white" style={{width: `${Math.min(100, (kWhNeeded/30)*100)}%`}} />
+                </div>
+                <div className="mt-3 mono text-[10px] uppercase tracking-[.18em] text-zinc-600">
+                  Tank capacity reference: 30 kWh ≈ a typical EV's full top-up
+                </div>
+              </div>
+
+              <div className="mt-10 flex flex-wrap gap-3">
+                <a href="#scenarios" className="btn btn-cy">SEE RESCUE SCENARIOS <span>→</span></a>
+                <a href="#kit" className="btn btn-ghost">WHAT YOU NEED</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* tagline strip */}
+        <div className="mt-10 mono text-[11px] uppercase tracking-[.22em] text-zinc-500">
+          ASSUMPTIONS · 9 KW NET TO VEHICLE · 1.75 GAL/HR AVG · 10–15% CHARGING LOSSES INCLUDED
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== THE MATH =================== */
+function TheMath(){
+  const stats = [
+    {n:"9 kW", l:"Net to vehicle", sub:"After 10–15% conversion losses"},
+    {n:"28–36", l:"Miles per hour", sub:"Real-world EV efficiency"},
+    {n:"1.6–1.9", l:"Gal / hour", sub:"At high-load operation"},
+    {n:"Level 2", l:"Equivalent class", sub:"Matches most home chargers"},
+  ];
+  return (
+    <section id="math" className="py-32 border-t border-b" style={{borderColor:'var(--line)'}}>
+      <div className="max-w-[1440px] mx-auto px-8">
+        <Eyebrow num="01" label="THE MATH" />
+        <h2 className="display-x mt-6 leading-[.95] tracking-[-.045em]" style={{fontSize:'clamp(44px, 7vw, 96px)'}}>
+          A real Level&nbsp;2<br/>charger, in 90&nbsp;lb.
+        </h2>
+        <p className="mt-8 max-w-[680px] text-[17px] leading-[1.65] text-zinc-400">
+          Most portable generators in this weight class push 2–5 kW. The DLE 170 + high-output starter generator delivers <span className="text-white">three to five times that</span> — the difference between trickle-charging an EV and actually getting somewhere.
+        </p>
+
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px" style={{background:'var(--line-strong)'}}>
+          {stats.map(s => (
+            <div key={s.l} className="bg-black p-10">
+              <div className="display-x text-[64px] tracking-[-.045em] leading-none">{s.n}</div>
+              <div className="mt-4 text-[15px] text-zinc-200">{s.l}</div>
+              <div className="mt-2 mono text-[11px] uppercase tracking-[.16em] text-zinc-500">{s.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== SCENARIOS =================== */
+function Scenarios(){
+  const cards = [
+    {
+      tag:"01 / TO TOWN",
+      title:"Twenty miles to the gas station.",
+      miles:"20–25 mi",
+      time:"35–45 min",
+      fuel:"0.8–1.1 gal",
+      body:"Battery hit zero on a Forest Service road. One 3-gallon jerry can in the truck bed gets you to a coffee shop, fast charger, or the next campground."
+    },
+    {
+      tag:"02 / TO A CHARGER",
+      title:"Forty miles to the next DC fast charger.",
+      miles:"40–45 mi",
+      time:"70–85 min",
+      fuel:"1.6–2.0 gal",
+      body:"You misjudged the route. Pull over, hook up, eat lunch. By the time you finish, you've got the buffer to make a real charger and resume normal speed."
+    },
+    {
+      tag:"03 / FULL BUFFER",
+      title:"Sixty miles of comfortable margin.",
+      miles:"60–70 mi",
+      time:"1 hr 45 min – 2 hrs",
+      fuel:"2.4–3.0 gal",
+      body:"Storm response, expedition, or a remote build site where the closest plug is ninety minutes away. Top up overnight on a single tank."
+    },
+  ];
+  return (
+    <section id="scenarios" className="py-32 border-b" style={{borderColor:'var(--line)'}}>
+      <div className="max-w-[1440px] mx-auto px-8">
+        <div className="flex items-end justify-between flex-wrap gap-8">
+          <div>
+            <Eyebrow num="02" label="THREE RESCUE SCENARIOS" />
+            <h2 className="display-x mt-6 leading-[.95] tracking-[-.045em]" style={{fontSize:'clamp(44px, 7vw, 96px)'}}>
+              Get to where<br/>you're charging.
+            </h2>
+          </div>
+          <div className="text-zinc-500 mono text-[11px] uppercase tracking-[.18em]">9 KW NET · 3.7 MI/KWH</div>
+        </div>
+
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-px" style={{background:'var(--line-strong)'}}>
+          {cards.map((c,i) => (
+            <div key={c.tag} className="bg-black p-10 lift relative">
+              <div className="mono text-[11px] tracking-[.18em] text-[var(--hi)]">{c.tag}</div>
+              <h3 className="display mt-10 text-[28px] tracking-[-.025em] leading-[1.15]">{c.title}</h3>
+              <p className="mt-5 text-[14px] leading-[1.6] text-zinc-400">{c.body}</p>
+
+              <div className="mt-10 grid grid-cols-3 gap-px" style={{background:'var(--line)'}}>
+                {[["RANGE", c.miles],["TIME", c.time],["FUEL", c.fuel]].map(([k,v])=>(
+                  <div key={k} className="bg-black px-4 py-4">
+                    <div className="mono text-[10px] uppercase tracking-[.16em] text-zinc-500">{k}</div>
+                    <div className="display text-[18px] tracking-[-.02em] mt-2">{v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-12 mono text-[11px] uppercase tracking-[.2em] text-zinc-500 max-w-[800px]">
+          Trade 1–3 gallons of gasoline for 30–70 miles of EV range. Effectively a portable Level 2 charger that fits in the bed of a truck.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* =================== COMPARISON =================== */
+function Comparison(){
+  const cols = [
+    {n:"Sitepulse", a:true, vals:["9 kW", "28–36 mi/hr", "~90 lb", "External tank", "Yes — Level 2 EVSE", "Stays connected"]},
+    {n:"2 kW inverter generator", vals:["1.6–1.8 kW", "5–7 mi/hr", "45–60 lb", "Built-in 1 gal", "Trickle only", "No telemetry"]},
+    {n:"AAA / tow truck", vals:["—", "0 mi/hr", "—", "Diesel", "Tow to charger", "—"]},
+    {n:"Tow with portable charger", vals:["7–11 kW", "25–30 mi/hr", "Vehicle", "Diesel", "Yes", "Variable wait"]},
+  ];
+  const rows = ["Output", "Range / hr", "Weight", "Fuel", "EV charging", "Other capability"];
+
+  return (
+    <section className="py-32 border-b" style={{borderColor:'var(--line)'}}>
+      <div className="max-w-[1440px] mx-auto px-8">
+        <Eyebrow num="03" label="COMPARED TO THE ALTERNATIVES" />
+        <h2 className="display-x mt-6 leading-[.95] tracking-[-.045em]" style={{fontSize:'clamp(44px, 7vw, 96px)'}}>
+          The only one of<br/>its weight class.
+        </h2>
+
+        <div className="mt-20 border overflow-hidden" style={{borderColor:'var(--line-strong)'}}>
+          <div className="grid grid-cols-5">
+            {/* header row */}
+            <div className="p-5 border-b border-r mono text-[11px] uppercase tracking-[.18em] text-zinc-500" style={{borderColor:'var(--line-strong)'}}>&nbsp;</div>
+            {cols.map(c => (
+              <div key={c.n} className={`p-5 border-b border-r last:border-r-0 ${c.a ? 'bg-white text-black' : ''}`} style={{borderColor:'var(--line-strong)'}}>
+                <div className={`display text-[16px] tracking-[-.015em] leading-[1.2] ${c.a ? '' : 'text-zinc-200'}`}>{c.n}</div>
+                {c.a && <div className="mt-1 mono text-[10px] uppercase tracking-[.18em] text-black/60">SUBJECT</div>}
+              </div>
+            ))}
+            {/* body rows */}
+            {rows.map((r, i) => (
+              <React.Fragment key={r}>
+                <div className="p-5 border-b border-r mono text-[11px] uppercase tracking-[.18em] text-zinc-500" style={{borderColor:'var(--line)'}}>{r}</div>
+                {cols.map(c => (
+                  <div key={c.n+r} className="p-5 border-b border-r last:border-r-0 text-[14px] text-zinc-200" style={{borderColor:'var(--line)', background: c.a ? 'rgba(255,255,255,.04)' : 'transparent'}}>
+                    {c.vals[i]}
+                  </div>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== WHAT YOU NEED =================== */
+function Kit(){
+  const items = [
+    {
+      n:"01",
+      tag:"EVSE",
+      title:"A portable Level 2 charger.",
+      body:"Most modern J1772 or NACS portable EVSEs accept generator power without complaint. We recommend a 32 A unit (the natural pairing for a 9 kW source).",
+      meta:"INCLUDED IN EV-BACKUP KIT"
+    },
+    {
+      n:"02",
+      tag:"GROUNDING",
+      title:"A grounding rod, properly driven.",
+      body:"Critical for safety. The unit ships with a 4-foot copper rod and clamp, plus a step-by-step in the field manual. Two minutes on arrival.",
+      meta:"INCLUDED IN ALL UNITS"
+    },
+    {
+      n:"03",
+      tag:"OUTPUT",
+      title:"A high-power outlet on the unit.",
+      body:"The hybrid inverter passes generator output through to a dedicated EV-rated outlet. No transfer-switch surgery required — it's wired in at the factory.",
+      meta:"V1 PROTOTYPE — STANDARD"
+    },
+    {
+      n:"04",
+      tag:"FUEL",
+      title:"A spare jerry can in the truck.",
+      body:"The external quick-disconnect tank is the perfect interface for a long rescue session. Bring a 3- or 5-gal can; swap it in 30 seconds without spilling.",
+      meta:"BYO FUEL"
+    },
+  ];
+
+  return (
+    <section id="kit" className="py-32 border-b" style={{borderColor:'var(--line)'}}>
+      <div className="max-w-[1440px] mx-auto px-8">
+        <Eyebrow num="04" label="WHAT YOU NEED" />
+        <h2 className="display-x mt-6 leading-[.95] tracking-[-.045em]" style={{fontSize:'clamp(44px, 7vw, 96px)'}}>
+          Four things,<br/>and you're charging.
+        </h2>
+
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-px" style={{background:'var(--line-strong)'}}>
+          {items.map(it => (
+            <div key={it.n} className="bg-black p-10 lift">
+              <div className="flex items-baseline justify-between">
+                <div className="mono text-[11px] tracking-[.18em] text-[var(--hi)]">{it.tag}</div>
+                <div className="mono text-[10px] tracking-[.16em] text-zinc-600">/{it.n}</div>
+              </div>
+              <h3 className="display mt-10 text-[28px] tracking-[-.025em] leading-[1.15]">{it.title}</h3>
+              <p className="mt-5 text-[14px] leading-[1.6] text-zinc-400">{it.body}</p>
+              <div className="mt-10 pt-5 border-t mono text-[10px] uppercase tracking-[.18em] text-zinc-500" style={{borderColor:'var(--line)'}}>
+                {it.meta}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== MODE COMPARISON =================== */
+function ModeCompare(){
+  const rows = [
+    ["Power output",       "1.5–2 kW",       "9–10 kW"],
+    ["Typical session",    "20–40 min",      "30–120 min"],
+    ["Fuel per session",   "0.4–0.8 gal",    "1.2–3.0 gal"],
+    ["Engine duty",        "~1.6%",          "On for the duration"],
+    ["Noise profile",      "Briefly running","Higher, sustained"],
+    ["Primary mission",    "Stays online",   "Recharge an EV"],
+  ];
+  return (
+    <section className="py-32 border-b" style={{borderColor:'var(--line)'}}>
+      <div className="max-w-[1440px] mx-auto px-8">
+        <Eyebrow num="05" label="TWO MODES, ONE BOX" />
+        <h2 className="display-x mt-6 leading-[.95] tracking-[-.045em]" style={{fontSize:'clamp(44px, 7vw, 96px)'}}>
+          Connectivity by default.<br/>Rescue when you ask.
+        </h2>
+        <p className="mt-8 max-w-[680px] text-[17px] leading-[1.65] text-zinc-400">
+          The primary mission stays the same: weeks of unattended remote operation, silent on battery. EV-backup mode is an explicit override — you choose it, the engine commits to it, the system warns you about fuel.
+        </p>
+
+        <div className="mt-20 grid grid-cols-3 gap-px" style={{background:'var(--line-strong)'}}>
+          <div className="bg-black p-6 mono text-[11px] uppercase tracking-[.18em] text-zinc-500">METRIC</div>
+          <div className="bg-black p-6">
+            <div className="mono text-[11px] uppercase tracking-[.18em] text-zinc-300">CONNECTIVITY MODE</div>
+            <div className="mono text-[10px] uppercase tracking-[.18em] text-zinc-500 mt-1">Default · automatic</div>
+          </div>
+          <div className="bg-white text-black p-6">
+            <div className="mono text-[11px] uppercase tracking-[.18em]">EV BACKUP MODE</div>
+            <div className="mono text-[10px] uppercase tracking-[.18em] text-black/60 mt-1">Explicit override</div>
+          </div>
+          {rows.map(([k,a,b])=>(
+            <React.Fragment key={k}>
+              <div className="bg-black p-6 mono text-[11px] uppercase tracking-[.18em] text-zinc-500">{k}</div>
+              <div className="bg-black p-6 text-[15px] text-zinc-200">{a}</div>
+              <div className="p-6 text-[15px]" style={{background:'rgba(255,255,255,.04)'}}>{b}</div>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== HONEST CAVEATS =================== */
+function Caveats(){
+  const items = [
+    {h:"Not a DC fast charger", b:"You'll lose 10–15% in conversions versus a wall plug. This is a get-home tool, not a daily charging plan."},
+    {h:"Noisy at high load", b:"The engine works harder than in remote-power mode. Expect closer to 60 dB than 0. Don't run it next to a tent."},
+    {h:"Heat under load", b:"Sustained 9 kW puts more thermal load on the enclosure. The IP65 chassis is designed for it; don't bury it in a cargo box."},
+    {h:"Range-limited by fuel", b:"A 3-gallon jerry can is roughly 90 minutes of EV charging. Plan accordingly for longer expeditions."},
+  ];
+  return (
+    <section className="py-32 border-b" style={{borderColor:'var(--line)'}}>
+      <div className="max-w-[1440px] mx-auto px-8">
+        <Eyebrow num="06" label="HONEST LIMITATIONS" />
+        <h2 className="display-x mt-6 leading-[.95] tracking-[-.045em]" style={{fontSize:'clamp(44px, 7vw, 96px)'}}>
+          Things to know.
+        </h2>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-px max-w-[1100px]" style={{background:'var(--line-strong)'}}>
+          {items.map(it=>(
+            <div key={it.h} className="bg-black p-8">
+              <div className="display text-[20px] tracking-[-.02em]">{it.h}</div>
+              <p className="mt-3 text-[14px] leading-[1.6] text-zinc-400">{it.b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== FINAL CTA =================== */
+function FinalCTA(){
+  return (
+    <section className="relative py-40 border-b overflow-hidden" style={{borderColor:'var(--line)'}}>
+      <div className="absolute inset-0 grid-bg opacity-60"/>
+      <div className="stars opacity-40"/>
+      <div className="nebula" style={{width:900, height:900, left:'50%', top:'50%', transform:'translate(-50%,-50%)', opacity:.3}} />
+      <div className="relative max-w-[1440px] mx-auto px-8 text-center">
+        <div className="mono text-[12px] tracking-[.22em] uppercase text-[var(--hi)]">DUAL-USE · V1 PROTOTYPE BUILDS</div>
+        <h2 className="display-x mt-8 leading-[.92] tracking-[-.05em]" style={{fontSize:'clamp(56px, 11vw, 180px)'}}>
+          Stay online.<br/>Get home.
+        </h2>
+        <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
+          <a href="Sitepulse Landing.html#config" className="btn btn-cy">RESERVE A UNIT <span>→</span></a>
+          <a href="Sitepulse Landing.html" className="btn btn-ghost">BACK TO OVERVIEW</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =================== FOOTER =================== */
+function Footer(){
+  return (
+    <footer className="py-20">
+      <div className="max-w-[1440px] mx-auto px-8">
+        <div className="flex flex-wrap items-center justify-between gap-6 mono text-[10px] tracking-[.18em] uppercase text-zinc-500">
+          <div className="display text-[16px] text-white tracking-[.04em] font-bold">SITEPULSE</div>
+          <div>© 2026 Sitepulse Power, Inc.</div>
+          <div>EV-Backup figures · 9 kW net · ~1.75 gal/hr · 3.7 mi/kWh baseline</div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* =================== TWEAKS =================== */
+function Tweaks({tweaks, setTweak}){
+  return (
+    <TweaksPanel>
+      <TweakSection title="Calculator defaults">
+        <TweakSlider label="Miles needed" min={5} max={120} step={5}
+          value={tweaks.evRange} onChange={v=>setTweak('evRange', v)} />
+        <TweakSelect label="EV efficiency"
+          value={String(tweaks.efficiency)}
+          onChange={v=>setTweak('efficiency', parseFloat(v))}
+          options={[
+            {value:"3.5", label:"3.5 mi/kWh — truck"},
+            {value:"3.7", label:"3.7 mi/kWh — crossover"},
+            {value:"4.0", label:"4.0 mi/kWh — sedan"},
+            {value:"4.3", label:"4.3 mi/kWh — efficient"},
+          ]}
+        />
+      </TweakSection>
+      <TweakSection title="Accent">
+        <TweakRadio
+          label="Tone"
+          value={tweaks.accent}
+          onChange={v=>setTweak('accent', v)}
+          options={[
+            {value:"#FFFFFF", label:"White"},
+            {value:"#00D4FF", label:"Cyan"},
+            {value:"#FFB02E", label:"Amber"},
+          ]}
+        />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+/* =================== APP =================== */
+function App(){
+  const [tweaks, setTweak] = useTweaks(TWEAKS_DEFAULTS);
+  useEffect(()=>{
+    document.documentElement.style.setProperty('--hi', tweaks.accent);
+  }, [tweaks.accent]);
+  return (
+    <div className="min-h-screen bg-black">
+      <Header />
+      <Hero tweaks={tweaks} setTweak={setTweak} />
+      <TheMath />
+      <Scenarios />
+      <Comparison />
+      <Kit />
+      <ModeCompare />
+      <Caveats />
+      <FinalCTA />
+      <Footer />
+      <Tweaks tweaks={tweaks} setTweak={setTweak} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #000000;
+  --paper: #ffffff;
+  --ink: #000000;
+  --mute: #a1a1aa;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --hi: #ffffff;
+  --hi-dim: rgba(255, 255, 255, 0.1);
+  --run: rgba(255, 255, 255, 0.85);
+  --warn: rgba(255, 255, 255, 0.85);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-paper: var(--paper);
+  --color-hi: var(--hi);
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--paper);
+}
+
+body {
+  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.display {
+  font-family: var(--font-inter), sans-serif;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+}
+
+.display-x {
+  font-family: var(--font-inter), sans-serif;
+  letter-spacing: -0.045em;
+  font-weight: 900;
+}
+
+.mono {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-feature-settings: "zero", "ss01";
+}
+
+.hr { border-color: var(--line); }
+.hr-s { border-color: var(--line-strong); }
+
+::selection {
+  background: var(--hi);
+  color: #000;
+}
+
+/* Starfield */
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 80% 60%, rgba(255, 255, 255, 0.3) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(255, 255, 255, 0.45) 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 20%, rgba(255, 255, 255, 0.4) 50%, transparent 51%),
+    radial-gradient(1px 1px at 10% 70%, rgba(255, 255, 255, 0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 60% 45%, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 35% 15%, rgba(255, 255, 255, 0.35) 50%, transparent 51%),
+    radial-gradient(1px 1px at 90% 85%, rgba(255, 255, 255, 0.4) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 25% 55%, rgba(255, 255, 255, 0.45) 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 75%, rgba(255, 255, 255, 0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 75% 90%, rgba(255, 255, 255, 0.4) 50%, transparent 51%),
+    radial-gradient(1px 1px at 5% 45%, rgba(255, 255, 255, 0.35) 50%, transparent 51%);
+  background-size: 100% 100%;
+}
+
+.stars::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.4), transparent 60%),
+    radial-gradient(1px 1px at 65% 25%, rgba(255, 255, 255, 0.3), transparent 60%),
+    radial-gradient(2px 2px at 45% 50%, rgba(255, 255, 255, 0.18), transparent 60%),
+    radial-gradient(1px 1px at 30% 95%, rgba(255, 255, 255, 0.4), transparent 60%),
+    radial-gradient(1.5px 1.5px at 88% 40%, rgba(255, 255, 255, 0.3), transparent 60%);
+  background-size: 100% 100%;
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.45;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 65%);
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(63, 227, 138, 0.55); }
+  80% { box-shadow: 0 0 0 8px rgba(63, 227, 138, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(63, 227, 138, 0); }
+}
+
+.pulse-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--run);
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+
+@keyframes scroll-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: scroll-x 50s linear infinite;
+  width: max-content;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 48px;
+  padding: 0 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.btn-cy {
+  background: var(--hi);
+  color: #000;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+}
+
+.btn-cy:hover {
+  box-shadow: 0 0 28px rgba(255, 255, 255, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  border-color: var(--hi);
+  color: var(--hi);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.1);
+}
+
+.ulink { position: relative; }
+.ulink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s;
+}
+.ulink:hover::after { transform: scaleX(1); }
+.ulink:hover { color: var(--hi); }
+
+@keyframes meter {
+  0% { transform: scaleX(0.2); }
+  50% { transform: scaleX(0.95); }
+  100% { transform: scaleX(0.6); }
+}
+
+.meter-fill {
+  transform-origin: left center;
+  animation: meter 4s ease-in-out infinite;
+}
+
+.glow-cy { box-shadow: 0 0 60px rgba(255, 255, 255, 0.1); }
+.text-glow { text-shadow: 0 0 28px rgba(255, 255, 255, 0.18); }
+
+.seg {
+  display: inline-flex;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0;
+  overflow: hidden;
+}
+.seg button {
+  padding: 8px 14px;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 11px;
+  color: #a1a1aa;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.seg button[aria-pressed="true"] { background: var(--hi); color: #000; }
+
+.opt {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s;
+}
+.opt[data-on="true"] {
+  border-color: var(--hi);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px var(--hi);
+}
+.opt:hover { border-color: rgba(255, 255, 255, 0.25); }
+
+.lift {
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+.lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.nowrap { white-space: nowrap; }
+
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.orbit::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--hi);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.45);
+  top: -3px;
+  left: 50%;
+}
+
+.spec-row td, .spec-row th { transition: background 0.2s ease; }
+.spec-row:hover td, .spec-row:hover th { background: rgba(255, 255, 255, 0.04); }
