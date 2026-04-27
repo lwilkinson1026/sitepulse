@@ -256,7 +256,7 @@ export function Hero() {
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a href="#config" className="btn btn-cy">
-            RESERVE FROM $499 <span>→</span>
+            RESERVE FROM $100 <span>→</span>
           </a>
           <a href="#runs" className="btn btn-ghost">
             SEE IT RUN

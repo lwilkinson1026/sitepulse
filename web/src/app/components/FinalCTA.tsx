@@ -33,7 +33,7 @@ export function FinalCTA() {
         </h2>
         <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
           <a href="#config" className="btn btn-cy">
-            RESERVE FROM $499 <span>→</span>
+            RESERVE FROM $100 <span>→</span>
           </a>
           <a href="#" className="btn btn-ghost">
             TALK TO AN ENGINEER

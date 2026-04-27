@@ -70,7 +70,7 @@ export function Configurator() {
           Configure yours.
         </h2>
         <p className="mt-8 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
-          Reserve with $499 today. Build slot locks in. Balance due before Q3
+          Reserve with $100 today. Build slot locks in. Balance due before Q3
           ship date. Refundable until 30 days before fulfillment.
         </p>
 
@@ -250,7 +250,7 @@ export function Configurator() {
                     Reserve today
                   </div>
                   <div className="display text-[22px] tracking-[-.02em] text-[var(--hi)]">
-                    $499
+                    $100
                   </div>
                 </div>
               </div>
