@@ -50,118 +50,89 @@ function HeroProductImage() {
         className="aspect-[21/9] relative overflow-hidden border"
         style={{ borderColor: "var(--line-strong)", background: "#000" }}
       >
-        <div className="absolute inset-0 grid-bg opacity-30" />
-        <div className="absolute inset-0 grid grid-cols-12">
-          {/* LEFT: telemetry rail */}
-          <div
-            className="col-span-4 p-8 border-r flex flex-col justify-between"
-            style={{ borderColor: "var(--line)" }}
-          >
-            <div>
-              <div className="mono text-[10px] tracking-[.22em] text-zinc-500 uppercase">
-                UNIT-001 · BOZEMAN PLANT
-              </div>
-              <div className="mt-2 mono text-[10px] tracking-[.22em] uppercase flex items-center gap-2">
-                <span className="pulse-dot" />
-                <span className="text-[var(--hi)]">LIVE TELEMETRY</span>
-              </div>
-            </div>
-            <div className="space-y-5">
-              <div>
-                <div className="mono text-[10px] tracking-[.18em] text-zinc-400 uppercase flex justify-between">
-                  <span>Battery SOC</span>
-                  <span className="text-[var(--hi)]">87%</span>
-                </div>
-                <div className="mt-1.5 h-[3px] bg-white/10">
-                  <div
-                    className="h-full bg-[var(--hi)] meter-fill"
-                    style={{ width: "87%" }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="mono text-[10px] tracking-[.18em] text-zinc-400 uppercase flex justify-between">
-                  <span>Load</span>
-                  <span className="text-[var(--run)]">26 W</span>
-                </div>
-                <div className="mt-1.5 h-[3px] bg-white/10">
-                  <div
-                    className="h-full meter-fill"
-                    style={{
-                      width: "18%",
-                      background: "var(--run)",
-                      animationDelay: "-1s",
-                    }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="mono text-[10px] tracking-[.18em] text-zinc-400 uppercase flex justify-between">
-                  <span>Engine</span>
-                  <span>STANDBY</span>
-                </div>
-                <div className="mt-1.5 h-[3px] bg-white/10">
-                  <div
-                    className="h-full"
-                    style={{
-                      width: "2%",
-                      background: "rgba(255,255,255,.4)",
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mono text-[10px] tracking-[.18em] text-zinc-500 uppercase grid grid-cols-2 gap-y-1.5">
-              <span>Cycle</span>
-              <span className="text-zinc-300 text-right">2,418 / 6,000</span>
-              <span>Next svc</span>
-              <span className="text-right">2,082 H</span>
-              <span>Uplink</span>
-              <span className="text-[var(--hi)] text-right">STARLINK</span>
-              <span>Env</span>
-              <span className="text-right">14°C</span>
-            </div>
-          </div>
-          {/* RIGHT: product card */}
-          <div className="col-span-8 relative">
-            <div
-              className="absolute"
-              style={{
-                left: "6%",
-                right: "6%",
-                top: "8%",
-                bottom: "8%",
-                background: "#000",
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/assets/product-hero-v2.jpg"
-                alt="Sitepulse 2400W Hybrid Inverter"
-                className="absolute inset-0 w-full h-full object-contain"
-              />
-            </div>
-            <span
-              className="absolute top-3 left-3 w-4 h-4 border-l border-t"
-              style={{ borderColor: "var(--line-strong)" }}
-            />
-            <span
-              className="absolute top-3 right-3 w-4 h-4 border-r border-t"
-              style={{ borderColor: "var(--line-strong)" }}
-            />
-            <span
-              className="absolute bottom-3 left-3 w-4 h-4 border-l border-b"
-              style={{ borderColor: "var(--line-strong)" }}
-            />
-            <span
-              className="absolute bottom-3 right-3 w-4 h-4 border-r border-b"
-              style={{ borderColor: "var(--line-strong)" }}
-            />
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 mono text-[10px] tracking-[.22em] text-zinc-500 uppercase whitespace-nowrap">
-              FIG. 01 · SITEPULSE V1 · 90 LB DRY · IP65
-            </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/hero-lifestyle.png"
+          alt="Sitepulse 2400W Hybrid Inverter mounted in a Cybertruck bed"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 28%, rgba(0,0,0,0) 70%, rgba(0,0,0,.65) 100%)",
+          }}
+        />
+
+        {/* TOP-LEFT: unit identity */}
+        <div className="absolute top-6 left-6 mono text-[10px] tracking-[.22em] text-zinc-300 uppercase">
+          <div>UNIT-001 · BOZEMAN PLANT</div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="pulse-dot" />
+            <span className="text-[var(--hi)]">LIVE TELEMETRY</span>
           </div>
         </div>
+
+        {/* TOP-RIGHT: meters */}
+        <div className="absolute top-6 right-6 w-[220px]">
+          <div className="mono text-[10px] tracking-[.18em] text-zinc-200 uppercase flex justify-between">
+            <span>Battery SOC</span>
+            <span className="text-[var(--hi)]">87%</span>
+          </div>
+          <div className="mt-1.5 h-[3px] bg-white/15">
+            <div
+              className="h-full bg-[var(--hi)] meter-fill"
+              style={{ width: "87%" }}
+            />
+          </div>
+          <div className="mt-3 mono text-[10px] tracking-[.18em] text-zinc-200 uppercase flex justify-between">
+            <span>Load</span>
+            <span className="text-[var(--run)]">26 W</span>
+          </div>
+          <div className="mt-1.5 h-[3px] bg-white/15">
+            <div
+              className="h-full meter-fill"
+              style={{
+                width: "18%",
+                background: "var(--run)",
+                animationDelay: "-1s",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* BOTTOM-LEFT: chassis spec */}
+        <div className="absolute bottom-6 left-6 mono text-[10px] tracking-[.22em] text-zinc-300 uppercase">
+          <div>~90 LB DRY</div>
+          <div className="mt-1">IP65 · −20°C TO +50°C</div>
+        </div>
+
+        {/* BOTTOM-RIGHT: service status */}
+        <div className="absolute bottom-6 right-6 mono text-[10px] tracking-[.22em] text-zinc-300 uppercase text-right">
+          <div className="text-zinc-100">CYCLE 2,418 / 6,000</div>
+          <div className="mt-1">NEXT SVC: 2,082 H</div>
+        </div>
+
+        {/* corner ticks */}
+        <span
+          className="absolute top-3 left-3 w-4 h-4 border-l border-t"
+          style={{ borderColor: "var(--line-strong)" }}
+        />
+        <span
+          className="absolute top-3 right-3 w-4 h-4 border-r border-t"
+          style={{ borderColor: "var(--line-strong)" }}
+        />
+        <span
+          className="absolute bottom-3 left-3 w-4 h-4 border-l border-b"
+          style={{ borderColor: "var(--line-strong)" }}
+        />
+        <span
+          className="absolute bottom-3 right-3 w-4 h-4 border-r border-b"
+          style={{ borderColor: "var(--line-strong)" }}
+        />
+      </div>
+      <div className="mt-3 mono text-[10px] tracking-[.22em] text-zinc-500 uppercase text-center">
+        FIG. 01 · SITEPULSE V1 · 2400W HYBRID INVERTER · 90 LB DRY · IP65
       </div>
     </div>
   );
