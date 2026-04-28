@@ -76,8 +76,8 @@ export function Specs() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/product-angle.jpg"
-                alt="Sitepulse 3/4 view"
+                src="/assets/product-angle-v2.jpg"
+                alt="Sitepulse 2400W Hybrid Inverter, 3/4 view"
                 className="absolute inset-0 w-full h-full object-contain"
               />
               <div className="absolute bottom-3 right-3 mono text-[10px] tracking-[.18em] uppercase text-zinc-500">

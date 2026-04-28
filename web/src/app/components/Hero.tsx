@@ -131,16 +131,13 @@ function HeroProductImage() {
                 right: "6%",
                 top: "8%",
                 bottom: "8%",
-                background:
-                  "linear-gradient(180deg, #f5f5f5 0%, #dcdcdc 70%, #c8c8c8 100%)",
-                boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,.6), 0 2px 24px rgba(0,0,0,.5)",
+                background: "#000",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/product-hero.jpg"
-                alt="Sitepulse hybrid power unit"
+                src="/assets/product-hero-v2.jpg"
+                alt="Sitepulse 2400W Hybrid Inverter"
                 className="absolute inset-0 w-full h-full object-contain"
               />
             </div>
