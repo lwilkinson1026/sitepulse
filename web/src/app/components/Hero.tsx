@@ -52,7 +52,7 @@ function HeroProductImage() {
       >
         <video
           src="/assets/hero.mp4"
-          poster="/assets/hero-lifestyle.png"
+          poster="/assets/hero-lifestyle2.png"
           autoPlay
           muted
           loop
