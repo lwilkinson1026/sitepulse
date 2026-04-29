@@ -50,10 +50,15 @@ function HeroProductImage() {
         className="aspect-[21/9] relative overflow-hidden border"
         style={{ borderColor: "var(--line-strong)", background: "#000" }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/assets/hero-lifestyle.png"
-          alt="Sitepulse 2400W Hybrid Inverter mounted in a Cybertruck bed"
+        <video
+          src="/assets/hero.mp4"
+          poster="/assets/hero-lifestyle.png"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-label="Sitepulse 2400W Hybrid Inverter in field operation"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div
