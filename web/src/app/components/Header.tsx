@@ -1,9 +1,11 @@
+import Link from "next/link";
+
 const NAV_LINKS: ReadonlyArray<readonly [string, string]> = [
-  ["The Unit", "#unit"],
-  ["How it Runs", "#runs"],
-  ["Specs", "#specs"],
-  ["EV Backup", "#config"],
-  ["Configure", "#config"],
+  ["The Unit", "/#unit"],
+  ["How it Runs", "/#runs"],
+  ["Specs", "/#specs"],
+  ["DJI Dock", "/dji-dock"],
+  ["Configure", "/#config"],
 ];
 
 export function Header() {
@@ -17,18 +19,18 @@ export function Header() {
       }}
     >
       <div className="max-w-[1440px] mx-auto px-8 h-[68px] flex items-center justify-between">
-        <a href="#top" className="flex items-center">
+        <Link href="/" className="flex items-center">
           <span className="font-bold tracking-[.06em] text-[16px]">SITEPULSE</span>
-        </a>
+        </Link>
         <nav className="hidden md:flex items-center gap-9">
           {NAV_LINKS.map(([label, href]) => (
-            <a
+            <Link
               key={label}
               href={href}
               className="ulink text-[13px] text-zinc-400 hover:text-white transition-colors uppercase tracking-[.08em] font-medium"
             >
               {label}
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="flex items-center gap-5">
@@ -38,9 +40,9 @@ export function Header() {
           >
             Dealers
           </a>
-          <a href="#config" className="btn btn-cy">
+          <Link href="/#config" className="btn btn-cy">
             RESERVE <span className="opacity-70">→</span>
-          </a>
+          </Link>
         </div>
       </div>
     </header>
