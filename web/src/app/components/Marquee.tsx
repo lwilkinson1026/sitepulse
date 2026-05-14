@@ -1,6 +1,6 @@
 const ITEMS = [
-  "5,000 W pure sine",
-  "10 kW surge",
+  "4,000 W pure sine",
+  "8 kW surge",
   "1.54 kWh LFP",
   "30 Ah · 48 V",
   "Starlink Mini",
