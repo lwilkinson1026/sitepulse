@@ -1,5 +1,4 @@
 export type Tier = "BASE" | "PRO";
-export type Mount = "CART" | "TRAILER" | "STATIONARY" | "PELICAN CASE";
 
 export const TIERS: Record<Tier, { price: number; label: string; desc: string }> = {
   BASE: {
@@ -13,13 +12,6 @@ export const TIERS: Record<Tier, { price: number; label: string; desc: string }>
     desc: "+ direct DC Starlink feed · redundant cellular failover · extended telemetry",
   },
 };
-
-export const MOUNTS: ReadonlyArray<Mount> = [
-  "CART",
-  "TRAILER",
-  "STATIONARY",
-  "PELICAN CASE",
-];
 
 export type Addon = {
   id: string;
@@ -61,10 +53,6 @@ export function isTier(v: unknown): v is Tier {
   return v === "BASE" || v === "PRO";
 }
 
-export function isMount(v: unknown): v is Mount {
-  return MOUNTS.includes(v as Mount);
-}
-
 export function computeTotal(
   tier: Tier,
   selectedAddonIds: ReadonlyArray<string>,
@@ -78,13 +66,12 @@ export function computeTotal(
 
 export function buildSummary(
   tier: Tier,
-  mount: Mount,
   selectedAddonIds: ReadonlyArray<string>,
 ): string {
   const addonLabels = selectedAddonIds
     .map((id) => ADDON_BY_ID.get(id)?.label)
     .filter((l): l is string => !!l);
-  const parts = [TIERS[tier].label, `mount: ${mount}`];
+  const parts = [TIERS[tier].label];
   if (addonLabels.length) parts.push(`add-ons: ${addonLabels.join(", ")}`);
   return parts.join(" · ");
 }

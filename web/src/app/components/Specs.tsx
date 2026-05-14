@@ -31,7 +31,7 @@ const ROWS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "Chassis",
-    "SendcutSend sheet metal enclosure · IP65 · 8 lb · skid or trailer mount",
+    "SendcutSend sheet metal enclosure · IP65 · 8 lb · integrated carry handles",
   ],
   [
     "Environment",

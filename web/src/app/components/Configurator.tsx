@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ADDONS,
-  computeTotal,
-  MOUNTS,
-  TIERS,
-  type Mount,
-  type Tier,
-} from "@/lib/build";
+import { ADDONS, computeTotal, TIERS, type Tier } from "@/lib/build";
 import { Eyebrow } from "./Eyebrow";
 
 export function Configurator() {
   const [tier, setTier] = useState<Tier>("BASE");
-  const [mount, setMount] = useState<Mount>("CART");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [reserving, setReserving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +23,7 @@ export function Configurator() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, mount, addonIds: selectedAddonIds }),
+        body: JSON.stringify({ tier, addonIds: selectedAddonIds }),
       });
       const data: { url?: string; error?: string } = await res.json();
       if (!res.ok || !data.url) {
@@ -164,27 +156,6 @@ export function Configurator() {
               </div>
             </div>
 
-            {/* mount */}
-            <div>
-              <div className="mono text-[11px] tracking-[.18em] uppercase text-zinc-500">
-                03 — Mounting
-              </div>
-              <div className="mt-5 seg">
-                {MOUNTS.map((o) => (
-                  <button
-                    key={o}
-                    onClick={() => setMount(o)}
-                    aria-pressed={mount === o}
-                  >
-                    {o}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 mono text-[11px] tracking-[.16em] text-zinc-500 uppercase">
-                Selected: <span className="text-zinc-300">{mount}</span> —
-                included with build
-              </div>
-            </div>
           </div>
 
           {/* summary */}
@@ -221,13 +192,6 @@ export function Configurator() {
                     </span>
                   </li>
                 ))}
-                <li
-                  className="flex justify-between border-b pb-3"
-                  style={{ borderColor: "var(--line)" }}
-                >
-                  <span>Mount</span>
-                  <span className="text-zinc-200">{mount}</span>
-                </li>
                 <li className="flex justify-between">
                   <span>Freight</span>
                   <span className="text-[var(--run)]">FREE</span>

@@ -79,12 +79,6 @@ export default async function ReserveSuccess({ searchParams }: Props) {
                   <dd className="text-zinc-200">{meta.build_label}</dd>
                 </>
               )}
-              {meta.mount && (
-                <>
-                  <dt className="text-zinc-500">Mount</dt>
-                  <dd className="text-zinc-200">{meta.mount}</dd>
-                </>
-              )}
               {meta.addons && meta.addons !== "(none)" && (
                 <>
                   <dt className="text-zinc-500">Add-ons</dt>
