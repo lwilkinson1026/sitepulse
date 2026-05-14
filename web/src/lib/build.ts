@@ -5,12 +5,12 @@ export const TIERS: Record<Tier, { price: number; label: string; desc: string }>
   BASE: {
     price: 2995,
     label: "Sitepulse — Base",
-    desc: "1.54 kWh LFP · Starlink Mini · DLE 170 hybrid",
+    desc: "5,000 W pure-sine inverter · 1.54 kWh LFP · Starlink Mini · DLE 170 hybrid",
   },
   PRO: {
     price: 3795,
     label: "Sitepulse — Pro",
-    desc: "+ direct DC Starlink feed + redundant cellular failover + extended telemetry",
+    desc: "+ direct DC Starlink feed · redundant cellular failover · extended telemetry",
   },
 };
 

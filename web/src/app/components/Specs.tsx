@@ -7,7 +7,7 @@ const ROWS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "Inverter",
-    "1,500–2,000 W continuous · hybrid w/ generator input · 120 V pure sine · 60 Hz",
+    "5,000 W continuous · 10,000 W surge · hybrid w/ generator input · 120 V pure sine · 60 Hz",
   ],
   [
     "Engine",
@@ -77,7 +77,7 @@ export function Specs() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/assets/product-angle-v2.jpg"
-                alt="Sitepulse 2400W Hybrid Inverter, 3/4 view"
+                alt="Sitepulse 5000W Hybrid Inverter, 3/4 view"
                 className="absolute inset-0 w-full h-full object-contain"
               />
               <div className="absolute bottom-3 right-3 mono text-[10px] tracking-[.18em] uppercase text-zinc-500">

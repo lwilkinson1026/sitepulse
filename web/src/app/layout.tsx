@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Sitepulse — Hybrid Battery · Starlink · Generator",
   description:
-    "A 90-lb hybrid power system that keeps Starlink Mini connected for weeks on one tank. Battery runs the radio. The 170 cc engine only kicks in 23 minutes a day.",
+    "A 90-lb hybrid power station with a 5,000 W pure-sine inverter, Starlink Mini, and a top-up 170 cc engine. Silent for days, online forever.",
 };
 
 export default function RootLayout({
