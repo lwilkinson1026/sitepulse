@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 type ContactBody = {
   name?: unknown;
@@ -43,17 +52,69 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Email delivery is not wired up yet. Until a provider (e.g. Resend) and a
-  // destination inbox are configured, submissions are logged server-side so
-  // nothing is lost. Replace this with the real send once those are set.
-  console.log("[contact] submission", {
-    name,
-    email,
-    company: company || "(none)",
-    topic: topic || "(none)",
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.CONTACT_TO_EMAIL;
+  const from = process.env.CONTACT_FROM_EMAIL;
+
+  // Fallback: if the email provider isn't configured, log so nothing is lost.
+  if (!apiKey || !to || !from) {
+    console.warn(
+      "[contact] RESEND_API_KEY / CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL not set — logging submission instead of sending",
+    );
+    console.log("[contact] submission", {
+      name,
+      email,
+      company: company || "(none)",
+      topic: topic || "(none)",
+      message,
+      at: new Date().toISOString(),
+    });
+    return NextResponse.json({ ok: true });
+  }
+
+  const subject = `Sitepulse contact — ${topic || "General"} — ${name}`;
+  const lines = [
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Company: ${company || "(none)"}`,
+    `Topic: ${topic || "(none)"}`,
+    "",
     message,
-    at: new Date().toISOString(),
-  });
+  ];
+  const html = `
+    <table style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.5">
+      <tr><td><strong>Name</strong></td><td>${escapeHtml(name)}</td></tr>
+      <tr><td><strong>Email</strong></td><td>${escapeHtml(email)}</td></tr>
+      <tr><td><strong>Company</strong></td><td>${escapeHtml(company || "(none)")}</td></tr>
+      <tr><td><strong>Topic</strong></td><td>${escapeHtml(topic || "(none)")}</td></tr>
+    </table>
+    <p style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(message)}</p>
+  `;
+
+  try {
+    const resend = new Resend(apiKey);
+    const { error } = await resend.emails.send({
+      from,
+      to,
+      replyTo: email,
+      subject,
+      text: lines.join("\n"),
+      html,
+    });
+    if (error) {
+      console.error("[contact] Resend error:", error);
+      return NextResponse.json(
+        { error: "Could not send your message. Please try again." },
+        { status: 502 },
+      );
+    }
+  } catch (err) {
+    console.error("[contact] send failed:", err);
+    return NextResponse.json(
+      { error: "Could not send your message. Please try again." },
+      { status: 502 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
