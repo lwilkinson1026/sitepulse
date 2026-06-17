@@ -37,7 +37,7 @@ const CASES: ReadonlyArray<Case> = [
 
 export function UseCases() {
   return (
-    <section className="py-32 border-b" style={{ borderColor: "var(--line)" }}>
+    <section id="cases" className="py-32 border-b" style={{ borderColor: "var(--line)" }}>
       <div className="max-w-[1440px] mx-auto px-8">
         <div className="flex items-end justify-between flex-wrap gap-8">
           <div>

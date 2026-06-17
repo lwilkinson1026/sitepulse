@@ -34,12 +34,12 @@ export function Header() {
           ))}
         </nav>
         <div className="flex items-center gap-5">
-          <a
-            href="#dealers"
+          <Link
+            href="/contact"
             className="ulink hidden sm:inline text-[12px] uppercase tracking-[.1em] text-zinc-400 mono"
           >
             Dealers
-          </a>
+          </Link>
           <Link href="/#config" className="btn btn-cy">
             RESERVE <span className="opacity-70">→</span>
           </Link>

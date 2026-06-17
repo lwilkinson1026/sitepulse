@@ -71,7 +71,7 @@ function HeroProductImage() {
 
         {/* TOP-LEFT: unit identity */}
         <div className="absolute top-6 left-6 mono text-[10px] tracking-[.22em] text-zinc-300 uppercase">
-          <div>UNIT-001 · BOZEMAN PLANT</div>
+          <div>UNIT-001 · YAKIMA PLANT</div>
           <div className="mt-2 flex items-center gap-2">
             <span className="pulse-dot" />
             <span className="text-[var(--hi)]">LIVE TELEMETRY</span>
@@ -205,7 +205,7 @@ export function Hero() {
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="mt-12 flex items-center gap-3 mono text-[11px] tracking-[.18em] text-zinc-500 uppercase">
           <span className="pulse-dot" />
-          <span>SHIPPING Q3 · MADE IN BOZEMAN, MT · 5-YEAR WARRANTY</span>
+          <span>SHIPPING Q3 · MADE IN YAKIMA, WA · 5-YEAR WARRANTY</span>
         </div>
 
         <div className="mt-10 mono text-[12px] tracking-[.22em] text-[var(--hi)] uppercase">

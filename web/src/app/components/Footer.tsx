@@ -1,22 +1,49 @@
-type Column = readonly [string, ReadonlyArray<string>];
+import Link from "next/link";
+
+type FooterLink = readonly [string, string];
+type Column = readonly [string, ReadonlyArray<FooterLink>];
 
 const COLUMNS: ReadonlyArray<Column> = [
-  ["Product", ["The Unit", "Specs", "Configure", "Compare", "Reviews"]],
+  [
+    "Product",
+    [
+      ["The Unit", "/#unit"],
+      ["Specs", "/#specs"],
+      ["Configure", "/#config"],
+      ["Compare", "/contact"],
+      ["Reviews", "/#reports"],
+    ],
+  ],
   [
     "Use Cases",
     [
-      "Remote Monitoring",
-      "Backcountry Research",
-      "Disaster Response",
-      "Oil & Gas",
-      "Off-Grid Sites",
+      ["Remote Monitoring", "/#cases"],
+      ["Backcountry Research", "/#cases"],
+      ["Disaster Response", "/#cases"],
+      ["Oil & Gas", "/#cases"],
+      ["Off-Grid Sites", "/#cases"],
     ],
   ],
   [
     "Support",
-    ["Owner's Manual", "Field Service", "Firmware", "Warranty", "Contact"],
+    [
+      ["Owner's Manual", "/contact"],
+      ["Field Service", "/contact"],
+      ["Firmware", "/contact"],
+      ["Warranty", "/contact"],
+      ["Contact", "/contact"],
+    ],
   ],
-  ["Company", ["Bozeman Plant", "Careers", "Press", "Investors", "Privacy"]],
+  [
+    "Company",
+    [
+      ["Yakima Plant", "/contact"],
+      ["Careers", "/contact"],
+      ["Press", "/contact"],
+      ["Investors", "/contact"],
+      ["Privacy", "/contact"],
+    ],
+  ],
 ];
 
 export function Footer() {
@@ -31,7 +58,7 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-6 text-[14px] leading-[1.6] text-zinc-400">
-              Designed and assembled in Bozeman, Montana. A 90-lb true hybrid
+              Designed and assembled in Yakima, Washington. A 90-lb true hybrid
               built for months of unattended remote operation — silent on
               battery, engine only when it has to.
             </p>
@@ -48,14 +75,14 @@ export function Footer() {
                   {t}
                 </div>
                 <ul className="mt-5 space-y-3">
-                  {l.map((x) => (
-                    <li key={x}>
-                      <a
-                        href="#"
+                  {l.map(([label, href]) => (
+                    <li key={label}>
+                      <Link
+                        href={href}
                         className="text-[13px] text-zinc-300 hover:text-[var(--hi)] transition-colors"
                       >
-                        {x}
-                      </a>
+                        {label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -67,7 +94,7 @@ export function Footer() {
           className="mt-20 pt-8 border-t flex flex-wrap items-center justify-between gap-4 mono text-[10px] tracking-[.18em] uppercase text-zinc-500"
           style={{ borderColor: "var(--line)" }}
         >
-          <div>© 2026 Sitepulse Power, Inc. · Bozeman, Montana</div>
+          <div>© 2026 Sitepulse Power, Inc. · Yakima, Washington</div>
           <div>External fuel · Cellular failover · OTA · IP65</div>
           <div>Made in USA · Patents pending</div>
         </div>

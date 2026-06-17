@@ -22,7 +22,7 @@ const QUOTES: ReadonlyArray<Quote> = [
 
 export function FieldReports() {
   return (
-    <section className="py-32 border-b" style={{ borderColor: "var(--line)" }}>
+    <section id="reports" className="py-32 border-b" style={{ borderColor: "var(--line)" }}>
       <div className="max-w-[1440px] mx-auto px-8">
         <Eyebrow num="05" label="FIELD REPORTS" />
         <h2
