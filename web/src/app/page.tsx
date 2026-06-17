@@ -1,5 +1,4 @@
 import { Configurator } from "./components/Configurator";
-import { EVTeaser } from "./components/EVTeaser";
 import { FieldReports } from "./components/FieldReports";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
@@ -22,7 +21,6 @@ export default function Page() {
       <UseCases />
       <Specs />
       <FieldReports />
-      <EVTeaser />
       <Configurator />
       <FinalCTA />
       <Footer />

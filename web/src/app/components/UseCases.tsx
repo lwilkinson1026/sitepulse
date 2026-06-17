@@ -6,7 +6,7 @@ const CASES: ReadonlyArray<Case> = [
   {
     tag: "REMOTE MONITORING",
     title: "Pipeline sensor backhaul",
-    body: "Months of unattended uptime on a single fuel tank. Engine runs ~12 hr/month. Every reading hits the cloud over Starlink, with cellular failover for telemetry.",
+    body: "Weeks of unattended uptime on a single fuel fill. Engine runs ~1.5 hr/day. Every reading hits the cloud over Starlink, with cellular failover for telemetry.",
   },
   {
     tag: "BACKCOUNTRY RESEARCH",
@@ -21,17 +21,17 @@ const CASES: ReadonlyArray<Case> = [
   {
     tag: "DISASTER RESPONSE",
     title: "Comms node, deployed in minutes",
-    body: "Lift it off the truck, plug in the external tank, raise the dish. Internet and a 120 V outlet within 90 seconds. Up to 12 kW available when crews arrive.",
+    body: "Lift it off the truck, plug in the external tank, raise the dish. Internet and a 120 V outlet within 90 seconds. A full 2,000 W (4 kW peak) available when crews arrive.",
   },
   {
     tag: "OIL & GAS PAD",
     title: "SCADA where the grid isn't",
-    body: "Drives flow meters and a Starlink uplink for an entire well pad. Engine duty stays under 2%. Stabilizer auto-doses on shutdown for long sits between visits.",
+    body: "Drives flow meters and a Starlink uplink for an entire well pad. Engine duty stays around 6%. Stabilizer auto-doses on shutdown for long sits between visits.",
   },
   {
     tag: "REMOTE OFFICE",
     title: "Cabin or jobsite trailer",
-    body: "~25 W of Starlink lasts 40-plus hours on battery alone. Plug in tools or a fridge and the engine joins in automatically. No switches to flip.",
+    body: "~40 W of Starlink and the controller lasts ~35 hours on battery alone. Plug in tools or a fridge and the engine joins in automatically. No switches to flip.",
   },
 ];
 

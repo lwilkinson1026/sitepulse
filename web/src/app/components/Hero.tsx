@@ -58,7 +58,7 @@ function HeroProductImage() {
           loop
           playsInline
           preload="auto"
-          aria-label="Sitepulse 4000W Hybrid Inverter in field operation"
+          aria-label="Sitepulse hybrid power station in field operation"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div
@@ -137,7 +137,7 @@ function HeroProductImage() {
         />
       </div>
       <div className="mt-3 mono text-[10px] tracking-[.22em] text-zinc-500 uppercase text-center">
-        FIG. 01 · SITEPULSE V1 · 4000W HYBRID INVERTER · 90 LB DRY · IP65
+        FIG. 01 · SITEPULSE V1 · 2000W HYBRID POWER STATION · 90 LB DRY · IP65
       </div>
     </div>
   );
@@ -145,14 +145,14 @@ function HeroProductImage() {
 
 const HEADLINE = {
   eyebrow: "REMOTE HYBRID POWER · STARLINK MINI · TRUE HYBRID",
-  sub: "A 90-lb hybrid power station — 4,000 W pure-sine inverter, Starlink Mini, and a top-up 170 cc engine. Battery handles daily loads. The engine only kicks in 23 minutes a day.",
+  sub: "A 90-lb hybrid power station — 2,000 W pure-sine inverter (4 kW peak), Starlink Mini, and a top-up 79cc engine. Battery handles daily loads. The engine runs about 1.5 hours a day.",
 };
 
 const HERO_STATS: ReadonlyArray<readonly [string, string]> = [
-  ["4,000 W", "Pure-sine inverter"],
-  ["48 hr", "Silent, Starlink only"],
-  ["12 kW", "Peak, engine running"],
-  ["~13 gal", "Fuel per month"],
+  ["2,000 W", "Pure-sine inverter"],
+  ["~35 hr", "Silent, Starlink only"],
+  ["4 kW", "Peak surge"],
+  ["~10 gal", "Fuel per month"],
 ];
 
 export function Hero() {

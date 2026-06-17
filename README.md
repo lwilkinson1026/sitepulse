@@ -1,6 +1,6 @@
 # Sitepulse
 
-Marketing site for Sitepulse — a 90-lb hybrid power system (LFP battery + Starlink Mini + DLE 170 cc engine) built for unattended remote operation.
+Marketing site for Sitepulse — a 90-lb hybrid power system (1.54 kWh LFP battery + 2,000 W inverter + Starlink Mini + 79cc top-up engine) built for unattended remote operation.
 
 ## Stack
 
@@ -38,13 +38,13 @@ Other scripts: `npm run build`, `npm run start`, `npm run lint`.
 
 ## Landing page sections
 
-`Header`, `Hero`, `Marquee`, `Pillars`, `RunCycle`, `UseCases`, `Specs`, `FieldReports`, `EVTeaser`, `Configurator`, `FinalCTA`, `Footer`.
+`Header`, `Hero`, `Marquee`, `Pillars`, `RunCycle`, `UseCases`, `Specs`, `FieldReports`, `Configurator`, `FinalCTA`, `Footer`.
 
 The `Configurator` is a client component (tier + add-ons + mount → live total). Everything else renders on the server.
 
 ## Known TODOs
 
-- **Reserve buttons** are placeholders — no payment flow wired up. Plan: Stripe Checkout for the $499 deposit, plus a small backend to persist reservations.
-- **EV Backup page** — the prototype includes a separate `Sitepulse EV Backup.html`. Nav link currently points to `#config`. Port this as `/ev-backup` when needed.
+- **Reserve buttons** are placeholders — no payment flow wired up. Plan: Stripe Checkout for the $100 deposit, plus a small backend to persist reservations.
+- **EV Backup** — the EV-charger section and add-on were removed from the live site; the current unit (2,000 W / 4 kW peak) can't sustain Level 2 charging. Reintroduce when a higher-output unit ships. Prototype kept in `project/Sitepulse EV Backup.html` for reference.
 - **"Talk to an engineer" / "Download spec PDF" / "Read the field report"** CTAs are dead links.
 - **Dealers / footer links** — all `href="#"` for now.

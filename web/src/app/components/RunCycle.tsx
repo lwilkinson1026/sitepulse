@@ -12,41 +12,41 @@ const PHASES: ReadonlyArray<Phase> = [
   {
     h: "00:00 — IDLE",
     title: "Battery carries the radio",
-    body: "Starlink Mini pulls ~25 W. Engine off. Pack drains roughly 1% per hour. Site at zero decibels.",
+    body: "Starlink Mini and the controller pull ~40 W. Engine off. Pack drains roughly 2.5% per hour. Site at zero decibels.",
     source: "BATTERY",
   },
   {
-    h: "+24 HOURS",
+    h: "+18 HOURS",
     title: "Still silent",
-    body: "Day-one finishes at ~60% SOC. The control board is happy. Telemetry beats home every minute.",
+    body: "Past the first night, pack sits near 55% SOC. The control board is happy. Telemetry beats home every minute.",
     source: "BATTERY",
   },
   {
-    h: "+48 HOURS",
+    h: "+35 HOURS",
     title: "Threshold reached",
-    body: "Pack hits ~25%. Engine warm-start, idles up, generator picks up the load while the pack tops off.",
+    body: "Pack hits ~20%. Engine warm-start, idles up, the starter-generator picks up the load while the pack tops off.",
     source: "ENGINE",
     ring: true,
   },
   {
-    h: "+48:23",
+    h: "+36:30",
     title: "Engine shuts down",
-    body: "Pack back to ~90% in 23 minutes. Cooldown sequence runs. Stabilizer doses on shutdown. System silent again.",
+    body: "Pack back to ~95% in about 90 minutes at 600–800 W charging. Cooldown runs. Stabilizer doses on shutdown. System silent again.",
     source: "BATTERY",
   },
   {
     h: "REPEAT",
-    title: "~2.4 days per cycle",
-    body: "~13 gallons consumed per month. ~12 hours of total engine runtime. The other 97% of the time: silence.",
+    title: "~1.5 days per cycle",
+    body: "About 1.5 hours of engine runtime a day, ~10 gallons a month. Roughly two weeks of autonomy per 5-gallon fill. The rest of the time: silence.",
     source: "BATTERY",
   },
 ];
 
 const TOTALS: ReadonlyArray<readonly [string, string]> = [
-  ["12 hr", "Engine runtime / mo"],
-  ["13 gal", "Fuel / mo @ 25 W avg"],
-  ["1.6%", "Engine duty cycle"],
-  ["~12", "Battery cycles / mo"],
+  ["~1.5 hr", "Engine runtime / day"],
+  ["~10 gal", "Fuel / month"],
+  ["~6%", "Engine duty cycle"],
+  ["~20", "Battery cycles / mo"],
 ];
 
 export function RunCycle() {
@@ -64,10 +64,11 @@ export function RunCycle() {
         >
           Silent for days.
           <br />
-          23 minutes to recharge.
+          Recharges in under two hours.
         </h2>
         <p className="mt-8 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
-          Connectivity-only mode: a Starlink Mini at ~25 W average. The control
+          Connectivity-only mode: a Starlink Mini and the onboard controller at
+          ~40 W average. The control
           board tracks load, state-of-charge, and fuel — and starts the engine
           only when it has to.
         </p>

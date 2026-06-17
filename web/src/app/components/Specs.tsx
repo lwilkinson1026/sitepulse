@@ -7,15 +7,15 @@ const ROWS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "Inverter",
-    "4,000 W continuous · 8,000 W surge · hybrid w/ generator input · 120 V pure sine · 60 Hz",
+    "2,000 W continuous · 4,000 W peak · hybrid w/ generator input · 120 V pure sine · 60 Hz",
   ],
   [
     "Engine",
-    "DLE 170cc twin-cylinder gas · 17.5 HP · 9.1 lb · vibration-isolated mounts",
+    "79cc single-cylinder gas · propane-ready · vibration-isolated mounts",
   ],
   [
     "Starter generator",
-    "High-output starter/alternator · up to 10–12 kW peak · VESC controller",
+    "BLDC starter/alternator · 600–800 W sustained charging · VESC controller",
   ],
   [
     "Connectivity",
@@ -41,7 +41,7 @@ const ROWS: ReadonlyArray<readonly [string, string]> = [
     "Safety",
     "CO shutdown · fuel cutoff · BMS protect · GFCI · surge · local + remote E-stop",
   ],
-  ["Total weight", "~90 lb dry (no fuel) · realistic 85–92 lb range"],
+  ["Total weight", "~90 lb dry (no fuel) · 85–95 lb range"],
 ];
 
 const SCALE_STATS: ReadonlyArray<readonly [string, string]> = [
@@ -77,7 +77,7 @@ export function Specs() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/assets/product-angle-v2.jpg"
-                alt="Sitepulse 4000W Hybrid Inverter, 3/4 view"
+                alt="Sitepulse hybrid power station, 3/4 view"
                 className="absolute inset-0 w-full h-full object-contain"
               />
               <div className="absolute bottom-3 right-3 mono text-[10px] tracking-[.18em] uppercase text-zinc-500">

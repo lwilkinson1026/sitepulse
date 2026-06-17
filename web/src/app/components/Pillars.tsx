@@ -49,7 +49,7 @@ const ITEMS: ReadonlyArray<PillarItem> = [
   {
     tag: "01 / BATTERY",
     title: "1.54 kWh LFP pack.",
-    copy: "30 Ah lithium iron phosphate at 48 V nominal, 22 lb with active BMS. Cell-level protection, optional sub-zero heaters. Runs Starlink Mini for 40–48 hours of pure silence between starts.",
+    copy: "30 Ah lithium iron phosphate at 48 V nominal, 22 lb with active BMS. Cell-level protection, optional sub-zero heaters. Runs Starlink Mini and the controller for ~35 hours of pure silence between starts.",
     stats: [
       ["48 V", "Nominal"],
       ["30 Ah", "Capacity"],
@@ -72,12 +72,12 @@ const ITEMS: ReadonlyArray<PillarItem> = [
   },
   {
     tag: "03 / ENGINE",
-    title: "DLE 170cc · 17.5 HP twin.",
-    copy: "Gas twin paired with a high-output starter generator delivers up to 10–12 kW on demand. Auto-starts when load exceeds the inverter for 45 s; otherwise idle. External quick-disconnect fuel tank — no built-in tank, no spillage.",
+    title: "79cc top-up engine.",
+    copy: "A compact 79cc engine paired with a BLDC starter-generator delivers 600–800 W of sustained charging — enough to keep the pack topped between silent stretches. Auto-starts when SOC drops or load exceeds the inverter; otherwise idle. External quick-disconnect fuel tank — no built-in tank, no spillage.",
     stats: [
-      ["17.5 HP", "Twin cyl"],
-      ["10–12 kW", "Peak"],
-      ["~1.1", "gal/hr running"],
+      ["79cc", "Displacement"],
+      ["600–800 W", "Charging"],
+      ["~0.3", "gal/hr running"],
       ["<60 dB", "Enclosed"],
     ],
     icon: <GenIcon />,

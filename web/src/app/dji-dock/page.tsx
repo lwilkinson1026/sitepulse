@@ -61,11 +61,11 @@ const WHY_POINTS: ReadonlyArray<{ title: string; body: string }> = [
   },
   {
     title: "Engine only wakes for charge peaks",
-    body: "Post-flight charging draws 200–280 W for ~30 minutes. The DLE 170 starts, tops the pack while the dock charges the aircraft, and shuts back down. Expect 15–20 hours of engine runtime a month at typical mission cadence.",
+    body: "Post-flight charging draws 200–280 W for ~30 minutes. The engine starts, tops the pack while the dock charges the aircraft, and shuts back down. Expect 15–20 hours of engine runtime a month at typical mission cadence.",
   },
   {
     title: "Headroom for the worst day",
-    body: "The 4,000 W pure-sine inverter (8 kW surge) absorbs the Dock's 800–1,000 W peaks without breaking a sweat. Add an AC compressor spike in 110°F heat and you're still under half rated continuous.",
+    body: "The 2,000 W pure-sine inverter (4 kW peak) absorbs the Dock's 800–1,000 W peaks comfortably. Even an AC compressor spike in 110°F heat stays within the continuous rating, with peak headroom to spare.",
   },
   {
     title: "Starlink Mini, integrated",
@@ -129,7 +129,7 @@ export default function DjiDockPage() {
           <p className="mt-10 max-w-[680px] text-[17px] leading-[1.65] text-zinc-400">
             DJI Dock 3 + Matrice 4D draws roughly <strong className="text-zinc-200">140&nbsp;W on average</strong> across a typical
             inspection day. Sitepulse runs it silently on battery the vast majority of
-            the time — the DLE 170 only spins up for short, efficient recharges. Set
+            the time — the engine only spins up for short, efficient recharges. Set
             it on the canyon rim, log in over Starlink, fly missions for months.
           </p>
 

@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Sitepulse — Hybrid Battery · Starlink · Generator",
   description:
-    "A 90-lb hybrid power station with a 4,000 W pure-sine inverter, Starlink Mini, and a top-up 170 cc engine. Silent for days, online forever.",
+    "A 90-lb hybrid power station with a 2,000 W pure-sine inverter (4 kW peak), Starlink Mini, and a top-up 79cc engine. Silent for days, online forever.",
 };
 
 export default function RootLayout({

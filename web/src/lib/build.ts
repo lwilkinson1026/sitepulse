@@ -2,12 +2,12 @@ export type Tier = "BASE" | "PRO";
 
 export const TIERS: Record<Tier, { price: number; label: string; desc: string }> = {
   BASE: {
-    price: 2995,
+    price: 3995,
     label: "Sitepulse — Base",
-    desc: "4,000 W pure-sine inverter · 1.54 kWh LFP · Starlink Mini · DLE 170 hybrid",
+    desc: "2,000 W pure-sine inverter (4 kW peak) · 1.54 kWh LFP · Starlink Mini · 79cc hybrid",
   },
   PRO: {
-    price: 3795,
+    price: 4795,
     label: "Sitepulse — Pro",
     desc: "+ direct DC Starlink feed · redundant cellular failover · extended telemetry",
   },
@@ -38,12 +38,6 @@ export const ADDONS: ReadonlyArray<Addon> = [
     label: "Extended fuel kit",
     price: 1240,
     desc: "Larger external tank + dual quick-disconnect for months between fills",
-  },
-  {
-    id: "evkit",
-    label: "EV-Backup Kit",
-    price: 680,
-    desc: "32 A portable Level 2 EVSE (J1772 + NACS adapter) + grounding rod — turns the unit into an emergency EV charger.",
   },
 ];
 

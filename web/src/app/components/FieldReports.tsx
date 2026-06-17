@@ -9,12 +9,12 @@ const QUOTES: ReadonlyArray<Quote> = [
     t: "Field ops, remote pipeline — Big Sky, MT",
   },
   {
-    q: "~13 gallons a month for a Starlink uplink and a logger. The math finally works for our pads.",
+    q: "~10 gallons a month for a Starlink uplink and a logger. The math finally works for our pads.",
     a: "Mira Okafor",
     t: "SCADA lead, basin operator — Williston, ND",
   },
   {
-    q: "Engine started when it said it would, ran for 23 minutes, and went quiet again. Boring. Good.",
+    q: "Engine started when it said it would, ran for about 90 minutes, and went quiet again. Boring. Good.",
     a: "David Cho",
     t: "Research engineer, hydrology station — Big Bend, TX",
   },
