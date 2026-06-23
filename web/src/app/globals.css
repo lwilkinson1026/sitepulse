@@ -242,6 +242,16 @@ body {
 
 .nowrap { white-space: nowrap; }
 
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq .faq-sign { transition: transform 0.25s ease; }
+.faq[open] .faq-sign { transform: rotate(45deg); }
+.faq summary:hover .faq-q { color: var(--hi); }
+.faq-q { transition: color 0.2s ease; }
+
 .orbit {
   position: absolute;
   border: 1px solid rgba(255, 255, 255, 0.1);
