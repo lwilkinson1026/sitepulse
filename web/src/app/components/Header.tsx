@@ -5,6 +5,7 @@ const NAV_LINKS: ReadonlyArray<readonly [string, string]> = [
   ["How it Runs", "/#runs"],
   ["Specs", "/#specs"],
   ["DJI Dock", "/dji-dock"],
+  ["Off-Grid", "/off-grid"],
   ["Configure", "/#config"],
 ];
 
