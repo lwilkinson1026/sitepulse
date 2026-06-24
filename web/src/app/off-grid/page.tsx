@@ -8,7 +8,7 @@ import { SizingTool } from "./SizingTool";
 export const metadata: Metadata = {
   title: "Sitepulse — Off-Grid System Sizing Tool",
   description:
-    "Estimate your daily load, solar array size, number of SitePulse units, fuel use, and upfront cost for an off-grid home. Live, interactive, North Idaho defaults.",
+    "Estimate your daily load, solar array size, number of SitePulse units, fuel use, and upfront cost for an off-grid home. Live, interactive, with city-level solar search.",
 };
 
 const HYBRID_POINTS: ReadonlyArray<{ title: string; body: string }> = [
@@ -123,8 +123,9 @@ export default function OffGridPage() {
             Build your estimate.
           </h2>
           <p className="mt-8 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
-            Everything recalculates instantly. Open Advanced settings to tune
-            load, solar, fuel, and pricing assumptions to your exact situation.
+            Everything recalculates instantly. Search your city to localize
+            solar production, then open Advanced settings to tune load, solar,
+            fuel, and pricing assumptions to your exact situation.
           </p>
 
           <SizingTool />

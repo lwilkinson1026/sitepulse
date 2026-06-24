@@ -1,14 +1,13 @@
 export type PrimaryAppliances = "propane" | "electric";
 export type SpaceHeating = "wood" | "propane-furnace" | "heat-pump" | "resistance";
-export type LocationKey = "north-idaho" | "custom";
 export type FuelKey = "gasoline" | "propane";
 
 export type SizingInputs = {
   people: number;
   primaryAppliances: PrimaryAppliances;
   spaceHeating: SpaceHeating;
-  location: LocationKey;
-  peakSunHours: number; // used when location === "custom"
+  cityLabel: string; // display label for the selected location, e.g. "Coeur d'Alene, ID"
+  peakSunHours: number; // annual-average peak sun hours/day for the location
   starlink: boolean;
   wellPump: boolean;
   solarCoverage: number; // 0.60 – 0.90
@@ -30,8 +29,7 @@ export type SizingParams = {
   wellPump: number;
   minDaily: number;
   maxDaily: number;
-  northIdahoProdPerKw: number; // annual kWh produced per kW installed
-  derate: number; // system derate applied to custom peak-sun estimates
+  derate: number; // system derate applied to peak-sun production estimates
   panelWatts: number;
   panelCost: number;
   unitCost: number;
@@ -56,7 +54,6 @@ export const DEFAULT_PARAMS: SizingParams = {
   wellPump: 1.2,
   minDaily: 4,
   maxDaily: 25,
-  northIdahoProdPerKw: 1350,
   derate: 0.85,
   panelWatts: 500,
   panelCost: 135,
@@ -73,8 +70,8 @@ export const DEFAULT_INPUTS: SizingInputs = {
   people: 3,
   primaryAppliances: "propane",
   spaceHeating: "wood",
-  location: "north-idaho",
-  peakSunHours: 4.5,
+  cityLabel: "Coeur d'Alene, ID",
+  peakSunHours: 4.3,
   starlink: true,
   wellPump: false,
   solarCoverage: 0.75,
@@ -161,10 +158,7 @@ export function computeSizing(
   const targetSolarKwh = annualKwh * coverage;
   const generatorKwh = annualKwh - targetSolarKwh;
 
-  const prodPerKw =
-    inputs.location === "custom"
-      ? Math.max(1, inputs.peakSunHours) * 365 * params.derate
-      : params.northIdahoProdPerKw;
+  const prodPerKw = Math.max(1, inputs.peakSunHours) * 365 * params.derate;
 
   const kwSolar = targetSolarKwh / prodPerKw;
   const panels = Math.max(1, Math.ceil((kwSolar * 1000) / params.panelWatts));
