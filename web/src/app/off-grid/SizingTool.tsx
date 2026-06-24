@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { type City, cityLabel, searchCities } from "@/lib/cities";
 import {
   computeSizing,
   DEFAULT_INPUTS,
   DEFAULT_PARAMS,
   type FuelKey,
-  type LocationKey,
   type PrimaryAppliances,
   type SizingInputs,
   type SizingParams,
@@ -70,6 +70,87 @@ function Toggle({
   );
 }
 
+function CitySearch({
+  selected,
+  onPick,
+}: {
+  selected: string;
+  onPick: (city: City) => void;
+}) {
+  const [query, setQuery] = useState(selected);
+  const [open, setOpen] = useState(false);
+
+  const matches = useMemo(() => searchCities(query), [query]);
+  const dirty = query.trim() !== selected;
+
+  return (
+    <div className="relative mt-4">
+      <input
+        type="text"
+        value={query}
+        placeholder="Search your city…"
+        autoComplete="off"
+        spellCheck={false}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => {
+          // Delay so an option click registers before we close & reset.
+          setTimeout(() => {
+            setOpen(false);
+            setQuery(selected);
+          }, 140);
+        }}
+        className="w-full bg-black border px-4 py-3 text-[15px] text-zinc-100 outline-none focus:border-white transition-colors"
+        style={{ borderColor: "var(--line-strong)" }}
+      />
+      {open && (
+        <ul
+          className="absolute z-30 mt-1 w-full max-h-64 overflow-auto border bg-black/95 backdrop-blur"
+          style={{ borderColor: "var(--line-strong)" }}
+        >
+          {matches.length === 0 && (
+            <li className="px-4 py-3 text-[13px] text-zinc-500">
+              No match — use “Set manually” below.
+            </li>
+          )}
+          {matches.map((c) => {
+            const label = cityLabel(c);
+            const isSelected = !dirty && label === selected;
+            return (
+              <li key={label}>
+                <button
+                  type="button"
+                  aria-pressed={isSelected}
+                  // Prevent the input's onBlur from firing before the click.
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    onPick(c);
+                    setQuery(label);
+                    setOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between gap-4 px-4 py-2.5 text-left text-[14px] text-zinc-200 hover:bg-white/10 transition-colors"
+                  style={isSelected ? { background: "rgba(255,255,255,.08)" } : undefined}
+                >
+                  <span>
+                    {c.name}
+                    <span className="text-zinc-500">, {c.state}</span>
+                  </span>
+                  <span className="mono text-[11px] tracking-[.1em] text-zinc-500">
+                    {c.sun.toFixed(1)} hrs
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function Bar({
   value,
   color = "var(--hi)",
@@ -120,6 +201,7 @@ export function SizingTool() {
   const [inputs, setInputs] = useState<SizingInputs>(DEFAULT_INPUTS);
   const [params, setParams] = useState<SizingParams>(DEFAULT_PARAMS);
   const [advanced, setAdvanced] = useState(false);
+  const [manualSun, setManualSun] = useState(false);
 
   const set = <K extends keyof SizingInputs>(key: K, val: SizingInputs[K]) =>
     setInputs((prev) => ({ ...prev, [key]: val }));
@@ -182,20 +264,29 @@ export function SizingTool() {
         <Field
           label="04 — Location / climate"
           hint={
-            inputs.location === "custom"
-              ? "Enter your average annual peak sun hours per day."
-              : "North Idaho averages ~4.5 peak sun hours/day; winter runs 35–45% of summer."
+            inputs.cityLabel.startsWith("Custom")
+              ? `Manual estimate of ≈ ${inputs.peakSunHours.toFixed(1)} peak sun hours/day. Northern climates run 35–45% of summer in winter.`
+              : `${inputs.cityLabel} averages ≈ ${inputs.peakSunHours.toFixed(1)} peak sun hours/day. Northern climates run 35–45% of summer in winter.`
           }
         >
-          <Seg<LocationKey>
-            value={inputs.location}
-            onChange={(v) => set("location", v)}
-            options={[
-              ["north-idaho", "North Idaho"],
-              ["custom", "Custom"],
-            ]}
+          <CitySearch
+            key={inputs.cityLabel}
+            selected={inputs.cityLabel}
+            onPick={(c) => {
+              set("cityLabel", cityLabel(c));
+              set("peakSunHours", c.sun);
+              setManualSun(false);
+            }}
           />
-          {inputs.location === "custom" && (
+          <button
+            type="button"
+            onClick={() => setManualSun((m) => !m)}
+            className="mt-4 mono text-[11px] tracking-[.16em] uppercase text-zinc-500 hover:text-white transition-colors flex items-center gap-2"
+          >
+            <span>{manualSun ? "−" : "+"}</span>
+            City not listed? Set peak sun hours manually
+          </button>
+          {manualSun && (
             <div className="mt-4 flex items-center gap-5">
               <input
                 type="range"
@@ -203,7 +294,11 @@ export function SizingTool() {
                 max={7}
                 step={0.1}
                 value={inputs.peakSunHours}
-                onChange={(e) => set("peakSunHours", Number(e.target.value))}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  set("peakSunHours", v);
+                  set("cityLabel", `Custom · ${v.toFixed(1)} hrs/day`);
+                }}
                 className="flex-1 accent-white"
               />
               <span className="display text-[20px] tracking-[-.02em] w-24 text-right">
@@ -286,7 +381,7 @@ export function SizingTool() {
                 <div className="mono text-[10px] tracking-[.2em] uppercase text-zinc-500">
                   Solar &amp; pricing
                 </div>
-                <ParamInput label="North Idaho kWh per kW/yr" value={params.northIdahoProdPerKw} step={10} onChange={(n) => setParam("northIdahoProdPerKw", n)} />
+                <ParamInput label="System derate (0–1)" value={params.derate} step={0.01} onChange={(n) => setParam("derate", n)} />
                 <ParamInput label="Panel watts" value={params.panelWatts} step={10} onChange={(n) => setParam("panelWatts", n)} />
                 <ParamInput label="Panel cost ($)" value={params.panelCost} step={5} onChange={(n) => setParam("panelCost", n)} />
                 <ParamInput label="SitePulse unit cost ($)" value={params.unitCost} step={50} onChange={(n) => setParam("unitCost", n)} />
@@ -439,8 +534,8 @@ export function SizingTool() {
 
           <div className="mt-6 text-[11px] leading-[1.55] text-zinc-500">
             Estimate only. Real results depend on your exact appliances, habits,
-            panel orientation, shading, and weather. North Idaho winters require
-            more generator runtime than this annual average implies.
+            panel orientation, shading, and weather. Northern-climate winters
+            require more generator runtime than this annual average implies.
           </div>
         </div>
       </div>

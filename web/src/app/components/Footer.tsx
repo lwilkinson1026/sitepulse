@@ -21,7 +21,7 @@ const COLUMNS: ReadonlyArray<Column> = [
       ["Backcountry Research", "/#cases"],
       ["Disaster Response", "/#cases"],
       ["Oil & Gas", "/#cases"],
-      ["Off-Grid Sites", "/#cases"],
+      ["Off-Grid Calculator", "/off-grid"],
     ],
   ],
   [
