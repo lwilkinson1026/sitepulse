@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getStripe } from "@/lib/stripe";
+import TwitterPurchaseEvent from "./TwitterPurchaseEvent";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,13 @@ export default async function ReserveSuccess({ searchParams }: Props) {
 
   return (
     <main className="relative min-h-screen overflow-hidden">
+      {paid && session && (
+        <TwitterPurchaseEvent
+          conversionId={session.id}
+          value={(session.amount_total ?? 0) / 100}
+          currency={(session.currency ?? "usd").toUpperCase()}
+        />
+      )}
       <div className="absolute inset-0 grid-bg opacity-60" />
       <div className="stars opacity-50" />
       <div
