@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { hashEmail, sendTwitterConversions } from "@/lib/twitter";
+import { PURCHASE_EVENT_ID } from "@/lib/twitter-events";
 
 export const runtime = "nodejs";
 
@@ -42,12 +43,6 @@ async function fireTwitterConversion(
   session: Stripe.Checkout.Session,
   origin: string,
 ) {
-  const eventId = process.env.TWITTER_PURCHASE_EVENT_ID;
-  if (!eventId) {
-    console.error("TWITTER_PURCHASE_EVENT_ID is not set; skipping conversion");
-    return;
-  }
-
   const email = session.customer_details?.email;
   const twclid =
     typeof session.metadata?.twclid === "string" ? session.metadata.twclid : undefined;
@@ -66,7 +61,7 @@ async function fireTwitterConversion(
   try {
     await sendTwitterConversions([
       {
-        event_id: eventId,
+        event_id: PURCHASE_EVENT_ID,
         conversion_id: session.id,
         conversion_time: new Date().toISOString(),
         event_source_url: `${origin}/reserve/success`,
