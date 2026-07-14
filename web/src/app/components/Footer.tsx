@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EmailSignup } from "./EmailSignup";
 
 type FooterLink = readonly [string, string];
 type Column = readonly [string, ReadonlyArray<FooterLink>];
@@ -91,7 +92,25 @@ export function Footer() {
           </div>
         </div>
         <div
-          className="mt-20 pt-8 border-t flex flex-wrap items-center justify-between gap-4 mono text-[10px] tracking-[.18em] uppercase text-zinc-500"
+          className="mt-20 pt-10 border-t flex flex-col md:flex-row md:items-center justify-between gap-8"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <div className="max-w-[380px]">
+            <div className="mono text-[10px] tracking-[.18em] uppercase text-zinc-500">
+              Stay in the loop
+            </div>
+            <p className="mt-3 text-[14px] leading-[1.6] text-zinc-400">
+              Field-test data, build progress, and first word when reservation
+              slots open.
+            </p>
+          </div>
+          <div className="w-full max-w-[420px]">
+            <EmailSignup />
+          </div>
+        </div>
+
+        <div
+          className="mt-16 pt-8 border-t flex flex-wrap items-center justify-between gap-4 mono text-[10px] tracking-[.18em] uppercase text-zinc-500"
           style={{ borderColor: "var(--line)" }}
         >
           <div>© 2026 Sitepulse Power, Inc. · Yakima, Washington</div>
