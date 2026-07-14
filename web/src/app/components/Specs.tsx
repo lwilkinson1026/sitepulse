@@ -1,4 +1,5 @@
 import { Eyebrow } from "./Eyebrow";
+import { SpecPdfGate } from "./SpecPdfGate";
 
 const ROWS: ReadonlyArray<readonly [string, string]> = [
   [
@@ -122,9 +123,7 @@ export function Specs() {
               <a href="#config" className="btn btn-cy">
                 CONFIGURE YOUR UNIT <span>→</span>
               </a>
-              <a href="#" className="btn btn-ghost">
-                DOWNLOAD SPEC PDF
-              </a>
+              <SpecPdfGate />
             </div>
           </div>
         </div>

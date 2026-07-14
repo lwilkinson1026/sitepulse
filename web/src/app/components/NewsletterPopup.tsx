@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { EmailSignup } from "./EmailSignup";
 
 const STORAGE_KEY = "sitepulse:newsletter-dismissed";
-const SHOW_DELAY_MS = 15000;
+const SHOW_DELAY_MS = 6000;
 
 export function NewsletterPopup() {
   const [open, setOpen] = useState(false);

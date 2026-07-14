@@ -1,0 +1,272 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 3463 >>
+stream
+0 0 0 rg
+BT
+/F2 24 Tf
+1 0 0 1 54 732 Tm
+(SITEPULSE) Tj
+ET
+0.4 0.4 0.4 rg
+BT
+/F1 10 Tf
+1 0 0 1 54 712 Tm
+(Technical Specifications / Hybrid Battery / Starlink / Generator) Tj
+ET
+1 w
+0.7 0.7 0.7 RG
+54 696 m 558 696 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 670 Tm
+(BATTERY) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 670 Tm
+(30 Ah / 48 V LFP \(1.54 kWh\) / 22 lb / active BMS / cell-level) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 657 Tm
+(protection) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 638 m 558 638 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 626 Tm
+(INVERTER) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 626 Tm
+(2,000 W continuous / 4,000 W peak / hybrid w/ generator input / 120 V) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 613 Tm
+(pure sine / 60 Hz) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 594 m 558 594 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 582 Tm
+(ENGINE) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 582 Tm
+(79cc single-cylinder gas / propane-ready / vibration-isolated mounts) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 563 m 558 563 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 551 Tm
+(STARTER GENERATOR) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 551 Tm
+(BLDC starter/alternator / 600-800 W sustained charging / VESC) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 538 Tm
+(controller) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 519 m 558 519 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 507 Tm
+(CONNECTIVITY) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 507 Tm
+(Starlink Mini integrated \(3.5 lb kit\) / cellular failover / OTA) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 494 Tm
+(firmware) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 475 m 558 475 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 463 Tm
+(FUEL) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 463 Tm
+(External quick-disconnect tank / gasoline w/ auto-stabilizer dosing on) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 450 Tm
+(shutdown) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 431 m 558 431 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 419 Tm
+(SENSORS) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 419 Tm
+(Ultrasonic fuel level / SOC/V/I/temp / CO / enclosure temp / GPS) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 400 m 558 400 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 388 Tm
+(CHASSIS) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 388 Tm
+(SendcutSend sheet metal enclosure / IP65 / 8 lb / integrated carry) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 375 Tm
+(handles) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 356 m 558 356 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 344 Tm
+(ENVIRONMENT) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 344 Tm
+(-20 C to +50 C \(heaters optional\) / <60 dB\(A\) enclosed /) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 331 Tm
+(vibration-isolated) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 312 m 558 312 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 300 Tm
+(SAFETY) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 300 Tm
+(CO shutdown / fuel cutoff / BMS protect / GFCI / surge / local + remote) Tj
+ET
+BT
+/F1 10 Tf
+1 0 0 1 200 287 Tm
+(E-stop) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 268 m 558 268 l S
+0.35 0.35 0.35 rg
+BT
+/F2 9 Tf
+1 0 0 1 54 256 Tm
+(TOTAL WEIGHT) Tj
+ET
+0.1 0.1 0.1 rg
+BT
+/F1 10 Tf
+1 0 0 1 200 256 Tm
+(~90 lb dry \(no fuel\) / 85-95 lb range) Tj
+ET
+0.85 0.85 0.85 rg
+0.5 w
+0.7 0.7 0.7 RG
+54 237 m 558 237 l S
+0.45 0.45 0.45 rg
+BT
+/F1 9 Tf
+1 0 0 1 54 215 Tm
+(Made in Yakima, Washington / Patents pending / V1 prototype / Generated 2026-07-14) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000003766 00000 n 
+0000003836 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3911
+%%EOF

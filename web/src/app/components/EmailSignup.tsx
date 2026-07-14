@@ -7,7 +7,19 @@ type Status = "idle" | "sending" | "sent" | "error";
 const inputClass =
   "w-full bg-transparent border px-4 py-3 text-[15px] text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-[var(--hi)] transition-colors";
 
-export function EmailSignup({ onSuccess }: { onSuccess?: () => void }) {
+type EmailSignupProps = {
+  onSuccess?: () => void;
+  submitLabel?: string;
+  sendingLabel?: string;
+  successMessage?: React.ReactNode;
+};
+
+export function EmailSignup({
+  onSuccess,
+  submitLabel = "Notify me",
+  sendingLabel = "Joining…",
+  successMessage,
+}: EmailSignupProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const consentId = useId();
@@ -45,10 +57,14 @@ export function EmailSignup({ onSuccess }: { onSuccess?: () => void }) {
 
   if (status === "sent") {
     return (
-      <p className="text-[14px] leading-[1.6] text-zinc-300">
-        <span className="text-[var(--hi)]">You&rsquo;re on the list.</span>{" "}
-        Watch your inbox for field updates and reservation news.
-      </p>
+      <div className="text-[14px] leading-[1.6] text-zinc-300">
+        {successMessage ?? (
+          <p>
+            <span className="text-[var(--hi)]">You&rsquo;re on the list.</span>{" "}
+            Watch your inbox for field updates and reservation news.
+          </p>
+        )}
+      </div>
     );
   }
 
@@ -70,7 +86,7 @@ export function EmailSignup({ onSuccess }: { onSuccess?: () => void }) {
           disabled={status === "sending"}
           className="btn btn-cy disabled:opacity-50 whitespace-nowrap"
         >
-          {status === "sending" ? "Joining…" : "Notify me"} <span>→</span>
+          {status === "sending" ? sendingLabel : submitLabel} <span>→</span>
         </button>
       </div>
 
