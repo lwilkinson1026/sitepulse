@@ -27,6 +27,7 @@ const COLUMNS: ReadonlyArray<Column> = [
   [
     "Support",
     [
+      ["Field Guide (PDF)", "/field-guide"],
       ["Owner's Manual", "/contact"],
       ["Field Service", "/contact"],
       ["Firmware", "/contact"],

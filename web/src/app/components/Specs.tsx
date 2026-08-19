@@ -122,8 +122,8 @@ export function Specs() {
               <a href="#config" className="btn btn-cy">
                 CONFIGURE YOUR UNIT <span>→</span>
               </a>
-              <a href="#" className="btn btn-ghost">
-                DOWNLOAD SPEC PDF
+              <a href="/field-guide" className="btn btn-ghost">
+                DOWNLOAD FIELD GUIDE
               </a>
             </div>
           </div>
