@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getStripe } from "@/lib/stripe";
-import TwitterPurchaseEvent from "./TwitterPurchaseEvent";
+import TwitterPurchaseEvent from "../../components/TwitterPurchaseEvent";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +61,7 @@ export default async function ReserveSuccess({ searchParams }: Props) {
         </h1>
         <p className="mt-8 max-w-[600px] text-[17px] leading-[1.65] text-zinc-400">
           {paid
-            ? "Your $100 deposit is processed. Build slot locked. We'll email you a confirmation, and follow up with shipping details before the Q3 ship date."
+            ? "Your $250 deposit is processed. Build slot locked. We'll email you a confirmation, and follow up with shipping details before the Q3 ship date."
             : "Your payment is being processed. You'll receive a confirmation email shortly."}
           {email && (
             <>

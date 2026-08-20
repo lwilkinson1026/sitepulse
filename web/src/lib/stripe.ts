@@ -14,4 +14,4 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-export const RESERVATION_DEPOSIT_USD = 100;
+export const RESERVATION_DEPOSIT_USD = 250;
