@@ -14,4 +14,8 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-export const RESERVATION_DEPOSIT_USD = 250;
+/** Deposit for the hardware reservation flow (Configurator -> /api/checkout). */
+export const RESERVATION_DEPOSIT_USD = 100;
+
+/** Deposit for the field-unit service reservation (/field-unit -> /api/reserve). */
+export const FIELD_UNIT_DEPOSIT_USD = 250;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { getStripe, RESERVATION_DEPOSIT_USD } from "@/lib/stripe";
+import { FIELD_UNIT_DEPOSIT_USD, getStripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: RESERVATION_DEPOSIT_USD * 100,
+            unit_amount: FIELD_UNIT_DEPOSIT_USD * 100,
             product_data: {
               name: "Sitepulse Reservation Deposit",
               description: `Credited to month one, refundable — ${summary}`,
@@ -147,8 +147,8 @@ export async function POST(req: NextRequest) {
         units: String(units),
         monthly_usd: String(monthly),
       },
-      success_url: `${origin}/?reserved={CHECKOUT_SESSION_ID}#reserve`,
-      cancel_url: `${origin}/#reserve`,
+      success_url: `${origin}/field-unit?reserved={CHECKOUT_SESSION_ID}#reserve`,
+      cancel_url: `${origin}/field-unit#reserve`,
     });
 
     if (!session.url) {

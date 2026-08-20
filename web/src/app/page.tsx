@@ -1,34 +1,29 @@
-import { Addons } from "./components/landing/Addons";
-import { Comparison } from "./components/landing/Comparison";
-import { Coverage } from "./components/landing/Coverage";
-import { Faq } from "./components/landing/Faq";
-import { HowItWorks } from "./components/landing/HowItWorks";
-import { LandingFooter } from "./components/landing/LandingFooter";
-import { LandingHero } from "./components/landing/LandingHero";
-import { LandingNav } from "./components/landing/LandingNav";
-import { LoadMarquee } from "./components/landing/LoadMarquee";
-import { PowerCalculator } from "./components/landing/PowerCalculator";
-import { ReserveForm } from "./components/landing/ReserveForm";
-import { SizingProvider } from "./components/landing/SizingContext";
+import { Configurator } from "./components/Configurator";
+import { FieldReports } from "./components/FieldReports";
+import { FinalCTA } from "./components/FinalCTA";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
+import { Hero } from "./components/Hero";
+import { Marquee } from "./components/Marquee";
+import { Pillars } from "./components/Pillars";
+import { RunCycle } from "./components/RunCycle";
+import { Specs } from "./components/Specs";
+import { UseCases } from "./components/UseCases";
 
 export default function Page() {
   return (
-    // The calculator and the reserve summary share one sizing state; every
-    // section between them stays a server component.
-    <SizingProvider>
-      <div className="min-h-screen">
-        <LandingNav />
-        <LandingHero />
-        <LoadMarquee />
-        <Comparison />
-        <PowerCalculator />
-        <Addons />
-        <Coverage />
-        <HowItWorks />
-        <Faq />
-        <ReserveForm />
-        <LandingFooter />
-      </div>
-    </SizingProvider>
+    <>
+      <Header />
+      <Hero />
+      <Marquee />
+      <Pillars />
+      <RunCycle />
+      <UseCases />
+      <Specs />
+      <FieldReports />
+      <Configurator />
+      <FinalCTA />
+      <Footer />
+    </>
   );
 }

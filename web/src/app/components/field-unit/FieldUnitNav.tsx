@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const LINKS: ReadonlyArray<readonly [string, string]> = [
   ["#calc", "CALCULATOR"],
   ["#addons", "ADD-ONS"],
@@ -5,7 +7,7 @@ const LINKS: ReadonlyArray<readonly [string, string]> = [
   ["#faq", "FAQ"],
 ];
 
-export function LandingNav() {
+export function FieldUnitNav() {
   return (
     <nav
       className="sticky top-0 z-50 border-b"
@@ -17,9 +19,9 @@ export function LandingNav() {
     >
       <div className="wrap flex items-center justify-between py-[18px] gap-6">
         <div className="flex items-center gap-[14px]">
-          <span className="mono text-[13px] tracking-[.14em] font-semibold">
+          <Link href="/" className="mono text-[13px] tracking-[.14em] font-semibold">
             SITEPULSE
-          </span>
+          </Link>
           <span className="mono text-[10.5px] tracking-[.16em] text-[var(--mute)] hidden sm:inline">
             / FIELD UNIT · v1
           </span>
