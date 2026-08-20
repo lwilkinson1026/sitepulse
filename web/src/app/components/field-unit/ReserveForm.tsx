@@ -62,9 +62,9 @@ export function ReserveForm() {
   const [gc, setGc] = useState("");
   const [coi, setCoi] = useState("");
 
-  // Returning from Stripe Checkout: ?reserved=<session_id>. Verified server-side
-  // before the confirmation step is shown. Read from location rather than
-  // useSearchParams so the landing page stays statically rendered.
+  // Returning from Stripe Checkout: /field-unit?reserved=<session_id>. Verified
+  // server-side before the confirmation step is shown. Read from location rather
+  // than useSearchParams so the page stays statically rendered.
   useEffect(() => {
     const sessionId = new URLSearchParams(window.location.search).get("reserved");
     if (!sessionId) return;

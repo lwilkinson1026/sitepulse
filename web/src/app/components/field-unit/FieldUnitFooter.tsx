@@ -22,7 +22,7 @@ const COLUMNS: ReadonlyArray<{
   },
 ];
 
-export function LandingFooter() {
+export function FieldUnitFooter() {
   return (
     <footer
       className="border-t pt-16 pb-10"

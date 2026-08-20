@@ -13,7 +13,7 @@ const TELEMETRY: ReadonlyArray<readonly [string, string]> = [
   ["UPTIME", "18 d"],
 ];
 
-export function LandingHero() {
+export function FieldUnitHero() {
   return (
     <section className="relative pt-[120px] pb-[100px] overflow-hidden">
       <div className="stars" style={{ opacity: 0.5 }} />
