@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AmbientVideo } from "../components/AmbientVideo";
 import { Eyebrow } from "../components/Eyebrow";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
@@ -148,15 +149,12 @@ export default function DjiDockPage() {
               className="aspect-[21/9] relative overflow-hidden border"
               style={{ borderColor: "var(--line-strong)", background: "#000" }}
             >
-              <video
+              {/* TODO: no still exists for this scene yet — a frame pulled from
+                  dock-hero.mp4 dropped at /assets/dock-lifestyle.png would give
+                  this a first paint. The old poster path 404'd. */}
+              <AmbientVideo
                 src="/assets/dock-hero.mp4"
-                poster="/assets/dock-lifestyle.png"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-label="Sitepulse paired with a DJI Dock on a desert canyon rim"
+                label="Sitepulse paired with a DJI Dock on a desert canyon rim"
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div
