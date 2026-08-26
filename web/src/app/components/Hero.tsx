@@ -1,3 +1,5 @@
+import { AmbientVideo } from "./AmbientVideo";
+
 function CornerTicks() {
   type Pos = {
     top?: number;
@@ -50,15 +52,10 @@ function HeroProductImage() {
         className="aspect-[21/9] relative overflow-hidden border"
         style={{ borderColor: "var(--line-strong)", background: "#000" }}
       >
-        <video
+        <AmbientVideo
           src="/assets/hero.mp4"
           poster="/assets/hero-lifestyle2.png"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-label="Sitepulse hybrid power station in field operation"
+          label="Sitepulse hybrid power station in field operation"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div

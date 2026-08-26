@@ -92,6 +92,17 @@ product decision.
 - `GET /api/reserve/confirm` verifies `payment_status` server-side before the confirmation
   step renders and the X purchase conversion fires.
 
+## Hero videos
+
+`Hero` (`/`) and the `/dji-dock` hero both render through `AmbientVideo`, a small
+client component that shows the poster immediately and attaches `src` only after
+`window.load` fires *and* the element scrolls into view.
+
+Don't put a plain `<video autoPlay preload="auto">` back. Chrome — desktop and
+Android — fetches the whole file as part of the initial navigation, so the tab
+spinner keeps turning until the last byte lands. Safari defers that fetch, so the
+stall is invisible on Mac/iPhone and very visible everywhere else.
+
 ## Known TODOs
 
 - **Reservations aren't persisted.** The deposit goes through Stripe and the enquiry is
@@ -100,3 +111,11 @@ product decision.
 - **EV Backup** — the EV-charger section and add-on were removed from the live site; the current unit (2,000 W / 4 kW peak) can't sustain Level 2 charging. Reintroduce when a higher-output unit ships. Prototype kept in `project/Sitepulse EV Backup.html` for reference.
 - **"Talk to an engineer" / "Read the field report"** CTAs are dead links.
 - **Dealers / footer links** — all `href="#"` for now.
+- **Hero videos are badly oversized.** `hero.mp4` is 5.98 MB for a 10 s 1264×720
+  loop (≈4.8 Mbps — roughly 6× the bitrate this needs); `dock-hero.mp4` is
+  1.84 MB. Re-encode both (H.264 ~800 kbps + a WebM/AV1 source) to get them under
+  ~1 MB. `AmbientVideo` keeps them off the critical path, but on a job-site
+  connection they're still a slow, expensive download.
+- **`/assets/dock-lifestyle.png` doesn't exist.** The `/dji-dock` hero referenced
+  it as a poster and got a 404, so that video now has no poster and shows a black
+  box until it loads. Export a frame from `dock-hero.mp4` to that path.
