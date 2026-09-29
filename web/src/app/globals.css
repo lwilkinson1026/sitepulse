@@ -596,3 +596,91 @@ body {
   .load-row > :nth-child(5) { grid-column: 3; grid-row: 1; }
   .load-row > :nth-child(4):empty { display: none; }
 }
+
+/* First-visit intro (components/Intro.tsx). Hidden unless the pre-paint gate
+   set <html data-intro="play">, so no-JS, repeat and deep-link visits skip it. */
+.sp-intro { display: none; }
+html[data-intro="play"] { overflow: hidden; }
+html[data-intro="play"] .sp-intro {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #000;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity var(--exit-ms, 900ms) ease-in-out;
+}
+.sp-intro[data-exit] { opacity: 0; pointer-events: none; }
+
+.sp-intro-media {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.04);
+  transform-origin: 58% 55%;
+}
+.sp-intro[data-running] .sp-intro-media {
+  animation: sp-intro-push 11s cubic-bezier(.25, .1, .25, 1) forwards;
+}
+.sp-intro[data-exit] .sp-intro-media {
+  animation-play-state: paused;
+}
+@keyframes sp-intro-push {
+  to { transform: scale(1.16) translate(-1.5%, -1%); }
+}
+
+/* Same framing in all three shots, so stacking them reads as a time-lapse. */
+.sp-intro-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: 55% 45%;
+  opacity: 0;
+  transition: opacity 1400ms ease-in-out;
+}
+.sp-intro-photo[data-on] { opacity: 1; }
+
+/* Portrait screens only fit a slice of the 4:3 shots: keep the battery's front
+   panel (and the night shot's lit display) in frame. */
+@media (max-aspect-ratio: 3/4) {
+  .sp-intro-media { transform-origin: 70% 50%; }
+  .sp-intro-photo { background-position: 70% 50%; }
+  @keyframes sp-intro-push {
+    to { transform: scale(1.1); }
+  }
+}
+
+.sp-intro-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 45%, rgba(0,0,0,.82) 100%),
+    rgba(0,0,0,.55);
+  transition: background-color 1200ms ease-in-out;
+}
+.sp-intro[data-running] .sp-intro-scrim { background-color: rgba(0,0,0,.12); }
+
+.sp-intro-copy {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(6px);
+  transition: opacity 600ms ease, transform 600ms ease, filter 600ms ease;
+}
+.sp-intro-copy[data-on] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition-delay: 350ms;
+  transition-duration: 900ms;
+}
+
+.sp-intro-clock { opacity: 0; transition: opacity 600ms ease; }
+.sp-intro-clock[data-on] { opacity: 1; }
+
+.sp-intro-seg { height: 2px; background: rgba(255,255,255,.18); overflow: hidden; }
+.sp-intro-seg > div { height: 100%; width: 0; background: #fff; }
+.sp-intro-seg > div[data-state="done"] { width: 100%; }
+.sp-intro-seg > div[data-state="active"] {
+  animation: sp-intro-fill var(--scene-ms, 2600ms) linear forwards;
+}
+@keyframes sp-intro-fill { to { width: 100%; } }
