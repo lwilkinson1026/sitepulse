@@ -76,9 +76,9 @@ export function Specs() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/assets/product-prototype-solar.jpg"
-                alt="Sitepulse hybrid power station prototype with solar panel, 3/4 view"
-                className="absolute inset-0 w-full h-full object-contain"
+                src="/assets/intro-day.jpg"
+                alt="Sitepulse hybrid power station on a runway test stand, 3/4 view"
+                className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute bottom-3 right-3 mono text-[10px] tracking-[.18em] uppercase text-zinc-500">
                 SCALE 1:6
