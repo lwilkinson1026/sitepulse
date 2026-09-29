@@ -29,6 +29,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // The intro gate in page.tsx sets data-intro before hydration.
+      suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
     >
       <body>
