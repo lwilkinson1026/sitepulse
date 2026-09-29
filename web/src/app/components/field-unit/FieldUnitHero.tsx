@@ -99,11 +99,11 @@ export function FieldUnitHero() {
               }}
             >
               <Image
-                src="/assets/unit-hero.jpg"
+                src="/assets/intro-day.jpg"
                 alt="Sitepulse field unit deployed on a remote site"
                 fill
                 sizes="(max-width: 1024px) 100vw, 480px"
-                className="object-cover"
+                className="object-cover object-[55%_50%]"
                 priority
               />
 
