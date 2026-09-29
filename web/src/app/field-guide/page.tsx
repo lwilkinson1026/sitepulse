@@ -113,8 +113,8 @@ export default async function FieldGuidePage({
                 style={{ borderColor: "var(--line-strong)" }}
               >
                 <Image
-                  src="/assets/product-prototype-solar.jpg"
-                  alt="Sitepulse prototype unit deployed with a solar array"
+                  src="/assets/intro-day.jpg"
+                  alt="Sitepulse hybrid power station on a runway test stand"
                   fill
                   sizes="(max-width: 1024px) 100vw, 55vw"
                   className="object-cover"
