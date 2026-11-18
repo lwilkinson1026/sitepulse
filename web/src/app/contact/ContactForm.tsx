@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 const TOPICS = [
-  "Reservations & pricing",
+  "Rentals & pricing",
+  "Fuel service quote",
   "Technical / specs",
-  "Dealers & distribution",
   "Field service & support",
   "Press & partnerships",
   "Other",

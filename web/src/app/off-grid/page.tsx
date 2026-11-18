@@ -221,7 +221,7 @@ export default function OffGridPage() {
         />
         <div className="relative max-w-[1440px] mx-auto px-8 text-center">
           <div className="mono text-[12px] tracking-[.22em] uppercase text-[var(--hi)]">
-            CUSTOM QUOTES · SHIPPING Q3
+            CUSTOM QUOTES
           </div>
           <h2
             className="display-x mt-8 leading-[.92] tracking-[-.05em]"
@@ -235,8 +235,8 @@ export default function OffGridPage() {
             <Link href="/contact" className="btn btn-cy">
               TALK TO OUR TEAM <span>→</span>
             </Link>
-            <Link href="/#config" className="btn btn-ghost">
-              RESERVE A SITEPULSE
+            <Link href="/rent" className="btn btn-ghost">
+              RENT A SITEPULSE
             </Link>
           </div>
         </div>

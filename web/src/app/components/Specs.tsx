@@ -119,8 +119,8 @@ export function Specs() {
               </tbody>
             </table>
             <div className="mt-10 flex flex-wrap gap-3">
-              <a href="#config" className="btn btn-cy">
-                CONFIGURE YOUR UNIT <span>→</span>
+              <a href="/rent" className="btn btn-cy">
+                RENT THIS UNIT <span>→</span>
               </a>
               <a href="/field-guide" className="btn btn-ghost">
                 DOWNLOAD FIELD GUIDE

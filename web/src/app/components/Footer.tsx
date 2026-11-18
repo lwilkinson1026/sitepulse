@@ -9,7 +9,7 @@ const COLUMNS: ReadonlyArray<Column> = [
     [
       ["The Unit", "/#unit"],
       ["Specs", "/#specs"],
-      ["Configure", "/#config"],
+      ["Rent a Unit", "/rent"],
       ["Compare", "/contact"],
       ["Reviews", "/#reports"],
     ],
@@ -28,10 +28,9 @@ const COLUMNS: ReadonlyArray<Column> = [
     "Support",
     [
       ["Field Guide (PDF)", "/field-guide"],
-      ["Owner's Manual", "/contact"],
+      ["Operator's Manual", "/contact"],
       ["Field Service", "/contact"],
       ["Firmware", "/contact"],
-      ["Warranty", "/contact"],
       ["Contact", "/contact"],
     ],
   ],
@@ -64,8 +63,8 @@ export function Footer() {
               battery, engine only when it has to.
             </p>
             <div className="mt-8 mono text-[10px] tracking-[.18em] uppercase text-zinc-500">
-              <span className="pulse-dot mr-2" /> V1 prototype · reservations
-              open
+              <span className="pulse-dot mr-2" /> V1 prototype · now renting in
+              ID · OR · WA · MT
             </div>
           </div>
 

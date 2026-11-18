@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState, type CSSProperties } from "react";
  * Whether it plays is decided before first paint by INTRO_GATE (rendered
  * inline from page.tsx), which sets <html data-intro="play|skip">. The overlay
  * is display:none unless it's "play", so repeat visits in the same session,
- * deep links (/#config) and reduced-motion users never see a flash of it — and
+ * deep links (/#rent) and reduced-motion users never see a flash of it — and
  * because the photos are CSS backgrounds, a hidden overlay never fetches them.
  */
 

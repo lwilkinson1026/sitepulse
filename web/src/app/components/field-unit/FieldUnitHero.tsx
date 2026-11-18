@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const ENVELOPE: ReadonlyArray<readonly [string, string]> = [
   ["4 kW", "SURGE"],
@@ -37,7 +38,7 @@ export function FieldUnitHero() {
                 <span className="dot" />2 UNITS IN THE FIELD · LIVE
               </span>
               <span className="badge" style={{ color: "var(--paper)" }}>
-                INLAND NORTHWEST
+                PACIFIC NORTHWEST
               </span>
             </div>
 
@@ -51,18 +52,18 @@ export function FieldUnitHero() {
             </h1>
 
             <p className="text-[22px] leading-[1.35] font-medium tracking-[-.01em] m-0 mb-3">
-              Weeks unattended. Wi-Fi included. One box, delivered.
+              $299 a month. Starlink included. One box, delivered.
             </p>
             <p className="mono text-[12px] tracking-[.16em] text-[var(--mute)] m-0 mb-10">
-              IDAHO · EASTERN WASHINGTON · WESTERN MONTANA
+              IDAHO · OREGON · WASHINGTON · MONTANA
             </p>
 
             <div className="flex flex-wrap gap-3.5 mb-12">
-              <a href="#calc" className="btn btn-cy px-[22px] text-[14px]">
-                Size my site →
-              </a>
-              <a href="#how" className="btn btn-ghost px-[22px] text-[14px]">
-                How it works
+              <Link href="/rent" className="btn btn-cy px-[22px] text-[14px]">
+                Rent for $299/mo →
+              </Link>
+              <a href="#calc" className="btn btn-ghost px-[22px] text-[14px]">
+                Size my site
               </a>
             </div>
 

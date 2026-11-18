@@ -40,57 +40,79 @@ Other scripts: `npm run build`, `npm run start`, `npm run lint`.
 
 ## Landing page sections
 
-`Header`, `Hero`, `Marquee`, `Pillars`, `RunCycle`, `UseCases`, `Specs`, `FieldReports`, `Configurator`, `FinalCTA`, `Footer`.
+`Header`, `Hero`, `Marquee`, `Pillars`, `RunCycle`, `UseCases`, `Specs`, `FieldReports`, `RentalOffer`, `FinalCTA`, `Footer`.
 
-The `Configurator` is a client component (tier + add-ons + mount → live total). Everything else renders on the server.
+`RentalOffer` (`/#rent`) shows the two plans: the $299/mo rental (links to `/rent`) and fuel service by the gallon (links to `/contact`). The site no longer sells hardware — the old `Configurator` and its $100 deposit checkout were removed.
 
 ## `/field-unit`
 
 A second, self-contained page built from the `Sitepulse Landing.dc.html` Claude Design
-file. It pitches the **delivered monthly service** ($900/mo + $250 deposit) rather than the
-outright hardware sale on `/`, so the two pages deliberately carry different propositions.
-Linked from the shared header.
+file, aimed at instrument / monitoring sites. It carries the same rental offer as the rest
+of the site and sends people to `/rent`.
 
 Sections, in order: `FieldUnitNav`, `FieldUnitHero`, `LoadMarquee`, `Comparison`,
-`PowerCalculator`, `Addons`, `Coverage`, `HowItWorks`, `Faq`, `ReserveForm`,
-`FieldUnitFooter` — all under `src/app/components/field-unit/`.
+`PowerCalculator`, `Coverage`, `HowItWorks`, `Faq`, `RentCta`, `FieldUnitFooter` — all
+under `src/app/components/field-unit/`.
 
-Only `PowerCalculator` and `ReserveForm` are client components. They share sizing state
-through `SizingProvider`, so every section between them still renders on the server and
-`/field-unit` is statically prerendered.
+`PowerCalculator` is the only client component. Its state lives in `SizingProvider`, so
+every other section renders on the server and `/field-unit` is statically prerendered.
 
-The power model — load catalog, watt/day math, verdict thresholds, pricing — lives in
-`src/lib/site-power.ts`, ported from the design file's logic block.
+The power model — load catalog, watt/day math, verdict thresholds — lives in
+`src/lib/site-power.ts`, ported from the design file's logic block. The monthly figure it
+shows is simply units × the rental price from `src/lib/rental.ts`.
 
 ### Known gaps carried over from the design
 
 - **"How long between site visits?"** and the **ZIP / site** field are captured but don't
   feed the result. They don't in the design prototype either; deciding what they should do
   is a product call.
-- `public/assets/unit-hero.jpg` is a **stand-in** (a copy of `product-front.jpg`). The
-  design's own hero photo couldn't be exported intact. Drop the real file at that path —
-  no code change needed.
+- The design's priced add-ons table and the old $900/mo + $250 deposit reservation form
+  were removed when the offer changed to the flat rental. Both are in git history.
 
-## Reservations — two separate flows
+## The rental offer and `/rent`
 
-The site has two deposit paths, with different prices. Don't collapse them without a
-product decision.
+One offer, defined once in `src/lib/rental.ts` — change a number there and the copy, the
+flow and the checkout all follow:
 
-| | Hardware (`/`) | Service (`/field-unit`) |
-|---|---|---|
-| UI | `Configurator` | `ReserveForm` |
-| Deposit | `RESERVATION_DEPOSIT_USD` = **$100** | `FIELD_UNIT_DEPOSIT_USD` = **$250** |
-| API | `POST /api/checkout` | `POST /api/reserve` |
-| Returns to | `/reserve/success` | `/field-unit?reserved=<id>#reserve` |
+| | |
+|---|---|
+| Rental | **$299/mo**, Starlink service included, customer refuels |
+| Delivery & setup | **$150** one-time |
+| Due at checkout | **$449** (first month + delivery) |
+| Promise | Online **48–72 hours** after payment |
+| Service area | Idaho · Oregon · Washington · Montana |
+| Fuel service | By arrangement, priced per gallon delivered — `/contact`, or the opt-in in the flow |
 
-`ReserveForm` is a four-step flow: contact + site → ops details → $250 deposit → confirmed.
+`/rent` (`RentFlow`) is three steps, then Stripe:
 
-- `POST /api/reserve` validates the enquiry, emails it (Resend, falling back to a server
-  log like `/api/contact`), then creates a Stripe Checkout session and returns its URL.
-- The design prototype collected a card number inline. **We don't** — Stripe's hosted
-  checkout takes the card, which keeps this app out of PCI scope.
-- `GET /api/reserve/confirm` verifies `payment_status` server-side before the confirmation
-  step renders and the X purchase conversion fires.
+1. **Service location** — `SitePinMap`, a Leaflet map. Click to drop a pin, drag to adjust,
+   search for a town, or use the device's location; map / satellite toggle. Plus access notes.
+2. **Your details** — name, company, email, phone, what they're powering, and whether they
+   want a fuel-service quote.
+3. **Review + pay** — the order, the concrete online-by window, and the $449 total.
+
+- `POST /api/rent` validates everything again server-side (including the service area),
+  emails the team, and creates a Stripe Checkout session in **subscription** mode: $299/mo
+  recurring plus the one-time $150, so month two onward bills itself. Stripe's hosted page
+  takes the card, which keeps this app out of PCI scope.
+- `/rent/confirmed` verifies `payment_status` server-side, then shows the order number,
+  the delivery window counted from the moment of payment, and what happens next. The X
+  purchase conversion fires from there.
+- The Stripe webhook (`checkout.session.completed`) sends the team a second, **PAID** email
+  with the pin, a map link and the delivery deadline. That email is the dispatch trigger —
+  the "rental started" one only means someone reached checkout.
+- The draft is kept in `sessionStorage`, so backing out of Stripe returns to step 3 with
+  the pin and details intact.
+
+Service-area check: `inServiceArea()` is a deliberately coarse offline test (the four
+states' bounding box minus Wyoming's corner). The reverse geocoder can additionally reject a
+pin whose state it names as something else, but it can never approve one. The team still
+confirms every site.
+
+Map services, all keyless and called from the visitor's browser: OpenStreetMap tiles, Esri
+World Imagery for satellite, and OSM Nominatim for search / "near <town>". Fine at
+prototype volume; if traffic grows, move to a keyed provider (Mapbox, MapTiler, Google)
+— the URLs are in `SitePinMap.tsx` and `src/lib/geocode.ts`.
 
 ## Hero videos
 
@@ -105,11 +127,18 @@ stall is invisible on Mac/iPhone and very visible everywhere else.
 
 ## Known TODOs
 
-- **Reservations aren't persisted.** The deposit goes through Stripe and the enquiry is
-  emailed, but there's no datastore — Stripe's dashboard and the notification email are
-  the only records.
+- **Rentals aren't persisted.** Payment goes through Stripe and the order is emailed, but
+  there's no datastore — Stripe's dashboard and the notification emails are the only records.
+- **The five-unit limit isn't enforced.** Nothing stops a sixth checkout. Until there's
+  inventory tracking, pause sales by hand when the units are out.
+- **No rental terms / cancellation page.** The flow says the card is charged $299 monthly
+  "for as long as you keep the unit"; minimum term, returns, damage and refund terms need
+  writing and linking from step 3.
+- **Sales tax isn't collected.** Turn on Stripe Tax (`automatic_tax`) if it applies.
+- **`/off-grid` still models buying units** (upfront and 10-year cost). Its CTAs now point
+  at `/rent` and `/contact`, but the cost model itself is a purchase model.
 - **EV Backup** — the EV-charger section and add-on were removed from the live site; the current unit (2,000 W / 4 kW peak) can't sustain Level 2 charging. Reintroduce when a higher-output unit ships. Prototype kept in `project/Sitepulse EV Backup.html` for reference.
-- **"Talk to an engineer" / "Read the field report"** CTAs are dead links.
+- **"Read the field report"** CTA is a dead link.
 - **Dealers / footer links** — all `href="#"` for now.
 - **Hero videos are badly oversized.** `hero.mp4` is 5.98 MB for a 10 s 1264×720
   loop (≈4.8 Mbps — roughly 6× the bitrate this needs); `dock-hero.mp4` is

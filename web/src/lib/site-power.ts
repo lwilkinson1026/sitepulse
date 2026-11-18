@@ -3,9 +3,10 @@
  *
  * Ported verbatim from the `Sitepulse Landing.dc.html` design prototype — the
  * constants and thresholds below are the product's published envelope, so
- * change them here and the calculator, verdict copy, and reserve summary all
- * move together.
+ * change them here and the calculator and verdict copy move together.
  */
+
+import { RENT_MONTHLY_USD } from "./rental";
 
 export type CatalogLoad = {
   id: string;
@@ -96,9 +97,6 @@ const DESIRED_SILENT_H = 8;
 /** Engine hours between air-filter services. */
 const FILTER_INTERVAL_H = 50;
 const DAYS_PER_MONTH = 30.4;
-/** Monthly service price per box, and per custom load line. */
-const BASE_MONTHLY = 900;
-const CUSTOM_LOAD_MONTHLY = 200;
 
 export const UNIT_ENVELOPE = {
   surgeKw: 4,
@@ -147,7 +145,7 @@ export function computeSitePower(inputs: SitePowerInputs): SitePowerResult {
   else if (avgW > 200 || peakW > 2000) verdict = "y";
   else if (avgW > 75) verdict = "b";
 
-  const monthly = BASE_MONTHLY * units + CUSTOM_LOAD_MONTHLY * inputs.customLoads.length;
+  const monthly = RENT_MONTHLY_USD * units;
 
   return {
     avgW,
@@ -184,7 +182,7 @@ export function verdictFor(r: SitePowerResult): Verdict {
         color: "#60a5fa",
         className: "verdict-b",
         label: "Good fit",
-        copy: `Comfortable. Expect a service visit about every ${Math.round(
+        copy: `Comfortable. Expect to refuel or check the air filter about every ${Math.round(
           Math.min(r.airFilterDays, r.tankDays),
         )} days — whichever hits first.`,
       };
@@ -193,7 +191,7 @@ export function verdictFor(r: SitePowerResult): Verdict {
         color: "#fbbf24",
         className: "verdict-y",
         label: "Works, with caveats",
-        copy: "This runs, but it's a service-visit conversation, not set-and-forget. Read the schedule below carefully.",
+        copy: "This runs, but you'll be out there often — it's not set-and-forget. Read the schedule below carefully.",
       };
     case "r":
       return {

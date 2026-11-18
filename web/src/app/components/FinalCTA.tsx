@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function FinalCTA() {
   return (
     <section
@@ -19,7 +21,7 @@ export function FinalCTA() {
       />
       <div className="relative max-w-[1440px] mx-auto px-8 text-center">
         <div className="mono text-[12px] tracking-[.22em] uppercase text-[var(--hi)]">
-          SHIPPING Q3 · V1 PROTOTYPE BUILDS
+          NOW RENTING · V1 PROTOTYPE UNITS · ID · OR · WA · MT
         </div>
         <h2
           className="display-x mt-8 leading-[.92] tracking-[-.05em]"
@@ -32,12 +34,12 @@ export function FinalCTA() {
           Unattended.
         </h2>
         <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
-          <a href="#config" className="btn btn-cy">
-            RESERVE FROM $100 <span>→</span>
-          </a>
-          <a href="#" className="btn btn-ghost">
+          <Link href="/rent" className="btn btn-cy">
+            RENT FOR $299/MO <span>→</span>
+          </Link>
+          <Link href="/contact" className="btn btn-ghost">
             TALK TO AN ENGINEER
-          </a>
+          </Link>
         </div>
       </div>
     </section>

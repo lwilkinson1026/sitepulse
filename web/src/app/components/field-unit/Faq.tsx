@@ -9,11 +9,15 @@ const QUESTIONS: ReadonlyArray<{ q: string; a: string }> = [
   },
   {
     q: "Is it UL listed?",
-    a: "Not yet. It's in NRTL field evaluation — quote and timeline are attached to every proposal. In the meantime here's the test-data package: insulation resistance, GFCI, overcurrent, thermal at sustained load, ingress rating, fuel containment, BMS fault behavior. Ask, and it lands in your inbox before your safety manager does.",
+    a: "Not yet. It's in NRTL field evaluation — ask and we'll send the quote and timeline. In the meantime here's the test-data package: insulation resistance, GFCI, overcurrent, thermal at sustained load, ingress rating, fuel containment, BMS fault behavior. Ask, and it lands in your inbox before your safety manager does.",
   },
   {
     q: "What happens when it runs out of fuel?",
-    a: "It tells me before it does. Fuel level, engine hours, state of charge, and load are all on a dashboard — you get a login too. Service visits are scheduled off the telemetry, not off a calendar. That's the actual product: not the box, the fact that you don't have to think about the box.",
+    a: "On the $299 rental you keep the tank topped up — the calculator above tells you how many gallons a month your load burns and how long a tank lasts. If you'd rather not think about it, ask about fuel service: we set up fuel on site, keep it filled, and monitor and manage the unit, billed by the gallon delivered.",
+  },
+  {
+    q: "What does it cost, and how fast can I get one?",
+    a: "$299 a month, Starlink service included, plus a one-time $150 for delivery and setup — $449 to start. Drop a pin where you want it and pay online; the unit is on your site and online within 48–72 hours. We deliver across Idaho, Oregon, Washington and Montana.",
   },
   {
     q: "Can you run my trailer's heat, a welder, or a saw all day?",
@@ -26,11 +30,11 @@ export function Faq() {
     <section className="section" id="faq">
       <div className="wrap">
         <div className="section-hd">
-          <span className="idx">07 / FAQ</span>
+          <span className="idx">06 / FAQ</span>
         </div>
 
         <h2 className="section-h2 mb-10" style={{ fontSize: "clamp(34px, 5vw, 56px)" }}>
-          The five questions{" "}
+          The six questions{" "}
           <span style={{ color: "var(--mute)" }}>you&apos;re about to ask.</span>
         </h2>
 

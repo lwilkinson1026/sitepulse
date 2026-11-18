@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AmbientVideo } from "./AmbientVideo";
 
 function CornerTicks() {
@@ -202,7 +203,7 @@ export function Hero() {
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="mt-12 flex items-center gap-3 mono text-[11px] tracking-[.18em] text-zinc-500 uppercase">
           <span className="pulse-dot" />
-          <span>SHIPPING Q3 · MADE IN YAKIMA, WA · 5-YEAR WARRANTY</span>
+          <span>NOW RENTING · FIRST 5 V1 UNITS · ID · OR · WA · MT</span>
         </div>
 
         <div className="mt-10 mono text-[12px] tracking-[.22em] text-[var(--hi)] uppercase">
@@ -225,14 +226,14 @@ export function Hero() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <a href="#config" className="btn btn-cy">
-            RESERVE FROM $100 <span>→</span>
-          </a>
+          <Link href="/rent" className="btn btn-cy">
+            RENT FOR $299/MO <span>→</span>
+          </Link>
           <a href="#runs" className="btn btn-ghost">
             SEE IT RUN
           </a>
           <span className="mono text-[11px] uppercase tracking-[.18em] text-zinc-500 ml-3">
-            Refundable · Ships Q3 · Free freight
+            Starlink included · Online in 48–72 hrs
           </span>
         </div>
 

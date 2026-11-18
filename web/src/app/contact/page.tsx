@@ -8,24 +8,24 @@ import { ContactForm } from "./ContactForm";
 export const metadata: Metadata = {
   title: "Sitepulse — Contact",
   description:
-    "Talk to the team behind Sitepulse. Reservations, technical questions, dealers, field service, and press — designed and assembled in Yakima, Washington.",
+    "Talk to the team behind Sitepulse. Rentals, fuel service, technical questions, field service, and press — designed and assembled in Yakima, Washington.",
 };
 
 const CHANNELS: ReadonlyArray<{ label: string; value: string; note: string }> = [
   {
-    label: "Reservations",
-    value: "Configure & reserve",
-    note: "Build a unit and place a refundable deposit online.",
+    label: "Rentals",
+    value: "$299/mo, Starlink included",
+    note: "Drop a pin and start online — or ask us anything first. Idaho, Oregon, Washington and Montana.",
   },
   {
-    label: "Dealers & distribution",
-    value: "Partner with us",
-    note: "Carrying Sitepulse or deploying a fleet? Start here.",
+    label: "Fuel service",
+    value: "We keep it running",
+    note: "We set up fuel, keep the unit topped up, and monitor and manage it. Priced per gallon delivered — ask for a quote.",
   },
   {
     label: "Field service",
-    value: "Owner support",
-    note: "Manuals, firmware, warranty, and on-site help.",
+    value: "Renter support",
+    note: "Manuals, firmware, and on-site help for a unit you already have.",
   },
 ];
 
@@ -62,11 +62,11 @@ export default function ContactPage() {
           </h1>
 
           <p className="mt-10 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
-            Questions about specs, a deployment, dealer terms, or your existing
-            unit? Send a note and we&rsquo;ll get back to you. If you&rsquo;re
-            ready to order, you can{" "}
-            <Link href="/#config" className="text-[var(--hi)] hover:underline">
-              configure and reserve a unit
+            Questions about specs, a deployment, fuel service, or a unit you
+            already have? Send a note and we&rsquo;ll get back to you. If you&rsquo;re
+            ready to go, you can{" "}
+            <Link href="/rent" className="text-[var(--hi)] hover:underline">
+              start a rental online
             </Link>{" "}
             directly.
           </p>
