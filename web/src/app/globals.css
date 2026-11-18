@@ -684,3 +684,26 @@ html[data-intro="play"] .sp-intro {
   animation: sp-intro-fill var(--scene-ms, 2600ms) linear forwards;
 }
 @keyframes sp-intro-fill { to { width: 100%; } }
+
+/* ==========================================================================
+   /rent — Leaflet site-pin map, dressed to match the rest of the site.
+   ========================================================================== */
+.sp-map { background: #0a0a0a; cursor: crosshair; font-family: inherit; }
+.sp-map.leaflet-grab { cursor: crosshair; }
+.sp-map.leaflet-dragging { cursor: grabbing; }
+.sp-pin { background: none; border: none; cursor: grab; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6)); }
+.sp-map .leaflet-bar { border: 1px solid var(--line-strong); border-radius: 0; }
+.sp-map .leaflet-bar a,
+.sp-map .leaflet-bar a:hover {
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border-bottom-color: var(--line-strong);
+  border-radius: 0;
+}
+.sp-map .leaflet-bar a:hover { background: #fff; color: #000; }
+.sp-map .leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--mute);
+  font-size: 10px;
+}
+.sp-map .leaflet-control-attribution a { color: #fff; }

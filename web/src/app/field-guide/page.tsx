@@ -138,8 +138,8 @@ export default async function FieldGuidePage({
                     talk to the team
                   </Link>{" "}
                   or{" "}
-                  <Link href="/#config" className="text-[var(--hi)] hover:underline">
-                    configure a unit
+                  <Link href="/rent" className="text-[var(--hi)] hover:underline">
+                    rent a unit
                   </Link>
                   .
                 </p>

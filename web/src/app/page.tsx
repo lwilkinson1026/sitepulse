@@ -1,4 +1,3 @@
-import { Configurator } from "./components/Configurator";
 import { FieldReports } from "./components/FieldReports";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
@@ -7,6 +6,7 @@ import { Hero } from "./components/Hero";
 import { INTRO_GATE, Intro } from "./components/Intro";
 import { Marquee } from "./components/Marquee";
 import { Pillars } from "./components/Pillars";
+import { RentalOffer } from "./components/RentalOffer";
 import { RunCycle } from "./components/RunCycle";
 import { Specs } from "./components/Specs";
 import { UseCases } from "./components/UseCases";
@@ -25,7 +25,7 @@ export default function Page() {
       <UseCases />
       <Specs />
       <FieldReports />
-      <Configurator />
+      <RentalOffer />
       <FinalCTA />
       <Footer />
     </>

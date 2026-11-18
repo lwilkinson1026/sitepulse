@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   fmt,
@@ -470,12 +471,26 @@ export function PowerCalculator() {
               </div>
             </div>
 
-            <a
-              href="#reserve"
-              className="btn btn-cy w-full mt-5 justify-center h-auto py-4 text-[14px] text-center"
-            >
-              Reserve this configuration →
-            </a>
+            {result.units === 1 && result.verdict !== "r" ? (
+              <Link
+                href="/rent"
+                className="btn btn-cy w-full mt-5 justify-center h-auto py-4 text-[14px] text-center"
+              >
+                Rent it — online in 48–72 hours →
+              </Link>
+            ) : (
+              <Link
+                href="/contact"
+                className="btn btn-cy w-full mt-5 justify-center h-auto py-4 text-[14px] text-center"
+              >
+                {result.verdict === "r"
+                  ? "Talk to us about this load →"
+                  : `Talk to us about ${result.units} units →`}
+              </Link>
+            )}
+            <p className="mono text-[10px] tracking-[.12em] text-[var(--mute)] uppercase text-center mt-3 m-0">
+              + $150 one-time delivery · Starlink service included · you refuel
+            </p>
           </div>
         </div>
       </div>

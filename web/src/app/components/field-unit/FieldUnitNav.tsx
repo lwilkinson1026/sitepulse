@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const LINKS: ReadonlyArray<readonly [string, string]> = [
   ["#calc", "CALCULATOR"],
-  ["#addons", "ADD-ONS"],
+  ["#how", "HOW IT WORKS"],
   ["#coverage", "COVERAGE"],
   ["#faq", "FAQ"],
 ];
@@ -36,9 +36,9 @@ export function FieldUnitNav() {
               {label}
             </a>
           ))}
-          <a href="#reserve" className="btn btn-cy text-[12px] h-auto px-4 py-2">
-            Reserve
-          </a>
+          <Link href="/rent" className="btn btn-cy text-[12px] h-auto px-4 py-2">
+            Rent · $299/mo
+          </Link>
         </div>
       </div>
     </nav>

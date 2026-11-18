@@ -1,27 +1,27 @@
 const STEPS = [
   {
     n: "01",
-    eyebrow: "CONFIGURE",
-    title: "Size your site.",
-    desc: "Use the calculator, get a verdict, save the config. Or just call — you tell me watts and days.",
+    eyebrow: "LOCATE",
+    title: "Drop a pin.",
+    desc: "Mark the exact spot on the map — satellite view helps — and add anything we should know about the road or the gate.",
   },
   {
     n: "02",
-    eyebrow: "RESERVE",
-    title: "$250 holds a unit.",
-    desc: "Deposit is fully credited to month one. Refundable if we can’t make the site work.",
+    eyebrow: "COMMIT",
+    title: "$449 to start.",
+    desc: "First month ($299) plus a one-time $150 delivery, paid online. That payment starts the clock.",
   },
   {
     n: "03",
-    eyebrow: "SITE CALL",
-    title: "We walk the site.",
-    desc: "Access, siting, refuel plan, safety briefing. If you’re on a GC site, NRTL package lands before the call.",
+    eyebrow: "48–72 HOURS",
+    title: "We deliver and set up.",
+    desc: "We confirm a drop-off time, set the unit down on your pin, commission your load and bring Starlink online.",
   },
   {
     n: "04",
-    eyebrow: "DEPLOY + WATCH",
-    title: "Delivery, then telemetry.",
-    desc: "I drop the box, commission the load, hand you a dashboard login. Service is scheduled off telemetry, not a calendar.",
+    eyebrow: "RUN",
+    title: "Keep it fuelled.",
+    desc: "Top up the tank and it keeps running, billed monthly. Rather we did it? Fuel service is priced per gallon delivered.",
   },
 ] as const;
 
@@ -30,11 +30,11 @@ export function HowItWorks() {
     <section className="section" id="how">
       <div className="wrap">
         <div className="section-hd">
-          <span className="idx">06 / HOW IT WORKS</span>
+          <span className="idx">05 / HOW IT WORKS</span>
         </div>
 
         <h2 className="section-h2 mb-14" style={{ fontSize: "clamp(34px, 5vw, 56px)" }}>
-          From your inquiry <span style={{ color: "var(--mute)" }}>to retrieval.</span>
+          From a pin on a map <span style={{ color: "var(--mute)" }}>to online.</span>
         </h2>
 
         <div

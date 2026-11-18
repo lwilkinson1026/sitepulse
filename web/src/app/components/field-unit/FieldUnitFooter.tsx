@@ -8,7 +8,7 @@ const COLUMNS: ReadonlyArray<{
     title: "PRODUCT",
     links: [
       ["#calc", "Calculator"],
-      ["#addons", "Add-ons"],
+      ["/rent", "Rent a unit"],
       ["#coverage", "Coverage"],
     ],
   },
@@ -37,8 +37,8 @@ export function FieldUnitFooter() {
               </span>
             </div>
             <p className="text-[var(--mute)] text-[14px] leading-[1.55] m-0 max-w-[380px]">
-              Off-grid site power and connectivity — delivered, monitored, and serviced.
-              Idaho · Eastern Washington · Western Montana.
+              Off-grid site power and connectivity, delivered and online in 48–72 hours.
+              Idaho · Oregon · Washington · Montana.
             </p>
           </div>
 

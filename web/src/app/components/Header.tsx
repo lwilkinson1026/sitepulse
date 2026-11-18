@@ -10,7 +10,7 @@ const NAV_LINKS: ReadonlyArray<readonly [string, string]> = [
   ["Field Unit", "/field-unit"],
   ["DJI Dock", "/dji-dock"],
   ["Off-Grid", "/off-grid"],
-  ["Configure", "/#config"],
+  ["Pricing", "/#rent"],
 ];
 
 export function Header() {
@@ -45,10 +45,10 @@ export function Header() {
             href="/contact"
             className="ulink hidden sm:inline text-[12px] uppercase tracking-[.1em] text-zinc-400 mono"
           >
-            Dealers
+            Contact
           </Link>
-          <Link href="/#config" className="btn btn-cy">
-            RESERVE <span className="opacity-70">→</span>
+          <Link href="/rent" className="btn btn-cy">
+            RENT <span className="opacity-70">→</span>
           </Link>
           <button
             type="button"
@@ -96,7 +96,7 @@ export function Header() {
               onClick={() => setOpen(false)}
               className="py-3 text-[14px] text-zinc-300 hover:text-white transition-colors uppercase tracking-[.08em] font-medium mono"
             >
-              Dealers
+              Contact
             </Link>
           </div>
         </nav>

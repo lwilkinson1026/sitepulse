@@ -19,9 +19,9 @@ import {
 } from "@/lib/site-power";
 
 /**
- * The calculator and the reserve form are separated by four static sections,
- * so the sizing state lives in a context rather than in a common ancestor
- * component. That keeps every section between them a server component.
+ * The sizing state lives in a context rather than in a page-level component,
+ * so sections that want the result can read it while everything else on
+ * /field-unit stays a server component.
  */
 type SizingValue = {
   loads: Record<string, LoadState>;

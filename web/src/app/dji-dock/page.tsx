@@ -135,8 +135,8 @@ export default function DjiDockPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link href="/#config" className="btn btn-cy">
-              CONFIGURE FOR DOCK <span>→</span>
+            <Link href="/rent" className="btn btn-cy">
+              RENT A UNIT <span>→</span>
             </Link>
             <Link href="/" className="btn btn-ghost">
               ← BACK TO SITEPULSE
@@ -548,7 +548,7 @@ export default function DjiDockPage() {
         />
         <div className="relative max-w-[1440px] mx-auto px-8 text-center">
           <div className="mono text-[12px] tracking-[.22em] uppercase text-[var(--hi)]">
-            DOCK-READY · SHIPPING Q3
+            DOCK-READY · NOW RENTING
           </div>
           <h2
             className="display-x mt-8 leading-[.92] tracking-[-.05em]"
@@ -559,8 +559,8 @@ export default function DjiDockPage() {
             Walk away for weeks.
           </h2>
           <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
-            <Link href="/#config" className="btn btn-cy">
-              CONFIGURE FOR DOCK <span>→</span>
+            <Link href="/rent" className="btn btn-cy">
+              RENT A UNIT <span>→</span>
             </Link>
             <Link href="/" className="btn btn-ghost">
               ← BACK TO SITEPULSE

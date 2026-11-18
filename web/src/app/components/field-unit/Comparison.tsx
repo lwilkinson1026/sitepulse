@@ -11,13 +11,13 @@ type Row = { label: string; cells: readonly [string, string, string, string, str
 const ROWS: ReadonlyArray<Row> = [
   {
     label: "Time to live",
-    cells: ["Months", "Days – weeks", "Hours", "—", "Same week"],
+    cells: ["Months", "Days – weeks", "Hours", "—", "48–72 hours"],
   },
   { label: "Winter", cells: ["Fine", "Browns out", "Fine", "—", "Fine"] },
   { label: "Noise", cells: ["Silent", "Silent", "Constant", "—", "Silent ~90%"] },
   {
     label: "Refuel / service",
-    cells: ["None", "Battery swaps", "Weekly truck roll", "—", "Scheduled off telemetry"],
+    cells: ["None", "Battery swaps", "Weekly truck roll", "—", "You top up, or we do"],
   },
   {
     label: "Footprint",

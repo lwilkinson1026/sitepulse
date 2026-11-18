@@ -528,8 +528,8 @@ export function SizingTool() {
           <Link href="/contact" className="btn btn-cy w-full justify-center mt-8">
             TALK TO OUR TEAM <span>→</span>
           </Link>
-          <Link href="/#config" className="btn btn-ghost w-full justify-center mt-3">
-            RESERVE A SITEPULSE
+          <Link href="/rent" className="btn btn-ghost w-full justify-center mt-3">
+            RENT A SITEPULSE
           </Link>
 
           <div className="mt-6 text-[11px] leading-[1.55] text-zinc-500">
