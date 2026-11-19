@@ -14,6 +14,7 @@ import {
   SERVICE_AREA_LABEL,
   type LatLng,
 } from "@/lib/rental";
+import { metaIdsForRequest } from "@/lib/attribution-browser";
 import { identifyPerson, track } from "@/lib/track-client";
 import { newEventId, PRODUCT } from "@/lib/tracking";
 import { OnlineWindow } from "./OnlineWindow";
@@ -212,6 +213,7 @@ export function RentFlow() {
           loads: d.loads,
           fuelService: d.fuelService,
           event_id: eventId,
+          ...metaIdsForRequest(),
         }),
       });
       const data: { url?: string; error?: string } = await res.json();

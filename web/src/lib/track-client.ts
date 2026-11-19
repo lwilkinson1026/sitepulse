@@ -2,8 +2,8 @@
 
 import {
   captureAttributionFromLocation,
-  readMetaBrowserCookies,
-  readStoredAttribution,
+  ensureMetaClickIds,
+  metaIdsForRequest,
 } from "./attribution-browser";
 import { toAnalyticsProps, type Attribution } from "./attribution";
 import {
@@ -172,8 +172,7 @@ function fireCapi(name: TrackEventName, eventId: string, opts: TrackOptions) {
   // Pixel ID is public; CAPI still no-ops server-side without the token.
   if (!publicMetaPixelId()) return;
 
-  const metaCookies = readMetaBrowserCookies();
-  const attr = readStoredAttribution();
+  const ids = metaIdsForRequest();
   const body = JSON.stringify({
     event_name: name,
     event_id: eventId,
@@ -181,8 +180,8 @@ function fireCapi(name: TrackEventName, eventId: string, opts: TrackOptions) {
     email: opts.email,
     phone: opts.phone,
     first_name: opts.firstName,
-    fbp: metaCookies.fbp,
-    fbc: metaCookies.fbc || attr?.last.fbc,
+    fbp: ids.fbp,
+    fbc: ids.fbc,
     custom_data: pixelParams(name, opts),
   });
 
@@ -203,6 +202,7 @@ function fireCapi(name: TrackEventName, eventId: string, opts: TrackOptions) {
     headers: { "Content-Type": "application/json" },
     body,
     keepalive: true,
+    credentials: "same-origin",
   }).catch(() => {
     // Never surface tracking failures to the visitor.
   });
@@ -224,6 +224,8 @@ export function track(name: TrackEventName, opts: TrackOptions = {}) {
 export function bootstrapTracking() {
   if (typeof window === "undefined") return null;
   const attr = captureAttributionFromLocation();
+  // Mint _fbp/_fbc before Pixel init so the browser cookie and CAPI match.
+  ensureMetaClickIds(attr);
   if (publicMetaPixelId()) ensureMetaPixel();
   void registerAttribution(attr);
   return attr;

@@ -3,9 +3,13 @@ import { createHash } from "node:crypto";
 import test from "node:test";
 import {
   buildFbc,
+  buildFbp,
   hasAdSource,
   mergeAttribution,
   parseAttribution,
+  resolveMetaClickIds,
+  sanitizeFbc,
+  sanitizeFbp,
   serializeAttribution,
   toAnalyticsProps,
   toStripeMetadata,
@@ -90,6 +94,43 @@ test("hasAdSource / buildFbc helpers", () => {
   assert.equal(hasAdSource({ ts: 1, landing: "/" }), false);
   assert.equal(hasAdSource({ ts: 1, landing: "/", fbclid: "x" }), true);
   assert.equal(buildFbc("clid", 42), "fb.1.42.clid");
+});
+
+test("buildFbp / sanitizeFbp / sanitizeFbc", () => {
+  assert.equal(buildFbp(1_700_000_000_000, 42), "fb.1.1700000000000.42");
+  assert.equal(sanitizeFbp("fb.1.1700000000000.42"), "fb.1.1700000000000.42");
+  assert.equal(sanitizeFbp("not-a-cookie"), undefined);
+  assert.equal(sanitizeFbp(""), undefined);
+  assert.equal(
+    sanitizeFbc("fb.1.1700000000000.AbC-clid"),
+    "fb.1.1700000000000.AbC-clid",
+  );
+  assert.equal(sanitizeFbc("fbclid-only"), undefined);
+});
+
+test("resolveMetaClickIds prefers body, then cookies, then builds fbc from fbclid", () => {
+  const fromBody = resolveMetaClickIds({
+    bodyFbp: "fb.1.1.1",
+    cookieFbp: "fb.1.2.2",
+    bodyFbc: "fb.1.1.click",
+    cookieFbc: "fb.1.2.click",
+  });
+  assert.equal(fromBody.fbp, "fb.1.1.1");
+  assert.equal(fromBody.fbc, "fb.1.1.click");
+
+  const fromCookie = resolveMetaClickIds({
+    cookieFbp: "fb.1.2.2",
+    cookieFbc: "fb.1.2.click",
+  });
+  assert.equal(fromCookie.fbp, "fb.1.2.2");
+  assert.equal(fromCookie.fbc, "fb.1.2.click");
+
+  const built = resolveMetaClickIds({
+    fbclid: "abc123",
+    now: 1_700_000_000_000,
+  });
+  assert.equal(built.fbp, undefined);
+  assert.equal(built.fbc, "fb.1.1700000000000.abc123");
 });
 
 test("normalizePhone adds a US country code", () => {

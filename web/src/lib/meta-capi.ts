@@ -1,6 +1,11 @@
 import { createHash } from "node:crypto";
 import type { NextRequest } from "next/server";
-import { ATTR_COOKIE, parseAttribution, type Attribution } from "./attribution";
+import {
+  ATTR_COOKIE,
+  parseAttribution,
+  resolveMetaClickIds,
+  type Attribution,
+} from "./attribution";
 import { normalizePhone } from "./phone";
 import { META_EVENT_ALLOWLIST } from "./tracking";
 
@@ -95,7 +100,28 @@ export function metaCookiesFromRequest(req: NextRequest): {
   };
 }
 
-function userDataPayload(user: MetaUserData | undefined) {
+export function clickIdsFromRequest(
+  req: NextRequest,
+  body: { fbp?: unknown; fbc?: unknown } = {},
+): { fbp?: string; fbc?: string } {
+  const cookies = metaCookiesFromRequest(req);
+  const attr = attributionFromRequest(req);
+  return resolveMetaClickIds({
+    bodyFbp: typeof body.fbp === "string" ? body.fbp : undefined,
+    bodyFbc: typeof body.fbc === "string" ? body.fbc : undefined,
+    cookieFbp: cookies.fbp,
+    cookieFbc: cookies.fbc,
+    storedFbc: attr?.last.fbc,
+    fbclid: attr?.last.fbclid,
+  });
+}
+
+export function clientUserAgentFromRequest(req: NextRequest): string | undefined {
+  return req.headers.get("user-agent")?.trim() || undefined;
+}
+
+/** Hashed PII + raw fbp/fbc/IP/UA for the Graph API `user_data` object. */
+export function userDataPayload(user: MetaUserData | undefined) {
   if (!user) return {};
   const out: Record<string, unknown> = {};
   if (user.email) out.em = [hashEmail(user.email)];
@@ -105,8 +131,9 @@ function userDataPayload(user: MetaUserData | undefined) {
     const hashed = hashName(user.firstName);
     if (hashed) out.fn = [hashed];
   }
-  if (user.fbp) out.fbp = user.fbp;
-  if (user.fbc) out.fbc = user.fbc;
+  const ids = resolveMetaClickIds({ bodyFbp: user.fbp, bodyFbc: user.fbc });
+  if (ids.fbp) out.fbp = ids.fbp;
+  if (ids.fbc) out.fbc = ids.fbc;
   if (user.clientIp) out.client_ip_address = user.clientIp;
   if (user.clientUserAgent) out.client_user_agent = user.clientUserAgent;
   // Service area is the US; this is a cheap Event Match Quality lift.

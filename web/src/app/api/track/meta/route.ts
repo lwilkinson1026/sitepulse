@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  attributionFromRequest,
+  clickIdsFromRequest,
   clientIpFromRequest,
-  metaCookiesFromRequest,
+  clientUserAgentFromRequest,
   sendMetaCapiEvent,
 } from "@/lib/meta-capi";
 import { META_EVENT_ALLOWLIST } from "@/lib/tracking";
@@ -46,8 +46,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse(null, { status: 204 });
   }
 
-  const cookies = metaCookiesFromRequest(req);
-  const attr = attributionFromRequest(req);
+  const clickIds = clickIdsFromRequest(req, body);
   const custom =
     body.custom_data && typeof body.custom_data === "object"
       ? (body.custom_data as Record<string, unknown>)
@@ -67,10 +66,10 @@ export async function POST(req: NextRequest) {
       email: str(body.email, 320) || undefined,
       phone: str(body.phone, 40) || undefined,
       firstName: str(body.first_name, 80) || undefined,
-      fbp: str(body.fbp, 200) || cookies.fbp,
-      fbc: str(body.fbc, 500) || cookies.fbc || attr?.last.fbc,
+      fbp: clickIds.fbp,
+      fbc: clickIds.fbc,
       clientIp: clientIpFromRequest(req),
-      clientUserAgent: req.headers.get("user-agent") || undefined,
+      clientUserAgent: clientUserAgentFromRequest(req),
     },
     custom: {
       value,
