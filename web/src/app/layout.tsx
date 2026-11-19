@@ -16,10 +16,29 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
+const TITLE = "SitePulse — Power + Wi-Fi anywhere. $299/mo.";
+const DESCRIPTION =
+  "A portable hybrid power unit and Starlink Wi-Fi, $299/mo. 2,000 W inverter, 79cc engine, designed and assembled in Coeur d'Alene, ID.";
+
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Sitepulse — Hybrid Battery · Starlink · Generator",
-  description:
-    "A 90-lb hybrid power station with a 2,000 W pure-sine inverter (4 kW peak), Starlink Mini, and a top-up 79cc engine. Silent for days, online forever.",
+  metadataBase: new URL(siteUrl),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/assets/hero-lifestyle2.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/assets/hero-lifestyle2.png"],
+  },
 };
 
 export default function RootLayout({

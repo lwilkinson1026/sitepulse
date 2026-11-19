@@ -9,7 +9,7 @@ import { GUIDE_COOKIE, readAccessToken } from "@/lib/field-guide";
 import { FieldGuideForm } from "./FieldGuideForm";
 
 export const metadata: Metadata = {
-  title: "Sitepulse — Printable Field Guide",
+  title: "SitePulse — Printable Field Guide",
   description:
     "Download the Sitepulse printable field guide: annotated photos of every panel, port, and control on the unit, plus fueling, charging, and safety notes. Free PDF.",
 };
@@ -138,8 +138,8 @@ export default async function FieldGuidePage({
                     talk to the team
                   </Link>{" "}
                   or{" "}
-                  <Link href="/rent" className="text-[var(--hi)] hover:underline">
-                    rent a unit
+                  <Link href="/plan" className="text-[var(--hi)] hover:underline">
+                    get a unit
                   </Link>
                   .
                 </p>

@@ -12,9 +12,9 @@ import { RentCta } from "../components/field-unit/RentCta";
 import { SizingProvider } from "../components/field-unit/SizingContext";
 
 export const metadata: Metadata = {
-  title: "Sitepulse Field Unit — Power where there isn't any",
+  title: "SitePulse Field Unit — Power + Wi-Fi anywhere. $299/mo.",
   description:
-    "Off-grid power and Starlink for unattended remote sites — $299/month, delivered and online in 48–72 hours. Size your load in ten seconds. Idaho · Oregon · Washington · Montana.",
+    "Off-grid power and Starlink Wi-Fi for unattended remote sites — $299/mo + $150 one-time setup, delivered and online in 48–72 hours. Size your load in ten seconds. Idaho · Oregon · Washington · Montana.",
 };
 
 export default function FieldUnitPage() {

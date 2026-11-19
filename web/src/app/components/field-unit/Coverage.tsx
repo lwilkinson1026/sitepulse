@@ -32,7 +32,7 @@ export function Coverage() {
               pad, a gate, the back corner of a laydown yard — and that&apos;s where the
               unit gets set down, set up and brought online.
             </p>
-            <Link href="/rent" className="btn btn-cy px-[22px] text-[14px]">
+            <Link href="/plan" className="btn btn-cy px-[22px] text-[14px]">
               Drop your pin →
             </Link>
           </div>

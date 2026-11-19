@@ -15,7 +15,7 @@ import { OnlineWindow } from "../OnlineWindow";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Sitepulse — Rental confirmed",
+  title: "Sitepulse — Subscription confirmed",
   robots: { index: false },
 };
 
@@ -28,7 +28,7 @@ async function fetchSession(sessionId: string | undefined) {
   try {
     return await getStripe().checkout.sessions.retrieve(sessionId);
   } catch (err) {
-    console.error("[rent/confirmed] failed to retrieve session:", err);
+    console.error("[plan/confirmed] failed to retrieve session:", err);
     return null;
   }
 }
@@ -92,8 +92,8 @@ export default async function RentConfirmed({ searchParams }: Props) {
       <div className="relative max-w-[900px] mx-auto px-5 sm:px-8 pt-24 sm:pt-32 pb-24">
         <div className="mono text-[11px] tracking-[.22em] uppercase text-[var(--hi)]">
           {paid && session
-            ? `RENTAL CONFIRMED · ${orderNumber(session.id, new Date(paidAtMs).getFullYear())}`
-            : "RENTAL NOT CONFIRMED YET"}
+            ? `SUBSCRIPTION CONFIRMED · ${orderNumber(session.id, new Date(paidAtMs).getFullYear())}`
+            : "SUBSCRIPTION NOT CONFIRMED YET"}
         </div>
         <h1
           className="display-x mt-6 leading-[.95] tracking-[-.045em]"
@@ -120,7 +120,7 @@ export default async function RentConfirmed({ searchParams }: Props) {
                   The receipt is on its way to <span className="text-zinc-200">{email}</span>.
                 </>
               )}{" "}
-              Rental renews at ${RENT_MONTHLY_USD}/month for as long as you keep the unit.
+              Your subscription renews at ${RENT_MONTHLY_USD}/month for as long as you keep the unit.
             </p>
 
             <div
@@ -188,7 +188,7 @@ export default async function RentConfirmed({ searchParams }: Props) {
           <p className="mt-8 max-w-[620px] text-[17px] leading-[1.65] text-zinc-400">
             If you just paid, give it a minute and refresh this page. If you backed out of
             checkout, nothing was charged — you can{" "}
-            <Link href="/rent" className="text-[var(--hi)] hover:underline">
+            <Link href="/plan" className="text-[var(--hi)] hover:underline">
               pick up where you left off
             </Link>
             . Still stuck?{" "}

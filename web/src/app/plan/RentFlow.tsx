@@ -232,7 +232,7 @@ export function RentFlow() {
         ? "Review order"
         : submitting
           ? "Redirecting to secure checkout…"
-          : `Pay $${DUE_TODAY_USD} & start rental`;
+          : `Pay $${DUE_TODAY_USD} & start subscription`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-8 lg:gap-12 items-start">
@@ -397,7 +397,7 @@ export function RentFlow() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {(
                     [
-                      [false, "I'll refuel it myself", `Included in $${RENT_MONTHLY_USD}/mo`],
+                      [false, "I'll refuel it myself", "No extra charge"],
                       [true, "Quote me fuel service", "Priced per gallon delivered"],
                     ] as const
                   ).map(([value, title, sub]) => (
@@ -473,18 +473,18 @@ export function RentFlow() {
 
             <div className="mt-6 text-[14px]">
               <div className="flex justify-between py-1.5">
-                <span className="text-[var(--mute)]">First month&apos;s rental</span>
+                <span className="text-[var(--mute)]">First month&apos;s subscription</span>
                 <span className="num">${RENT_MONTHLY_USD}.00</span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-[var(--mute)]">Delivery &amp; setup · one-time</span>
+                <span className="text-[var(--mute)]">One-time delivery &amp; setup</span>
                 <span className="num">${DELIVERY_FEE_USD}.00</span>
               </div>
               <div
                 className="flex justify-between items-baseline pt-4 mt-2 border-t"
                 style={{ borderColor: "var(--line-strong)" }}
               >
-                <span className="font-semibold">Due today</span>
+                <span className="font-semibold">${DUE_TODAY_USD} due today</span>
                 <span className="num text-[30px] font-bold">${DUE_TODAY_USD}.00</span>
               </div>
             </div>
@@ -535,29 +535,29 @@ export function RentFlow() {
         className="border p-6 sm:p-7 lg:sticky lg:top-[88px]"
         style={{ borderColor: "var(--line-strong)" }}
       >
-        <div className="eyebrow">YOUR RENTAL</div>
+        <div className="eyebrow">YOUR SUBSCRIPTION</div>
         <div className="mt-3 text-[22px] font-bold tracking-[-.01em]">Sitepulse V1</div>
         <ul className="list-none p-0 m-0 mt-4 text-[14px] leading-[1.9] text-[var(--mute)]">
           <li>· Hybrid battery + generator power unit</li>
-          <li>· Starlink internet service included</li>
+          <li>· Starlink Wi-Fi + power, ${RENT_MONTHLY_USD}/mo</li>
           <li>· Delivered and set up on your pin</li>
           <li>· Online within {ONLINE_WINDOW_LABEL} of payment</li>
         </ul>
 
         <div className="mt-6 pt-5 border-t text-[14px]" style={{ borderColor: "var(--line)" }}>
           <div className="flex justify-between py-1.5">
-            <span className="text-[var(--mute)]">Rental</span>
+            <span className="text-[var(--mute)]">Subscription</span>
             <span className="num">${RENT_MONTHLY_USD}/mo</span>
           </div>
           <div className="flex justify-between py-1.5">
-            <span className="text-[var(--mute)]">Delivery &amp; setup</span>
+            <span className="text-[var(--mute)]">One-time delivery &amp; setup</span>
             <span className="num">${DELIVERY_FEE_USD} once</span>
           </div>
           <div
             className="flex justify-between items-baseline pt-4 mt-3 border-t"
             style={{ borderColor: "var(--line-strong)" }}
           >
-            <span className="font-semibold">Due today</span>
+            <span className="font-semibold">${DUE_TODAY_USD} due today</span>
             <span className="num text-[26px] font-bold">${DUE_TODAY_USD}</span>
           </div>
         </div>

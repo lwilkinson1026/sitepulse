@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-/** Once a rental is paid, the saved /rent draft has done its job. */
+/** Once a subscription is paid, the saved /plan draft has done its job. */
 export function ClearRentDraft() {
   useEffect(() => {
     try {

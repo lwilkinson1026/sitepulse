@@ -1,22 +1,23 @@
 import Link from "next/link";
 import {
   DELIVERY_FEE_USD,
+  DUE_TODAY_USD,
   ONLINE_WINDOW_LABEL,
   RENT_MONTHLY_USD,
   SERVICE_AREA_LABEL,
 } from "@/lib/rental";
 import { Eyebrow } from "./Eyebrow";
 
-const INCLUDED = [
+const PLAN = [
   "Sitepulse V1 hybrid unit — battery, inverter and top-up generator",
-  "Starlink internet service, included in the monthly price",
+  "Starlink Wi-Fi + power, $299/mo",
   `Delivered and set up on your pin (one-time $${DELIVERY_FEE_USD})`,
   `Online within ${ONLINE_WINDOW_LABEL} of payment`,
   "You keep the tank topped up",
 ];
 
 const MANAGED = [
-  "Everything in the rental",
+  "Everything in the subscription",
   "We set up fuel on site and keep it topped up",
   "We monitor and manage the unit for you",
   "Billed by the gallon delivered — it tracks your usage",
@@ -33,7 +34,7 @@ function Check() {
 export function RentalOffer() {
   return (
     <section
-      id="rent"
+      id="plan"
       className="relative py-32 border-b overflow-hidden"
       style={{ borderColor: "var(--line)" }}
     >
@@ -43,18 +44,18 @@ export function RentalOffer() {
         style={{ width: 520, height: 520, right: "-150px", top: "10%", opacity: 0.25 }}
       />
       <div className="relative max-w-[1440px] mx-auto px-8">
-        <Eyebrow num="07" label="RENT ONE" />
+        <Eyebrow num="07" label="GET ONE" />
         <h2
           className="display-x mt-6 leading-[.95] tracking-[-.045em]"
           style={{ fontSize: "clamp(44px, 7vw, 96px)" }}
         >
           ${RENT_MONTHLY_USD} a month.
           <br />
-          Starlink included.
+          Starlink Wi-Fi + power.
         </h2>
         <p className="mt-8 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
-          We&apos;re renting the first five V1 units across {SERVICE_AREA_LABEL}. Drop a
-          pin, pay the first month, and it&apos;s on your site and online within{" "}
+          We&apos;re shipping the first five V1 units across {SERVICE_AREA_LABEL}. Drop a
+          pin, start your subscription, and it&apos;s on your site and online within{" "}
           {ONLINE_WINDOW_LABEL}.
         </p>
 
@@ -65,7 +66,7 @@ export function RentalOffer() {
             style={{ borderColor: "var(--hi)" }}
           >
             <div className="mono text-[11px] tracking-[.18em] uppercase text-[var(--hi)]">
-              RENTAL · YOU REFUEL
+              SUBSCRIPTION · YOU REFUEL
             </div>
             <div className="mt-5 flex items-end gap-3">
               <div className="display-x text-[72px] sm:text-[96px] tracking-[-.05em] leading-[.85]">
@@ -76,7 +77,7 @@ export function RentalOffer() {
               </div>
             </div>
             <ul className="mt-8 space-y-3 text-[15px] text-zinc-300">
-              {INCLUDED.map((line) => (
+              {PLAN.map((line) => (
                 <li key={line} className="flex gap-4">
                   <Check />
                   <span>{line}</span>
@@ -84,11 +85,12 @@ export function RentalOffer() {
               ))}
             </ul>
             <div className="mt-10 flex flex-wrap items-center gap-5">
-              <Link href="/rent" className="btn btn-cy">
-                START YOUR RENTAL <span>→</span>
+              <Link href="/plan" className="btn btn-cy">
+                START YOUR SUBSCRIPTION <span>→</span>
               </Link>
               <span className="mono text-[11px] uppercase tracking-[.16em] text-zinc-500">
-                ${RENT_MONTHLY_USD + DELIVERY_FEE_USD} today · first month + delivery
+                ${RENT_MONTHLY_USD}/mo + ${DELIVERY_FEE_USD} one-time setup · $
+                {DUE_TODAY_USD} due today
               </span>
             </div>
           </div>

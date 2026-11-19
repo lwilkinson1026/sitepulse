@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { AmbientVideo } from "./AmbientVideo";
 
-function CornerTicks() {
-  type Pos = {
-    top?: number;
-    bottom?: number;
-    left?: number;
-    right?: number;
-  };
-  const Tick = ({ pos }: { pos: Pos }) => (
+type TickPos = {
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+function Tick({ pos }: { pos: TickPos }) {
+  return (
     <div className="absolute w-3 h-3" style={{ ...pos, borderColor: "var(--hi)" }}>
       {pos.top !== undefined && pos.left !== undefined && (
         <>
@@ -36,6 +37,9 @@ function CornerTicks() {
       )}
     </div>
   );
+}
+
+function CornerTicks() {
   return (
     <>
       <Tick pos={{ top: -1, left: -1 }} />
@@ -69,7 +73,7 @@ function HeroProductImage() {
 
         {/* TOP-LEFT: unit identity */}
         <div className="absolute top-6 left-6 mono text-[10px] tracking-[.22em] text-zinc-300 uppercase">
-          <div>UNIT-001 · YAKIMA PLANT</div>
+          <div>UNIT-001 · COEUR D&apos;ALENE, ID</div>
           <div className="mt-2 flex items-center gap-2">
             <span className="pulse-dot" />
             <span className="text-[var(--hi)]">LIVE TELEMETRY</span>
@@ -143,7 +147,7 @@ function HeroProductImage() {
 
 const HEADLINE = {
   eyebrow: "REMOTE HYBRID POWER · STARLINK MINI · TRUE HYBRID",
-  sub: "A 90-lb hybrid power station — 2,000 W pure-sine inverter (4 kW peak), Starlink Mini, and a top-up 79cc engine. Battery handles daily loads. The engine runs about 1.5 hours a day.",
+  sub: "Power + Wi-Fi anywhere. $299/mo.",
 };
 
 const HERO_STATS: ReadonlyArray<readonly [string, string]> = [
@@ -203,7 +207,7 @@ export function Hero() {
       <div className="relative max-w-[1440px] mx-auto px-8">
         <div className="mt-12 flex items-center gap-3 mono text-[11px] tracking-[.18em] text-zinc-500 uppercase">
           <span className="pulse-dot" />
-          <span>NOW RENTING · FIRST 5 V1 UNITS · ID · OR · WA · MT</span>
+          <span>NOW SHIPPING · FIRST 5 V1 UNITS · ID · OR · WA · MT</span>
         </div>
 
         <div className="mt-10 mono text-[12px] tracking-[.22em] text-[var(--hi)] uppercase">
@@ -226,14 +230,14 @@ export function Hero() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Link href="/rent" className="btn btn-cy">
-            RENT FOR $299/MO <span>→</span>
+          <Link href="/plan" className="btn btn-cy">
+            GET ONE FOR $299/MO <span>→</span>
           </Link>
           <a href="#runs" className="btn btn-ghost">
             SEE IT RUN
           </a>
           <span className="mono text-[11px] uppercase tracking-[.18em] text-zinc-500 ml-3">
-            Starlink included · Online in 48–72 hrs
+            Starlink Wi-Fi + power, $299/mo · Online in 48–72 hrs
           </span>
         </div>
 

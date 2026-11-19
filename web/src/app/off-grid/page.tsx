@@ -6,9 +6,9 @@ import { Header } from "../components/Header";
 import { SizingTool } from "./SizingTool";
 
 export const metadata: Metadata = {
-  title: "Sitepulse — Off-Grid System Sizing Tool",
+  title: "SitePulse — Off-Grid System Sizing Tool",
   description:
-    "Estimate your daily load, solar array size, number of SitePulse units, fuel use, and upfront cost for an off-grid home. Live, interactive, with city-level solar search.",
+    "Estimate your daily load, solar array size, number of SitePulse units, fuel use, and $299/mo subscription for an off-grid home. Live, interactive, with city-level solar search.",
 };
 
 const HYBRID_POINTS: ReadonlyArray<{ title: string; body: string }> = [
@@ -29,11 +29,11 @@ const HYBRID_POINTS: ReadonlyArray<{ title: string; body: string }> = [
 const FAQ_ITEMS: ReadonlyArray<{ q: string; a: string }> = [
   {
     q: "How does this compare to a traditional off-grid system?",
-    a: "A whole-home off-grid setup usually means a custom battery bank, a separate inverter, a standalone generator, and a solar array — all engineered, permitted, and installed by a contractor. That typically runs $30,000–$50,000+ and takes weeks of design and site visits. SitePulse packages the battery, inverter, hybrid engine, and Starlink into one finished unit. Most homes size out well under $10,000 here for the same grid-like reliability.",
+    a: "A whole-home off-grid setup usually means a custom battery bank, a separate inverter, a standalone generator, and a solar array — all engineered, permitted, and installed by a contractor. That typically runs $30,000–$50,000+ and takes weeks of design and site visits. SitePulse packages the battery, inverter, hybrid engine, and Starlink into one finished unit on a $299/mo subscription. Most homes size out at one or two units — no five-figure hardware purchase.",
   },
   {
     q: "Do I need a custom installation or a contractor?",
-    a: "No. SitePulse is built to deploy like Starlink or a Tesla Powerwall — a complete product, not a construction project. There's no rack of separate components to wire together and no custom engineering for a standard setup. Connect your panels, connect your loads, and the unit manages charging, switching, and engine top-ups automatically.",
+    a: "No. SitePulse is a subscription, like Starlink — a complete product you start online, not a construction project you order like a Powerwall. There's no rack of separate components to wire together and no custom engineering for a standard setup. Connect your panels, connect your loads, and the unit manages charging, switching, and engine top-ups automatically.",
   },
   {
     q: "Why do you recommend two units instead of one larger one?",
@@ -92,8 +92,8 @@ export default function OffGridPage() {
           <p className="mt-10 max-w-[680px] text-[17px] leading-[1.65] text-zinc-400">
             Tell us about your home and we&apos;ll estimate your daily load, the
             solar array and number of SitePulse units you need, your annual fuel
-            cost, and the total upfront price — updating live as you adjust.
-            Defaults are tuned for North Idaho.
+            cost, and the $299/mo subscription per unit — updating live as you
+            adjust. Defaults are tuned for North Idaho.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -182,8 +182,8 @@ export default function OffGridPage() {
             A whole-home off-grid system has always meant $30,000–$50,000+ of
             custom battery banks, inverters, a standalone generator, and an
             engineered install. SitePulse delivers the same reliability as a
-            finished product — sized, ordered, and set down like Starlink or a
-            Powerwall.
+            finished product on a $299/mo subscription — sized, started, and
+            set down like Starlink.
           </p>
 
           <div className="mt-16 max-w-[920px]">
@@ -235,8 +235,8 @@ export default function OffGridPage() {
             <Link href="/contact" className="btn btn-cy">
               TALK TO OUR TEAM <span>→</span>
             </Link>
-            <Link href="/rent" className="btn btn-ghost">
-              RENT A SITEPULSE
+            <Link href="/plan" className="btn btn-ghost">
+              GET A SITEPULSE
             </Link>
           </div>
         </div>

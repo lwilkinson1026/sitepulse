@@ -10,7 +10,7 @@ const NAV_LINKS: ReadonlyArray<readonly [string, string]> = [
   ["Field Unit", "/field-unit"],
   ["DJI Dock", "/dji-dock"],
   ["Off-Grid", "/off-grid"],
-  ["Pricing", "/#rent"],
+  ["Pricing", "/#plan"],
 ];
 
 export function Header() {
@@ -47,8 +47,8 @@ export function Header() {
           >
             Contact
           </Link>
-          <Link href="/rent" className="btn btn-cy">
-            RENT <span className="opacity-70">→</span>
+          <Link href="/plan" className="btn btn-cy">
+            GET ONE <span className="opacity-70">→</span>
           </Link>
           <button
             type="button"

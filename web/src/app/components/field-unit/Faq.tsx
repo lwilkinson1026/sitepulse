@@ -13,11 +13,11 @@ const QUESTIONS: ReadonlyArray<{ q: string; a: string }> = [
   },
   {
     q: "What happens when it runs out of fuel?",
-    a: "On the $299 rental you keep the tank topped up — the calculator above tells you how many gallons a month your load burns and how long a tank lasts. If you'd rather not think about it, ask about fuel service: we set up fuel on site, keep it filled, and monitor and manage the unit, billed by the gallon delivered.",
+    a: "On the $299/mo subscription you keep the tank topped up — the calculator above tells you how many gallons a month your load burns and how long a tank lasts. If you'd rather not think about it, ask about fuel service: we set up fuel on site, keep it filled, and monitor and manage the unit, billed by the gallon delivered.",
   },
   {
     q: "What does it cost, and how fast can I get one?",
-    a: "$299 a month, Starlink service included, plus a one-time $150 for delivery and setup — $449 to start. Drop a pin where you want it and pay online; the unit is on your site and online within 48–72 hours. We deliver across Idaho, Oregon, Washington and Montana.",
+    a: "$299/mo + $150 one-time setup. Starlink Wi-Fi + power, $299/mo. $449 due today. Drop a pin where you want it and pay online; the unit is on your site and online within 48–72 hours. We deliver across Idaho, Oregon, Washington and Montana.",
   },
   {
     q: "Can you run my trailer's heat, a welder, or a saw all day?",

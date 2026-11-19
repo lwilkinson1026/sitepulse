@@ -8,8 +8,8 @@ const STEPS = [
   {
     n: "02",
     eyebrow: "COMMIT",
-    title: "$449 to start.",
-    desc: "First month ($299) plus a one-time $150 delivery, paid online. That payment starts the clock.",
+    title: "$299/mo + $150 one-time setup.",
+    desc: "$449 due today — first month plus a one-time $150 delivery and setup, paid online. That payment starts the clock.",
   },
   {
     n: "03",

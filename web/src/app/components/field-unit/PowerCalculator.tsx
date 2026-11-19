@@ -473,10 +473,10 @@ export function PowerCalculator() {
 
             {result.units === 1 && result.verdict !== "r" ? (
               <Link
-                href="/rent"
+                href="/plan"
                 className="btn btn-cy w-full mt-5 justify-center h-auto py-4 text-[14px] text-center"
               >
-                Rent it — online in 48–72 hours →
+                Get one — online in 48–72 hours →
               </Link>
             ) : (
               <Link
@@ -489,7 +489,7 @@ export function PowerCalculator() {
               </Link>
             )}
             <p className="mono text-[10px] tracking-[.12em] text-[var(--mute)] uppercase text-center mt-3 m-0">
-              + $150 one-time delivery · Starlink service included · you refuel
+              $299/mo + $150 one-time setup · Starlink Wi-Fi + power · you refuel
             </p>
           </div>
         </div>
