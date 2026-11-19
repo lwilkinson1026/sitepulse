@@ -1,6 +1,7 @@
 /**
- * The rental offer. Prices, service area and the delivery promise live here so
- * the marketing copy, the /rent flow and the checkout API can't drift apart.
+ * The subscription offer. Prices, service area and the delivery promise live
+ * here so the marketing copy, the /plan flow and the checkout API can't drift
+ * apart.
  */
 
 export const RENT_MONTHLY_USD = 299;

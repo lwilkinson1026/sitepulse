@@ -5,7 +5,7 @@ import { identifyPerson, track } from "@/lib/track-client";
 import { newEventId } from "@/lib/tracking";
 
 const TOPICS = [
-  "Rentals & pricing",
+  "Subscriptions & pricing",
   "Fuel service quote",
   "Technical / specs",
   "Field service & support",

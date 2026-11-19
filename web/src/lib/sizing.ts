@@ -32,7 +32,10 @@ export type SizingParams = {
   derate: number; // system derate applied to peak-sun production estimates
   panelWatts: number;
   panelCost: number;
-  unitCost: number;
+  /** Monthly subscription per SitePulse unit. */
+  unitMonthly: number;
+  /** One-time delivery & setup per unit. */
+  setupFee: number;
   unitSolarInput: number; // max solar watts a single unit accepts via the DC solar port
   unitAcCharge: number; // additional watts a unit can absorb via the AC charging port
   gasolineKwhPerGal: number;
@@ -57,7 +60,8 @@ export const DEFAULT_PARAMS: SizingParams = {
   derate: 0.85,
   panelWatts: 500,
   panelCost: 135,
-  unitCost: 3995,
+  unitMonthly: 299,
+  setupFee: 150,
   unitSolarInput: 800,
   unitAcCharge: 800,
   gasolineKwhPerGal: 2.0,
@@ -97,8 +101,12 @@ export type SizingResult = {
   solarCost: number;
   units: 1 | 2;
   unitsDrivenBySolar: boolean;
-  unitsCost: number;
-  totalUpfront: number;
+  /** Units × monthly subscription. */
+  unitsMonthly: number;
+  /** Units × one-time setup fee. */
+  setupCost: number;
+  /** One-time total: setup + solar (subscription is billed monthly). */
+  totalOneTime: number;
   fuelKey: FuelKey;
   fuelKwhPerGal: number;
   fuelPricePerGal: number;
@@ -170,8 +178,9 @@ export function computeSizing(
   const units = (Math.min(2, Math.max(1, unitsForLoad, unitsForSolar)) as 1 | 2);
   const unitsDrivenBySolar = unitsForSolar > unitsForLoad;
 
-  const unitsCost = units * params.unitCost;
-  const totalUpfront = unitsCost + solarCost;
+  const unitsMonthly = units * params.unitMonthly;
+  const setupCost = units * params.setupFee;
+  const totalOneTime = setupCost + solarCost;
 
   const fuelKwhPerGal =
     inputs.fuel === "propane" ? params.propaneKwhPerGal : params.gasolineKwhPerGal;
@@ -179,7 +188,7 @@ export function computeSizing(
     inputs.fuel === "propane" ? params.propanePricePerGal : params.gasolinePricePerGal;
   const fuelGallonsYear = generatorKwh / fuelKwhPerGal;
   const fuelCostYear = fuelGallonsYear * fuelPricePerGal;
-  const tenYearLoaded = totalUpfront + fuelCostYear * 10;
+  const tenYearLoaded = unitsMonthly * 12 * 10 + totalOneTime + fuelCostYear * 10;
 
   const warnings: string[] = [];
   if (inputs.spaceHeating === "heat-pump") {
@@ -221,8 +230,9 @@ export function computeSizing(
     solarCost,
     units,
     unitsDrivenBySolar,
-    unitsCost,
-    totalUpfront,
+    unitsMonthly,
+    setupCost,
+    totalOneTime,
     fuelKey: inputs.fuel,
     fuelKwhPerGal,
     fuelPricePerGal,

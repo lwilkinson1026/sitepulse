@@ -6,7 +6,7 @@ import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
 export const metadata: Metadata = {
-  title: "Sitepulse — DJI Dock Power · Drone-in-a-Box",
+  title: "SitePulse — DJI Dock Power · $299/mo",
   description:
     "Pair Sitepulse with the DJI Dock 3 / Dock 2 for silent, unattended drone-in-a-box deployments. Battery-first power for the standby load, engine assist only for charging peaks.",
 };
@@ -135,8 +135,8 @@ export default function DjiDockPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link href="/rent" className="btn btn-cy">
-              RENT A UNIT <span>→</span>
+            <Link href="/plan" className="btn btn-cy">
+              GET A UNIT <span>→</span>
             </Link>
             <Link href="/" className="btn btn-ghost">
               ← BACK TO SITEPULSE
@@ -268,7 +268,7 @@ export default function DjiDockPage() {
           </h2>
           <p className="mt-8 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
             Sitepulse is rated for the full DJI Dock series. Below are the
-            published maximum input figures from DJI — the peak you'd see
+            published maximum input figures from DJI — the peak you&apos;d see
             during charging plus AC plus cover actuation in extreme weather.
             Sustained averages are dramatically lower.
           </p>
@@ -327,8 +327,8 @@ export default function DjiDockPage() {
             draws, by mode.
           </h2>
           <p className="mt-8 max-w-[640px] text-[17px] leading-[1.65] text-zinc-400">
-            DJI doesn't publish a single &ldquo;average&rdquo; figure because the
-            load is mode-dependent. Here's the breakdown we model against, based
+            DJI doesn&apos;t publish a single &ldquo;average&rdquo; figure because the
+            load is mode-dependent. Here&apos;s the breakdown we model against, based
             on published specs plus contractor mission logs.
           </p>
 
@@ -548,7 +548,7 @@ export default function DjiDockPage() {
         />
         <div className="relative max-w-[1440px] mx-auto px-8 text-center">
           <div className="mono text-[12px] tracking-[.22em] uppercase text-[var(--hi)]">
-            DOCK-READY · NOW RENTING
+            DOCK-READY · NOW SHIPPING
           </div>
           <h2
             className="display-x mt-8 leading-[.92] tracking-[-.05em]"
@@ -559,8 +559,8 @@ export default function DjiDockPage() {
             Walk away for weeks.
           </h2>
           <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
-            <Link href="/rent" className="btn btn-cy">
-              RENT A UNIT <span>→</span>
+            <Link href="/plan" className="btn btn-cy">
+              GET A UNIT <span>→</span>
             </Link>
             <Link href="/" className="btn btn-ghost">
               ← BACK TO SITEPULSE

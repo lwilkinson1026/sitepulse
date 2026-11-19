@@ -33,10 +33,11 @@ function bad(error: string) {
 }
 
 /**
- * Starts a rental: records the service location, notifies the team, then hands
- * off to Stripe Checkout for the first month plus the one-time delivery fee.
- * The monthly rent is a Stripe subscription, so later months bill themselves.
- * Card details never touch this app — Stripe's hosted page collects them.
+ * Starts a subscription: records the service location, notifies the team, then
+ * hands off to Stripe Checkout for the first month plus the one-time delivery
+ * fee. The monthly charge is a Stripe subscription, so later months bill
+ * themselves. Card details never touch this app — Stripe's hosted page
+ * collects them.
  */
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
 
   await notifyTeam(
     "rent",
-    `Sitepulse rental started — ${company || name}${place ? ` (${place})` : ""}`,
+    `Sitepulse subscription started — ${company || name}${place ? ` (${place})` : ""}`,
     fields,
     email,
   );
@@ -127,8 +128,9 @@ export async function POST(req: NextRequest) {
             unit_amount: RENT_MONTHLY_USD * 100,
             recurring: { interval: "month" },
             product_data: {
-              name: "Sitepulse V1 rental",
-              description: "Hybrid power unit with Starlink service included. Billed monthly.",
+              name: "SitePulse Power + Wi-Fi subscription",
+              description:
+                "Portable power and Starlink Wi-Fi, anywhere. $299/mo, billed monthly.",
             },
           },
         },
@@ -138,7 +140,7 @@ export async function POST(req: NextRequest) {
             currency: "usd",
             unit_amount: DELIVERY_FEE_USD * 100,
             product_data: {
-              name: "Delivery & setup",
+              name: "One-time delivery & setup",
               description: `One-time. Delivered to ${coords} and online within ${ONLINE_WINDOW_LABEL}.`,
             },
           },
@@ -151,8 +153,8 @@ export async function POST(req: NextRequest) {
       },
       metadata,
       subscription_data: { metadata },
-      success_url: `${origin}/rent/confirmed?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/rent?canceled=1`,
+      success_url: `${origin}/plan/confirmed?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/plan?canceled=1`,
     });
 
     if (!session.url) {
@@ -166,7 +168,7 @@ export async function POST(req: NextRequest) {
       void sendMetaCapiEvent({
         eventName: "InitiateCheckout",
         eventId,
-        eventSourceUrl: `${origin}/rent`,
+        eventSourceUrl: `${origin}/plan`,
         user: {
           email,
           phone,

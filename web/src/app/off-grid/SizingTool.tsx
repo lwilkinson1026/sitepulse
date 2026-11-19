@@ -384,7 +384,8 @@ export function SizingTool() {
                 <ParamInput label="System derate (0–1)" value={params.derate} step={0.01} onChange={(n) => setParam("derate", n)} />
                 <ParamInput label="Panel watts" value={params.panelWatts} step={10} onChange={(n) => setParam("panelWatts", n)} />
                 <ParamInput label="Panel cost ($)" value={params.panelCost} step={5} onChange={(n) => setParam("panelCost", n)} />
-                <ParamInput label="SitePulse unit cost ($)" value={params.unitCost} step={50} onChange={(n) => setParam("unitCost", n)} />
+                <ParamInput label="SitePulse monthly ($)" value={params.unitMonthly} step={1} onChange={(n) => setParam("unitMonthly", n)} />
+                <ParamInput label="Setup fee per unit ($)" value={params.setupFee} step={10} onChange={(n) => setParam("setupFee", n)} />
                 <ParamInput label="Solar input per unit (W)" value={params.unitSolarInput} step={50} onChange={(n) => setParam("unitSolarInput", n)} />
                 <ParamInput label="AC charging per unit (W)" value={params.unitAcCharge} step={50} onChange={(n) => setParam("unitAcCharge", n)} />
               </div>
@@ -481,15 +482,19 @@ export function SizingTool() {
           <ul className="mt-8 pt-6 border-t space-y-3 text-[14px] text-zinc-400 mono" style={{ borderColor: "var(--line-strong)" }}>
             <li className="flex justify-between border-b pb-3" style={{ borderColor: "var(--line)" }}>
               <span>{r.units}× SitePulse</span>
-              <span className="text-zinc-200">{usd(r.unitsCost)}</span>
+              <span className="text-zinc-200">{usd(r.unitsMonthly)}/mo</span>
+            </li>
+            <li className="flex justify-between border-b pb-3" style={{ borderColor: "var(--line)" }}>
+              <span>{r.units}× setup</span>
+              <span className="text-zinc-200">{usd(r.setupCost)} once</span>
             </li>
             <li className="flex justify-between border-b pb-3" style={{ borderColor: "var(--line)" }}>
               <span>{r.panels}× solar panels</span>
               <span className="text-zinc-200">{usd(r.solarCost)}</span>
             </li>
             <li className="flex justify-between">
-              <span className="text-zinc-300">Total upfront</span>
-              <span className="display text-[20px] tracking-[-.02em] text-[var(--hi)]">{usd(r.totalUpfront)}</span>
+              <span className="text-zinc-300">One-time (setup + solar)</span>
+              <span className="display text-[20px] tracking-[-.02em] text-[var(--hi)]">{usd(r.totalOneTime)}</span>
             </li>
           </ul>
 
@@ -528,8 +533,8 @@ export function SizingTool() {
           <Link href="/contact" className="btn btn-cy w-full justify-center mt-8">
             TALK TO OUR TEAM <span>→</span>
           </Link>
-          <Link href="/rent" className="btn btn-ghost w-full justify-center mt-3">
-            RENT A SITEPULSE
+          <Link href="/plan" className="btn btn-ghost w-full justify-center mt-3">
+            GET A SITEPULSE
           </Link>
 
           <div className="mt-6 text-[11px] leading-[1.55] text-zinc-500">

@@ -6,6 +6,20 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/field-guide/download": ["./private/sitepulse-field-guide.pdf"],
   },
+  async redirects() {
+    return [
+      {
+        source: "/rent",
+        destination: "/plan",
+        permanent: true,
+      },
+      {
+        source: "/rent/:path*",
+        destination: "/plan/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState, type CSSProperties } from "react";
  * Whether it plays is decided before first paint by INTRO_GATE (rendered
  * inline from page.tsx), which sets <html data-intro="play|skip">. The overlay
  * is display:none unless it's "play", so repeat visits in the same session,
- * deep links (/#rent) and reduced-motion users never see a flash of it — and
+ * deep links (/#plan) and reduced-motion users never see a flash of it — and
  * because the photos are CSS backgrounds, a hidden overlay never fetches them.
  */
 
@@ -174,7 +174,7 @@ export function Intro() {
           </div>
           <div className="mt-2 flex items-center gap-2">
             <span className="pulse-dot" />
-            <span>UNIT-001 · YAKIMA, WA</span>
+            <span>UNIT-001 · COEUR D&apos;ALENE, ID</span>
             <span className="sp-intro-clock text-white" data-on={step >= 0 || undefined}>
               {SCENES[Math.max(shown, 0)].clock}
             </span>

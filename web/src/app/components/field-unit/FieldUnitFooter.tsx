@@ -8,7 +8,7 @@ const COLUMNS: ReadonlyArray<{
     title: "PRODUCT",
     links: [
       ["#calc", "Calculator"],
-      ["/rent", "Rent a unit"],
+      ["/plan", "Get a unit"],
       ["#coverage", "Coverage"],
     ],
   },

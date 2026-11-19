@@ -52,15 +52,15 @@ export function FieldUnitHero() {
             </h1>
 
             <p className="text-[22px] leading-[1.35] font-medium tracking-[-.01em] m-0 mb-3">
-              $299 a month. Starlink included. One box, delivered.
+              Power + Wi-Fi anywhere. $299/mo.
             </p>
             <p className="mono text-[12px] tracking-[.16em] text-[var(--mute)] m-0 mb-10">
               IDAHO · OREGON · WASHINGTON · MONTANA
             </p>
 
             <div className="flex flex-wrap gap-3.5 mb-12">
-              <Link href="/rent" className="btn btn-cy px-[22px] text-[14px]">
-                Rent for $299/mo →
+              <Link href="/plan" className="btn btn-cy px-[22px] text-[14px]">
+                Get one for $299/mo →
               </Link>
               <a href="#calc" className="btn btn-ghost px-[22px] text-[14px]">
                 Size my site

@@ -11,11 +11,11 @@ import {
 import { RentFlow } from "./RentFlow";
 
 export const metadata: Metadata = {
-  title: `Rent a Sitepulse — $${RENT_MONTHLY_USD}/mo, Starlink included`,
-  description: `Off-grid power and Starlink internet, delivered. $${RENT_MONTHLY_USD}/month plus a one-time $${DELIVERY_FEE_USD} delivery. Drop a pin and your unit is online in ${ONLINE_WINDOW_LABEL}. ${SERVICE_AREA_LABEL}.`,
+  title: `SitePulse — Power + Wi-Fi anywhere. $${RENT_MONTHLY_USD}/mo.`,
+  description: `Portable power and Starlink Wi-Fi, anywhere. $${RENT_MONTHLY_USD}/mo + $${DELIVERY_FEE_USD} one-time setup. Drop a pin and your unit is online in ${ONLINE_WINDOW_LABEL}. ${SERVICE_AREA_LABEL}.`,
 };
 
-export default function RentPage() {
+export default function PlanPage() {
   return (
     <>
       <Header />
@@ -29,7 +29,7 @@ export default function RentPage() {
         <div className="relative max-w-[1440px] mx-auto px-5 sm:px-8 pt-8 pb-24">
           <div className="flex items-center gap-3 mono text-[11px] tracking-[.18em] text-zinc-500 uppercase">
             <span className="pulse-dot" />
-            <span>NOW RENTING · FIRST 5 V1 UNITS · {SERVICE_AREA_CODES}</span>
+            <span>NOW SHIPPING · FIRST 5 V1 UNITS · {SERVICE_AREA_CODES}</span>
           </div>
 
           <h1

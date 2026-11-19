@@ -12,14 +12,14 @@ export function RentCta() {
   return (
     <section
       className="section"
-      id="rent"
+      id="plan"
       style={{
         background: "linear-gradient(180deg, transparent, rgba(255,255,255,.03))",
       }}
     >
       <div className="wrap">
         <div className="section-hd">
-          <span className="idx">07 / RENT</span>
+          <span className="idx">07 / PLAN</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-start">
@@ -27,11 +27,11 @@ export function RentCta() {
             <h2 className="section-h2 mb-6" style={{ fontSize: "clamp(34px, 5vw, 56px)" }}>
               ${RENT_MONTHLY_USD} a month.
               <br />
-              <span style={{ color: "var(--mute)" }}>Online this week.</span>
+              <span style={{ color: "var(--mute)" }}>Online in 48–72 hours.</span>
             </h2>
             <p className="text-[var(--mute)] text-[17px] leading-[1.55] m-0 mb-8 max-w-[520px]">
-              Starlink service and the generator are included. Pay the first month and a
-              one-time ${DELIVERY_FEE_USD} delivery, and the unit is on your site and
+              Starlink Wi-Fi + power, ${RENT_MONTHLY_USD}/mo. Pay the first month and a
+              one-time ${DELIVERY_FEE_USD} setup, and the unit is on your site and
               online within {ONLINE_WINDOW_LABEL}.
             </p>
 
@@ -53,8 +53,8 @@ export function RentCta() {
               ))}
             </div>
 
-            <Link href="/rent" className="btn btn-cy px-[22px] text-[14px]">
-              Start your rental →
+            <Link href="/plan" className="btn btn-cy px-[22px] text-[14px]">
+              Start your subscription →
             </Link>
           </div>
 

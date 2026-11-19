@@ -30,17 +30,17 @@ test("touchFromSearch captures UTMs and click IDs", () => {
 });
 
 test("touchFromSearch returns null when the URL is clean", () => {
-  assert.equal(touchFromSearch("", "/rent"), null);
-  assert.equal(touchFromSearch("?foo=bar", "/rent"), null);
+  assert.equal(touchFromSearch("", "/plan"), null);
+  assert.equal(touchFromSearch("?foo=bar", "/plan"), null);
 });
 
 test("mergeAttribution keeps first ad source and updates last", () => {
   const first = touchFromSearch("?utm_source=twitter&utm_medium=paid_social", "/", 1)!;
-  const second = touchFromSearch("?utm_source=facebook&utm_medium=paid_social", "/rent", 2)!;
-  const merged = mergeAttribution({ first, last: first }, second, "/rent", 2);
+  const second = touchFromSearch("?utm_source=facebook&utm_medium=paid_social", "/plan", 2)!;
+  const merged = mergeAttribution({ first, last: first }, second, "/plan", 2);
   assert.equal(merged.first.utm_source, "twitter");
   assert.equal(merged.last.utm_source, "facebook");
-  assert.equal(merged.last.landing, "/rent");
+  assert.equal(merged.last.landing, "/plan");
 });
 
 test("mergeAttribution upgrades an organic first-touch when an ad arrives", () => {

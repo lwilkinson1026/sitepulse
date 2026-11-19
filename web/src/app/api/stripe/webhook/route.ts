@@ -70,7 +70,7 @@ async function fireTwitterConversion(
         event_id: PURCHASE_EVENT_ID,
         conversion_id: session.id,
         conversion_time: new Date().toISOString(),
-        event_source_url: `${origin}/rent/confirmed`,
+        event_source_url: `${origin}/plan/confirmed`,
         identifiers: [identifier],
       },
     ]);
@@ -93,7 +93,7 @@ async function fireMetaPurchase(
   await sendMetaCapiEvent({
     eventName: "Purchase",
     eventId: purchaseEventId(session.id),
-    eventSourceUrl: `${origin}/rent/confirmed`,
+    eventSourceUrl: `${origin}/plan/confirmed`,
     eventTime: session.created,
     user: {
       email,
@@ -132,7 +132,7 @@ async function notifyRentalPaid(session: Stripe.Checkout.Session) {
 
   await notifyTeam(
     "rent",
-    `PAID — Sitepulse rental, online due in ${ONLINE_WINDOW_LABEL} — ${m.contact_name ?? email}`,
+    `PAID — Sitepulse subscription, online due in ${ONLINE_WINDOW_LABEL} — ${m.contact_name ?? email}`,
     [
       ["Online window", `${at(ONLINE_MIN_HOURS)} → ${at(ONLINE_MAX_HOURS)}`],
       ["Name", m.contact_name ?? "(unknown)"],

@@ -6,15 +6,15 @@ import { Header } from "../components/Header";
 import { ContactForm } from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Sitepulse — Contact",
+  title: "SitePulse — Contact",
   description:
-    "Talk to the team behind Sitepulse. Rentals, fuel service, technical questions, field service, and press — designed and assembled in Yakima, Washington.",
+    "Talk to the team behind Sitepulse. Subscriptions, fuel service, technical questions, field service, and press — designed and assembled in Coeur d'Alene, Idaho.",
 };
 
 const CHANNELS: ReadonlyArray<{ label: string; value: string; note: string }> = [
   {
-    label: "Rentals",
-    value: "$299/mo, Starlink included",
+    label: "Subscriptions",
+    value: "Starlink Wi-Fi + power, $299/mo",
     note: "Drop a pin and start online — or ask us anything first. Idaho, Oregon, Washington and Montana.",
   },
   {
@@ -24,7 +24,7 @@ const CHANNELS: ReadonlyArray<{ label: string; value: string; note: string }> = 
   },
   {
     label: "Field service",
-    value: "Renter support",
+    value: "Customer support",
     note: "Manuals, firmware, and on-site help for a unit you already have.",
   },
 ];
@@ -47,7 +47,7 @@ export default function ContactPage() {
         <div className="relative max-w-[1440px] mx-auto px-8 pt-12 pb-24">
           <div className="mt-4 flex items-center gap-3 mono text-[11px] tracking-[.18em] text-zinc-500 uppercase">
             <span className="pulse-dot" />
-            <span>YAKIMA, WA · A REAL PERSON READS EVERY MESSAGE</span>
+            <span>COEUR D&apos;ALENE, ID · A REAL PERSON READS EVERY MESSAGE</span>
           </div>
 
           <h1
@@ -65,8 +65,8 @@ export default function ContactPage() {
             Questions about specs, a deployment, fuel service, or a unit you
             already have? Send a note and we&rsquo;ll get back to you. If you&rsquo;re
             ready to go, you can{" "}
-            <Link href="/rent" className="text-[var(--hi)] hover:underline">
-              start a rental online
+            <Link href="/plan" className="text-[var(--hi)] hover:underline">
+              start a subscription online
             </Link>{" "}
             directly.
           </p>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                 <p className="mt-4 text-[15px] leading-[1.6] text-zinc-300">
                   Sitepulse Power, Inc.
                   <br />
-                  Designed &amp; assembled in Yakima, Washington
+                  Designed &amp; assembled in Coeur d&apos;Alene, Idaho
                 </p>
               </div>
             </div>

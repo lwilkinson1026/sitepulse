@@ -21,7 +21,7 @@ export function FinalCTA() {
       />
       <div className="relative max-w-[1440px] mx-auto px-8 text-center">
         <div className="mono text-[12px] tracking-[.22em] uppercase text-[var(--hi)]">
-          NOW RENTING · V1 PROTOTYPE UNITS · ID · OR · WA · MT
+          NOW SHIPPING · V1 PROTOTYPE UNITS · ID · OR · WA · MT
         </div>
         <h2
           className="display-x mt-8 leading-[.92] tracking-[-.05em]"
@@ -33,9 +33,12 @@ export function FinalCTA() {
           <br />
           Unattended.
         </h2>
+        <p className="mt-8 text-[18px] leading-[1.5] text-zinc-400">
+          Power + Wi-Fi anywhere. $299/mo.
+        </p>
         <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
-          <Link href="/rent" className="btn btn-cy">
-            RENT FOR $299/MO <span>→</span>
+          <Link href="/plan" className="btn btn-cy">
+            GET ONE FOR $299/MO <span>→</span>
           </Link>
           <Link href="/contact" className="btn btn-ghost">
             TALK TO AN ENGINEER
