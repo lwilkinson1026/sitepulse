@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { formatAttributionLines } from "@/lib/attribution";
 import {
   GUIDE_COOKIE,
   GUIDE_MAX_AGE,
   issueAccessToken,
 } from "@/lib/field-guide";
+import {
+  attributionFromRequest,
+  clientIpFromRequest,
+  metaCookiesFromRequest,
+  sendMetaCapiEvent,
+} from "@/lib/meta-capi";
+import { PRODUCT } from "@/lib/tracking";
 
 export const runtime = "nodejs";
 
@@ -27,10 +35,15 @@ type Body = {
   company?: unknown;
   /** Honeypot — real people leave this empty. */
   website?: unknown;
+  event_id?: unknown;
 };
 
 /** Record the lead: email it if Resend is configured, otherwise log it. */
-async function captureLead(email: string, company: string) {
+async function captureLead(
+  email: string,
+  company: string,
+  attrLines: ReadonlyArray<readonly [string, string]>,
+) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL;
   const from = process.env.CONTACT_FROM_EMAIL;
@@ -42,6 +55,7 @@ async function captureLead(email: string, company: string) {
     console.log("[field-guide] lead", {
       email,
       company: company || "(none)",
+      attribution: Object.fromEntries(attrLines),
       at: new Date().toISOString(),
     });
     return;
@@ -58,12 +72,19 @@ async function captureLead(email: string, company: string) {
         `Email: ${email}`,
         `Company: ${company || "(none)"}`,
         `At: ${new Date().toISOString()}`,
+        ...attrLines.map(([k, v]) => `${k}: ${v}`),
       ].join("\n"),
       html: `
         <table style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.5">
           <tr><td><strong>Email</strong></td><td>${escapeHtml(email)}</td></tr>
           <tr><td><strong>Company</strong></td><td>${escapeHtml(company || "(none)")}</td></tr>
           <tr><td><strong>At</strong></td><td>${new Date().toISOString()}</td></tr>
+          ${attrLines
+            .map(
+              ([k, v]) =>
+                `<tr><td><strong>${escapeHtml(k)}</strong></td><td>${escapeHtml(v)}</td></tr>`,
+            )
+            .join("")}
         </table>
       `,
     });
@@ -88,6 +109,10 @@ export async function POST(req: NextRequest) {
 
   const email = str(body.email);
   const company = str(body.company);
+  const eventId = str(body.event_id);
+  const attr = attributionFromRequest(req);
+  const metaCookies = metaCookiesFromRequest(req);
+  const attrLines = formatAttributionLines(attr);
 
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json(
@@ -97,7 +122,27 @@ export async function POST(req: NextRequest) {
   }
 
   // Never block the download on the notification path.
-  await captureLead(email, company);
+  await captureLead(email, company, attrLines);
+
+  if (eventId) {
+    void sendMetaCapiEvent({
+      eventName: "Lead",
+      eventId,
+      eventSourceUrl: `${req.headers.get("origin") ?? req.nextUrl.origin}/field-guide`,
+      user: {
+        email,
+        fbp: metaCookies.fbp,
+        fbc: metaCookies.fbc || attr?.last.fbc,
+        clientIp: clientIpFromRequest(req),
+        clientUserAgent: req.headers.get("user-agent") || undefined,
+      },
+      custom: {
+        content_name: "Sitepulse field guide",
+        content_ids: PRODUCT.content_ids,
+        content_category: "field_guide",
+      },
+    });
+  }
 
   const res = NextResponse.json({ ok: true });
   res.cookies.set(GUIDE_COOKIE, issueAccessToken(email), {

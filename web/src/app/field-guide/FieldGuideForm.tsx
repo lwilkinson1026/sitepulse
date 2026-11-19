@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 import { Eyebrow } from "../components/Eyebrow";
+import { identifyPerson, track } from "@/lib/track-client";
+import { newEventId } from "@/lib/tracking";
 
 type Status = "idle" | "sending" | "error";
 
@@ -24,6 +26,7 @@ export function FieldGuideForm({ unlocked = false }: { unlocked?: boolean }) {
       email: String(data.get("email") ?? "").trim(),
       company: String(data.get("company") ?? "").trim(),
       website: String(data.get("website") ?? "").trim(),
+      event_id: newEventId("lead"),
     };
 
     try {
@@ -38,6 +41,13 @@ export function FieldGuideForm({ unlocked = false }: { unlocked?: boolean }) {
           body.error ?? "Something went wrong. Please try again.",
         );
       }
+      void identifyPerson(payload.email, { company: payload.company });
+      track("Lead", {
+        event_id: payload.event_id,
+        email: payload.email,
+        extra: { lead_type: "field_guide" },
+        capi: false,
+      });
       setOpen(true);
       setStatus("idle");
       // The cookie is set, so the download route will serve the file.

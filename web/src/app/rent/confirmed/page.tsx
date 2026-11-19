@@ -8,7 +8,7 @@ import {
   RENT_MONTHLY_USD,
 } from "@/lib/rental";
 import { getStripe } from "@/lib/stripe";
-import TwitterPurchaseEvent from "../../components/TwitterPurchaseEvent";
+import PurchaseEvents from "../../components/PurchaseEvents";
 import { ClearRentDraft } from "../ClearRentDraft";
 import { OnlineWindow } from "../OnlineWindow";
 
@@ -66,10 +66,11 @@ export default async function RentConfirmed({ searchParams }: Props) {
     <main className="relative min-h-screen overflow-hidden">
       {paid && session && (
         <>
-          <TwitterPurchaseEvent
+          <PurchaseEvents
             conversionId={session.id}
             value={(session.amount_total ?? 0) / 100}
             currency={(session.currency ?? "usd").toUpperCase()}
+            email={email}
           />
           <ClearRentDraft />
         </>

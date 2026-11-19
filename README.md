@@ -20,6 +20,12 @@ Open <http://localhost:3000>.
 
 Other scripts: `npm run build`, `npm run start`, `npm run lint`.
 
+## Ad attribution
+
+UTM params and click IDs (`fbclid`, `gclid`, `twclid`) are stored first-touch and last-touch in the `sp_attr` cookie, attached to Stripe checkout metadata, and included on team notification emails.
+
+Meta Pixel + Conversions API and PostHog are **opt-in via env vars** — if the vars are unset, nothing extra loads. The existing X (Twitter) pixel stays on. See `web/.env.example` for `NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN`, `META_CAPI_TEST_EVENT_CODE`, `NEXT_PUBLIC_POSTHOG_KEY`, and `NEXT_PUBLIC_POSTHOG_HOST`.
+
 ## Repository layout
 
 ```

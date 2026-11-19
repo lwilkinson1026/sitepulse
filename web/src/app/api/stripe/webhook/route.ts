@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { sendMetaCapiEvent } from "@/lib/meta-capi";
 import { notifyTeam } from "@/lib/notify";
 import { ONLINE_MAX_HOURS, ONLINE_MIN_HOURS, ONLINE_WINDOW_LABEL } from "@/lib/rental";
 import { getStripe } from "@/lib/stripe";
+import { PRODUCT, purchaseEventId } from "@/lib/tracking";
 import { hashEmail, sendTwitterConversions } from "@/lib/twitter";
 import { PURCHASE_EVENT_ID } from "@/lib/twitter-events";
 
@@ -36,6 +38,7 @@ export async function POST(req: NextRequest) {
     if (session.payment_status === "paid") {
       if (session.metadata?.kind === "rental") await notifyRentalPaid(session);
       await fireTwitterConversion(session, req.nextUrl.origin);
+      await fireMetaPurchase(session, req.nextUrl.origin);
     }
   }
 
@@ -77,6 +80,44 @@ async function fireTwitterConversion(
   }
 }
 
+async function fireMetaPurchase(
+  session: Stripe.Checkout.Session,
+  origin: string,
+) {
+  const email = session.customer_details?.email ?? undefined;
+  const m = session.metadata ?? {};
+  const value = (session.amount_total ?? 0) / 100;
+  const currency = (session.currency ?? "usd").toUpperCase();
+
+  // Don't send the webhook caller's IP — that's Stripe, not the customer.
+  await sendMetaCapiEvent({
+    eventName: "Purchase",
+    eventId: purchaseEventId(session.id),
+    eventSourceUrl: `${origin}/rent/confirmed`,
+    eventTime: session.created,
+    user: {
+      email,
+      phone: typeof m.phone === "string" ? m.phone : undefined,
+      firstName:
+        typeof m.contact_name === "string"
+          ? m.contact_name.split(/\s+/)[0]
+          : undefined,
+      fbp: typeof m.fbp === "string" ? m.fbp : undefined,
+      fbc: typeof m.fbc === "string" ? m.fbc : undefined,
+    },
+    custom: {
+      value,
+      currency,
+      content_name: PRODUCT.content_name,
+      content_ids: PRODUCT.content_ids,
+      content_type: PRODUCT.content_type,
+      content_category: PRODUCT.content_category,
+      num_items: 1,
+      order_id: session.id,
+    },
+  });
+}
+
 /** The delivery clock starts at payment, so the team hears about it right away. */
 async function notifyRentalPaid(session: Stripe.Checkout.Session) {
   const m = session.metadata ?? {};
@@ -110,6 +151,34 @@ async function notifyRentalPaid(session: Stripe.Checkout.Session) {
       ],
       ["Paid", `$${((session.amount_total ?? 0) / 100).toFixed(2)}`],
       ["Stripe session", session.id],
+      [
+        "Last touch",
+        [m.utm_source, m.utm_medium, m.utm_campaign, m.utm_content, m.utm_term]
+          .filter(Boolean)
+          .join(" / ") || "(none)",
+      ],
+      [
+        "First touch",
+        [
+          m.first_utm_source,
+          m.first_utm_medium,
+          m.first_utm_campaign,
+          m.first_utm_content,
+          m.first_utm_term,
+        ]
+          .filter(Boolean)
+          .join(" / ") || "(none)",
+      ],
+      [
+        "Click IDs",
+        [
+          m.fbclid ? `fbclid=${m.fbclid}` : "",
+          m.gclid ? `gclid=${m.gclid}` : "",
+          m.twclid ? `twclid=${m.twclid}` : "",
+        ]
+          .filter(Boolean)
+          .join(" ") || "(none)",
+      ],
     ],
     email || undefined,
   );

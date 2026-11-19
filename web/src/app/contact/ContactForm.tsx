@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { identifyPerson, track } from "@/lib/track-client";
+import { newEventId } from "@/lib/tracking";
 
 const TOPICS = [
   "Rentals & pricing",
@@ -33,6 +35,7 @@ export function ContactForm() {
       company: String(data.get("company") ?? "").trim(),
       topic: String(data.get("topic") ?? "").trim(),
       message: String(data.get("message") ?? "").trim(),
+      event_id: newEventId("lead"),
     };
 
     try {
@@ -45,6 +48,17 @@ export function ContactForm() {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error ?? "Something went wrong. Please try again.");
       }
+      void identifyPerson(payload.email, {
+        name: payload.name,
+        company: payload.company,
+      });
+      track("Lead", {
+        event_id: payload.event_id,
+        email: payload.email,
+        firstName: payload.name,
+        extra: { lead_type: "contact", topic: payload.topic },
+        capi: false,
+      });
       setStatus("sent");
       form.reset();
     } catch (err) {

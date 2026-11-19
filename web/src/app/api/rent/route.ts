@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  attributionFromRequest,
+  clientIpFromRequest,
+  metaCookiesFromRequest,
+  sendMetaCapiEvent,
+} from "@/lib/meta-capi";
+import { formatAttributionLines, toStripeMetadata } from "@/lib/attribution";
 import { notifyTeam } from "@/lib/notify";
 import {
   DELIVERY_FEE_USD,
+  DUE_TODAY_USD,
   formatCoords,
   inServiceArea,
   mapsLink,
@@ -10,6 +18,7 @@ import {
   SERVICE_AREA_LABEL,
 } from "@/lib/rental";
 import { getStripe } from "@/lib/stripe";
+import { PRODUCT } from "@/lib/tracking";
 
 export const runtime = "nodejs";
 
@@ -45,7 +54,10 @@ export async function POST(req: NextRequest) {
   const loads = str(body.loads);
   const place = str(body.place, 200);
   const fuelService = body.fuelService === true;
+  const eventId = str(body.event_id, 200);
   const pin = { lat: Number(body.lat), lng: Number(body.lng) };
+  const attr = attributionFromRequest(req);
+  const metaCookies = metaCookiesFromRequest(req);
 
   if (body.lat == null || body.lng == null || !Number.isFinite(pin.lat) || !Number.isFinite(pin.lng)) {
     return bad("Drop a pin where you want the unit");
@@ -73,6 +85,7 @@ export async function POST(req: NextRequest) {
     ["Powering", loads || "(not given)"],
     ["Fuel", fuelService ? "WANTS FUEL SERVICE QUOTE (per gallon)" : "Self-refuel"],
     ["Status", "Checkout started — not paid until Stripe confirms"],
+    ...formatAttributionLines(attr),
   ];
 
   await notifyTeam(
@@ -97,6 +110,7 @@ export async function POST(req: NextRequest) {
     site_access: access.slice(0, 480) || "(none)",
     loads: loads.slice(0, 480) || "(none)",
     fuel_service: fuelService ? "quote_requested" : "self",
+    ...toStripeMetadata(attr, metaCookies),
   };
 
   try {
@@ -147,6 +161,33 @@ export async function POST(req: NextRequest) {
         { status: 502 },
       );
     }
+
+    if (eventId) {
+      void sendMetaCapiEvent({
+        eventName: "InitiateCheckout",
+        eventId,
+        eventSourceUrl: `${origin}/rent`,
+        user: {
+          email,
+          phone,
+          firstName: name.split(/\s+/)[0],
+          fbp: metaCookies.fbp,
+          fbc: metaCookies.fbc || attr?.last.fbc,
+          clientIp: clientIpFromRequest(req),
+          clientUserAgent: req.headers.get("user-agent") || undefined,
+        },
+        custom: {
+          value: DUE_TODAY_USD,
+          currency: PRODUCT.currency,
+          content_name: PRODUCT.content_name,
+          content_ids: PRODUCT.content_ids,
+          content_type: PRODUCT.content_type,
+          content_category: PRODUCT.content_category,
+          num_items: 1,
+        },
+      });
+    }
+
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("[rent] Stripe checkout error:", err);
