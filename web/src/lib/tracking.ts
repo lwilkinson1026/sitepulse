@@ -19,14 +19,14 @@ export const META_EVENT_ALLOWLIST: ReadonlySet<string> = new Set(
 export const VIEW_CONTENT_PATHS: ReadonlySet<string> = new Set([
   "/",
   "/field-unit",
-  "/rent",
+  "/plan",
   "/off-grid",
   "/dji-dock",
 ]);
 
 export const PRODUCT = {
   content_ids: ["sitepulse-v1-rental"],
-  content_name: "Sitepulse V1 rental",
+  content_name: "SitePulse Power + Wi-Fi subscription",
   content_type: "product",
   content_category: "hybrid_power",
   currency: "USD",

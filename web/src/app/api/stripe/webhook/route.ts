@@ -93,7 +93,7 @@ async function fireMetaPurchase(
   await sendMetaCapiEvent({
     eventName: "Purchase",
     eventId: purchaseEventId(session.id),
-    eventSourceUrl: `${origin}/rent/confirmed`,
+    eventSourceUrl: `${origin}/plan/confirmed`,
     eventTime: session.created,
     user: {
       email,

@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
       void sendMetaCapiEvent({
         eventName: "InitiateCheckout",
         eventId,
-        eventSourceUrl: `${origin}/rent`,
+        eventSourceUrl: `${origin}/plan`,
         user: {
           email,
           phone,
