@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Eyebrow } from "../components/Eyebrow";
+import { metaIdsForRequest } from "@/lib/attribution-browser";
 import { identifyPerson, track } from "@/lib/track-client";
 import { newEventId } from "@/lib/tracking";
 
@@ -27,6 +28,7 @@ export function FieldGuideForm({ unlocked = false }: { unlocked?: boolean }) {
       company: String(data.get("company") ?? "").trim(),
       website: String(data.get("website") ?? "").trim(),
       event_id: newEventId("lead"),
+      ...metaIdsForRequest(),
     };
 
     try {

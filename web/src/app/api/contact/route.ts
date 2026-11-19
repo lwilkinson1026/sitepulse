@@ -3,8 +3,9 @@ import { Resend } from "resend";
 import { formatAttributionLines } from "@/lib/attribution";
 import {
   attributionFromRequest,
+  clickIdsFromRequest,
   clientIpFromRequest,
-  metaCookiesFromRequest,
+  clientUserAgentFromRequest,
   sendMetaCapiEvent,
 } from "@/lib/meta-capi";
 import { PRODUCT } from "@/lib/tracking";
@@ -26,6 +27,8 @@ type ContactBody = {
   topic?: unknown;
   message?: unknown;
   event_id?: unknown;
+  fbp?: unknown;
+  fbc?: unknown;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,7 +52,7 @@ export async function POST(req: NextRequest) {
   const message = str(body.message);
   const eventId = str(body.event_id);
   const attr = attributionFromRequest(req);
-  const metaCookies = metaCookiesFromRequest(req);
+  const clickIds = clickIdsFromRequest(req, body);
   const attrLines = formatAttributionLines(attr);
 
   if (!name) {
@@ -84,7 +87,7 @@ export async function POST(req: NextRequest) {
       at: new Date().toISOString(),
     });
     if (eventId) {
-      void sendContactLead(req, { eventId, email, name, attr, metaCookies });
+      void sendContactLead(req, { eventId, email, name, clickIds });
     }
     return NextResponse.json({ ok: true });
   }
@@ -141,7 +144,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (eventId) {
-    void sendContactLead(req, { eventId, email, name, attr, metaCookies });
+    void sendContactLead(req, { eventId, email, name, clickIds });
   }
 
   return NextResponse.json({ ok: true });
@@ -153,8 +156,7 @@ async function sendContactLead(
     eventId: string;
     email: string;
     name: string;
-    attr: ReturnType<typeof attributionFromRequest>;
-    metaCookies: ReturnType<typeof metaCookiesFromRequest>;
+    clickIds: ReturnType<typeof clickIdsFromRequest>;
   },
 ) {
   await sendMetaCapiEvent({
@@ -164,10 +166,10 @@ async function sendContactLead(
     user: {
       email: opts.email,
       firstName: opts.name.split(/\s+/)[0],
-      fbp: opts.metaCookies.fbp,
-      fbc: opts.metaCookies.fbc || opts.attr?.last.fbc,
+      fbp: opts.clickIds.fbp,
+      fbc: opts.clickIds.fbc,
       clientIp: clientIpFromRequest(req),
-      clientUserAgent: req.headers.get("user-agent") || undefined,
+      clientUserAgent: clientUserAgentFromRequest(req),
     },
     custom: {
       content_name: PRODUCT.content_name,

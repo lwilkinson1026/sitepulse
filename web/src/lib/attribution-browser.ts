@@ -4,8 +4,12 @@ import {
   ATTR_COOKIE,
   ATTR_MAX_AGE_SEC,
   ATTR_STORAGE_KEY,
+  buildFbp,
   mergeAttribution,
   parseAttribution,
+  resolveMetaClickIds,
+  sanitizeFbp,
+  sanitizeFbc,
   serializeAttribution,
   touchFromSearch,
   type Attribution,
@@ -75,12 +79,55 @@ export function captureAttributionFromLocation(
 }
 
 export function readMetaBrowserCookies(): { fbp?: string; fbc?: string } {
-  const fbp = readCookie("_fbp");
-  const fbc = readCookie("_fbc");
   return {
-    fbp: fbp || undefined,
-    fbc: fbc || undefined,
+    fbp: sanitizeFbp(readCookie("_fbp")),
+    fbc: sanitizeFbc(readCookie("_fbc")),
   };
+}
+
+/**
+ * Session cache so a cookie-write failure still lets this page's CAPI events
+ * share one browser ID with the Pixel (`event_id` dedupe + fbp match).
+ */
+let cachedFbp: string | undefined;
+let cachedFbc: string | undefined;
+
+/**
+ * Make sure `_fbp` exists before the Pixel or CAPI fire. If Meta's script
+ * hasn't set the cookie yet (typical on first PageView), mint one in the
+ * documented format so CAPI isn't missing `user_data.fbp`. Also write `_fbc`
+ * from the landing `fbclid` when the Pixel cookie is absent.
+ */
+export function ensureMetaClickIds(
+  attr: Attribution | null = readStoredAttribution(),
+  now: number = Date.now(),
+): { fbp: string; fbc?: string } {
+  const cookieFbp = readCookie("_fbp");
+  const cookieFbc = readCookie("_fbc");
+  // Prefer the Pixel cookie once it exists so CAPI and the browser share IDs.
+  const fbp = sanitizeFbp(cookieFbp) || sanitizeFbp(cachedFbp) || buildFbp(now);
+  cachedFbp = fbp;
+  if (!sanitizeFbp(cookieFbp)) {
+    writeCookie("_fbp", fbp, ATTR_MAX_AGE_SEC);
+  }
+
+  const fbc = resolveMetaClickIds({
+    cookieFbc,
+    storedFbc: cachedFbc || attr?.last.fbc,
+    fbclid: attr?.last.fbclid,
+    now,
+  }).fbc;
+  if (fbc) {
+    cachedFbc = fbc;
+    if (!sanitizeFbc(cookieFbc)) writeCookie("_fbc", fbc, ATTR_MAX_AGE_SEC);
+  }
+
+  return { fbp, fbc };
+}
+
+/** Values to attach to conversion API POSTs so the server doesn't rely on cookies. */
+export function metaIdsForRequest(): { fbp: string; fbc?: string } {
+  return ensureMetaClickIds();
 }
 
 export { readCookie };

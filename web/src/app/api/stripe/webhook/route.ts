@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { resolveMetaClickIds } from "@/lib/attribution";
 import { sendMetaCapiEvent } from "@/lib/meta-capi";
 import { notifyTeam } from "@/lib/notify";
 import { ONLINE_MAX_HOURS, ONLINE_MIN_HOURS, ONLINE_WINDOW_LABEL } from "@/lib/rental";
@@ -88,6 +89,12 @@ async function fireMetaPurchase(
   const m = session.metadata ?? {};
   const value = (session.amount_total ?? 0) / 100;
   const currency = (session.currency ?? "usd").toUpperCase();
+  const clickIds = resolveMetaClickIds({
+    bodyFbp: typeof m.fbp === "string" ? m.fbp : undefined,
+    bodyFbc: typeof m.fbc === "string" ? m.fbc : undefined,
+    fbclid: typeof m.fbclid === "string" ? m.fbclid : undefined,
+    now: (session.created || Math.floor(Date.now() / 1000)) * 1000,
+  });
 
   // Don't send the webhook caller's IP — that's Stripe, not the customer.
   await sendMetaCapiEvent({
@@ -102,8 +109,14 @@ async function fireMetaPurchase(
         typeof m.contact_name === "string"
           ? m.contact_name.split(/\s+/)[0]
           : undefined,
-      fbp: typeof m.fbp === "string" ? m.fbp : undefined,
-      fbc: typeof m.fbc === "string" ? m.fbc : undefined,
+      fbp: clickIds.fbp,
+      fbc: clickIds.fbc,
+      // Stored at checkout creation — Stripe's webhook IP/UA are not the buyer.
+      clientIp: typeof m.client_ip === "string" ? m.client_ip : undefined,
+      clientUserAgent:
+        typeof m.client_user_agent === "string"
+          ? m.client_user_agent
+          : undefined,
     },
     custom: {
       value,

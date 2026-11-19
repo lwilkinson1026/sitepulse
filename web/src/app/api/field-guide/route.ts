@@ -8,8 +8,9 @@ import {
 } from "@/lib/field-guide";
 import {
   attributionFromRequest,
+  clickIdsFromRequest,
   clientIpFromRequest,
-  metaCookiesFromRequest,
+  clientUserAgentFromRequest,
   sendMetaCapiEvent,
 } from "@/lib/meta-capi";
 import { PRODUCT } from "@/lib/tracking";
@@ -36,6 +37,8 @@ type Body = {
   /** Honeypot — real people leave this empty. */
   website?: unknown;
   event_id?: unknown;
+  fbp?: unknown;
+  fbc?: unknown;
 };
 
 /** Record the lead: email it if Resend is configured, otherwise log it. */
@@ -111,7 +114,7 @@ export async function POST(req: NextRequest) {
   const company = str(body.company);
   const eventId = str(body.event_id);
   const attr = attributionFromRequest(req);
-  const metaCookies = metaCookiesFromRequest(req);
+  const clickIds = clickIdsFromRequest(req, body);
   const attrLines = formatAttributionLines(attr);
 
   if (!EMAIL_RE.test(email)) {
@@ -131,10 +134,10 @@ export async function POST(req: NextRequest) {
       eventSourceUrl: `${req.headers.get("origin") ?? req.nextUrl.origin}/field-guide`,
       user: {
         email,
-        fbp: metaCookies.fbp,
-        fbc: metaCookies.fbc || attr?.last.fbc,
+        fbp: clickIds.fbp,
+        fbc: clickIds.fbc,
         clientIp: clientIpFromRequest(req),
-        clientUserAgent: req.headers.get("user-agent") || undefined,
+        clientUserAgent: clientUserAgentFromRequest(req),
       },
       custom: {
         content_name: "Sitepulse field guide",

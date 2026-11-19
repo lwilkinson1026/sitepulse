@@ -53,8 +53,63 @@ export function hasAdSource(touch: Touch | null | undefined): boolean {
   return TRACKING_PARAM_KEYS.some((key) => Boolean(touch[key]));
 }
 
+/**
+ * Meta `_fbp` / `_fbc` cookie formats:
+ *   fbp: fb.{subdomainIndex}.{creationTimeMs}.{random}
+ *   fbc: fb.{subdomainIndex}.{creationTimeMs}.{fbclid}
+ * Mint these ourselves when the Pixel hasn't written the cookies yet so CAPI
+ * PageView/ViewContent still carry browser IDs (Events Manager EMQ).
+ */
+const FBP_RE = /^fb\.\d+\.\d+\.\d+$/;
+const FBC_RE = /^fb\.\d+\.\d+\..+$/;
+
+export function sanitizeFbp(value: string | null | undefined): string | undefined {
+  const v = value?.trim();
+  if (!v || v.length > 200 || !FBP_RE.test(v)) return undefined;
+  return v;
+}
+
+export function sanitizeFbc(value: string | null | undefined): string | undefined {
+  const v = value?.trim();
+  if (!v || v.length > 500 || !FBC_RE.test(v)) return undefined;
+  return v;
+}
+
+export function buildFbp(
+  ts: number = Date.now(),
+  random: number = Math.floor(Math.random() * 2 ** 31),
+): string {
+  return `fb.1.${ts}.${Math.abs(Math.floor(random))}`;
+}
+
 export function buildFbc(fbclid: string, ts: number = Date.now()): string {
   return `fb.1.${ts}.${fbclid}`;
+}
+
+/**
+ * Prefer the Pixel cookies / request body, then a stored click cookie, then
+ * construct `fbc` from `fbclid` when the landing URL had one and `_fbc` is
+ * missing (Meta's documented fallback).
+ */
+export function resolveMetaClickIds(input: {
+  bodyFbp?: string;
+  bodyFbc?: string;
+  cookieFbp?: string;
+  cookieFbc?: string;
+  storedFbc?: string;
+  fbclid?: string;
+  now?: number;
+}): { fbp?: string; fbc?: string } {
+  const fbp =
+    sanitizeFbp(input.bodyFbp) || sanitizeFbp(input.cookieFbp) || undefined;
+  const fbc =
+    sanitizeFbc(input.bodyFbc) ||
+    sanitizeFbc(input.cookieFbc) ||
+    sanitizeFbc(input.storedFbc) ||
+    (input.fbclid?.trim()
+      ? sanitizeFbc(buildFbc(input.fbclid.trim(), input.now ?? Date.now()))
+      : undefined);
+  return { fbp, fbc };
 }
 
 /** Pull UTM / click-ID params out of a query string. Null when none are present. */

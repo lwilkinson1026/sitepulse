@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   attributionFromRequest,
+  clickIdsFromRequest,
   clientIpFromRequest,
-  metaCookiesFromRequest,
+  clientUserAgentFromRequest,
   sendMetaCapiEvent,
 } from "@/lib/meta-capi";
 import { formatAttributionLines, toStripeMetadata } from "@/lib/attribution";
@@ -58,7 +59,9 @@ export async function POST(req: NextRequest) {
   const eventId = str(body.event_id, 200);
   const pin = { lat: Number(body.lat), lng: Number(body.lng) };
   const attr = attributionFromRequest(req);
-  const metaCookies = metaCookiesFromRequest(req);
+  const clickIds = clickIdsFromRequest(req, body);
+  const clientIp = clientIpFromRequest(req);
+  const clientUserAgent = clientUserAgentFromRequest(req);
 
   if (body.lat == null || body.lng == null || !Number.isFinite(pin.lat) || !Number.isFinite(pin.lng)) {
     return bad("Drop a pin where you want the unit");
@@ -111,7 +114,11 @@ export async function POST(req: NextRequest) {
     site_access: access.slice(0, 480) || "(none)",
     loads: loads.slice(0, 480) || "(none)",
     fuel_service: fuelService ? "quote_requested" : "self",
-    ...toStripeMetadata(attr, metaCookies),
+    ...toStripeMetadata(attr, clickIds),
+    ...(clientIp ? { client_ip: clientIp.slice(0, 80) } : {}),
+    ...(clientUserAgent
+      ? { client_user_agent: clientUserAgent.slice(0, 500) }
+      : {}),
   };
 
   try {
@@ -173,10 +180,10 @@ export async function POST(req: NextRequest) {
           email,
           phone,
           firstName: name.split(/\s+/)[0],
-          fbp: metaCookies.fbp,
-          fbc: metaCookies.fbc || attr?.last.fbc,
-          clientIp: clientIpFromRequest(req),
-          clientUserAgent: req.headers.get("user-agent") || undefined,
+          fbp: clickIds.fbp,
+          fbc: clickIds.fbc,
+          clientIp,
+          clientUserAgent,
         },
         custom: {
           value: DUE_TODAY_USD,

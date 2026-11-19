@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { metaIdsForRequest } from "@/lib/attribution-browser";
 import { identifyPerson, track } from "@/lib/track-client";
 import { newEventId } from "@/lib/tracking";
 
@@ -36,6 +37,7 @@ export function ContactForm() {
       topic: String(data.get("topic") ?? "").trim(),
       message: String(data.get("message") ?? "").trim(),
       event_id: newEventId("lead"),
+      ...metaIdsForRequest(),
     };
 
     try {
