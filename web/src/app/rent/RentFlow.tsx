@@ -14,6 +14,8 @@ import {
   SERVICE_AREA_LABEL,
   type LatLng,
 } from "@/lib/rental";
+import { identifyPerson, track } from "@/lib/track-client";
+import { newEventId, PRODUCT } from "@/lib/tracking";
 import { OnlineWindow } from "./OnlineWindow";
 import { SitePinMap } from "./SitePinMap";
 
@@ -180,7 +182,21 @@ export function RentFlow() {
     if (!pin) return;
     setError(null);
     setSubmitting(true);
+    const eventId = newEventId("ic");
     try {
+      void identifyPerson(d.email.trim(), {
+        name: d.name.trim(),
+        phone: d.phone.trim(),
+      });
+      track("InitiateCheckout", {
+        event_id: eventId,
+        value: DUE_TODAY_USD,
+        currency: PRODUCT.currency,
+        email: d.email.trim(),
+        phone: d.phone.trim(),
+        firstName: d.name.trim(),
+        capi: false,
+      });
       const res = await fetch("/api/rent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -195,6 +211,7 @@ export function RentFlow() {
           phone: d.phone,
           loads: d.loads,
           fuelService: d.fuelService,
+          event_id: eventId,
         }),
       });
       const data: { url?: string; error?: string } = await res.json();

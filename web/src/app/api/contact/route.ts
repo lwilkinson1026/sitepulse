@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { formatAttributionLines } from "@/lib/attribution";
+import {
+  attributionFromRequest,
+  clientIpFromRequest,
+  metaCookiesFromRequest,
+  sendMetaCapiEvent,
+} from "@/lib/meta-capi";
+import { PRODUCT } from "@/lib/tracking";
 
 export const runtime = "nodejs";
 
@@ -17,6 +25,7 @@ type ContactBody = {
   company?: unknown;
   topic?: unknown;
   message?: unknown;
+  event_id?: unknown;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,6 +47,10 @@ export async function POST(req: NextRequest) {
   const company = str(body.company);
   const topic = str(body.topic);
   const message = str(body.message);
+  const eventId = str(body.event_id);
+  const attr = attributionFromRequest(req);
+  const metaCookies = metaCookiesFromRequest(req);
+  const attrLines = formatAttributionLines(attr);
 
   if (!name) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -67,8 +80,12 @@ export async function POST(req: NextRequest) {
       company: company || "(none)",
       topic: topic || "(none)",
       message,
+      attribution: Object.fromEntries(attrLines),
       at: new Date().toISOString(),
     });
+    if (eventId) {
+      void sendContactLead(req, { eventId, email, name, attr, metaCookies });
+    }
     return NextResponse.json({ ok: true });
   }
 
@@ -78,6 +95,7 @@ export async function POST(req: NextRequest) {
     `Email: ${email}`,
     `Company: ${company || "(none)"}`,
     `Topic: ${topic || "(none)"}`,
+    ...attrLines.map(([k, v]) => `${k}: ${v}`),
     "",
     message,
   ];
@@ -87,6 +105,12 @@ export async function POST(req: NextRequest) {
       <tr><td><strong>Email</strong></td><td>${escapeHtml(email)}</td></tr>
       <tr><td><strong>Company</strong></td><td>${escapeHtml(company || "(none)")}</td></tr>
       <tr><td><strong>Topic</strong></td><td>${escapeHtml(topic || "(none)")}</td></tr>
+      ${attrLines
+        .map(
+          ([k, v]) =>
+            `<tr><td><strong>${escapeHtml(k)}</strong></td><td>${escapeHtml(v)}</td></tr>`,
+        )
+        .join("")}
     </table>
     <p style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(message)}</p>
   `;
@@ -116,5 +140,39 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (eventId) {
+    void sendContactLead(req, { eventId, email, name, attr, metaCookies });
+  }
+
   return NextResponse.json({ ok: true });
+}
+
+async function sendContactLead(
+  req: NextRequest,
+  opts: {
+    eventId: string;
+    email: string;
+    name: string;
+    attr: ReturnType<typeof attributionFromRequest>;
+    metaCookies: ReturnType<typeof metaCookiesFromRequest>;
+  },
+) {
+  await sendMetaCapiEvent({
+    eventName: "Lead",
+    eventId: opts.eventId,
+    eventSourceUrl: `${req.headers.get("origin") ?? req.nextUrl.origin}/contact`,
+    user: {
+      email: opts.email,
+      firstName: opts.name.split(/\s+/)[0],
+      fbp: opts.metaCookies.fbp,
+      fbc: opts.metaCookies.fbc || opts.attr?.last.fbc,
+      clientIp: clientIpFromRequest(req),
+      clientUserAgent: req.headers.get("user-agent") || undefined,
+    },
+    custom: {
+      content_name: PRODUCT.content_name,
+      content_ids: PRODUCT.content_ids,
+      content_category: "contact",
+    },
+  });
 }
