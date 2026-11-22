@@ -4,6 +4,7 @@ import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { Marquee } from "./components/Marquee";
+import { NewsletterSection } from "./components/NewsletterSection";
 import { Pillars } from "./components/Pillars";
 import { RentalOffer } from "./components/RentalOffer";
 import { RunCycle } from "./components/RunCycle";
@@ -23,6 +24,7 @@ export default function Page() {
       <FieldReports />
       <RentalOffer />
       <FinalCTA />
+      <NewsletterSection />
       <Footer />
     </>
   );

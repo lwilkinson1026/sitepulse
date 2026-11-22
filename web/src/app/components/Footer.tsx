@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { newsletterOffer, offerHeadline } from "@/lib/newsletter";
+import { NewsletterSignup } from "./NewsletterSignup";
 
 type FooterLink = readonly [string, string];
 type Column = readonly [string, ReadonlyArray<FooterLink>];
@@ -47,9 +49,27 @@ const COLUMNS: ReadonlyArray<Column> = [
 ];
 
 export function Footer() {
+  const offer = newsletterOffer();
+
   return (
     <footer id="support" className="py-24">
-      <div className="max-w-[1440px] mx-auto px-8">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-8">
+        <div
+          className="mb-16 pb-16 border-b"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <div className="max-w-[720px]">
+            <div className="mono text-[10px] tracking-[.18em] uppercase text-zinc-500">
+              Keep up with SitePulse
+            </div>
+            <p className="mt-3 text-[15px] leading-[1.6] text-zinc-400">
+              {offerHeadline(offer.amountUsd)}.
+            </p>
+            <div className="mt-6">
+              <NewsletterSignup offer={offer} source="footer" variant="footer" />
+            </div>
+          </div>
+        </div>
         <div className="flex flex-wrap items-end justify-between gap-12">
           <div className="max-w-[400px]">
             <div className="flex items-center">
