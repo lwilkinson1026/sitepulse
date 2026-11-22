@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { resolveMetaClickIds } from "@/lib/attribution";
 import { sendMetaCapiEvent } from "@/lib/meta-capi";
+import { promoPaidEmailLine } from "@/lib/newsletter";
 import { notifyTeam } from "@/lib/notify";
 import { ONLINE_MAX_HOURS, ONLINE_MIN_HOURS, ONLINE_WINDOW_LABEL } from "@/lib/rental";
 import { getStripe } from "@/lib/stripe";
@@ -163,6 +164,7 @@ async function notifyRentalPaid(session: Stripe.Checkout.Session) {
           : "Self-refuel",
       ],
       ["Paid", `$${((session.amount_total ?? 0) / 100).toFixed(2)}`],
+      ["Promo", promoPaidEmailLine(m)],
       ["Stripe session", session.id],
       [
         "Last touch",

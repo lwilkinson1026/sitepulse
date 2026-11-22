@@ -7,8 +7,12 @@ import {
   newsletterOffer,
   offerHeadline,
   parseNewsletterInput,
+  promoPaidEmailLine,
+  promoStripeMetadata,
+  quoteDelivery,
   welcomeEmail,
 } from "./newsletter.ts";
+import { DELIVERY_FEE_USD, DUE_TODAY_USD, RENT_MONTHLY_USD } from "./rental.ts";
 
 test("newsletterOffer defaults to $100 / DELIVERY100", () => {
   const prevAmount = process.env.NEWSLETTER_DISCOUNT_AMOUNT_USD;
@@ -86,7 +90,7 @@ test("honeypot trips when website is filled", () => {
   assert.equal(isHoneypot("https://spam.example"), true);
 });
 
-test("welcome email includes the code and redemption path", () => {
+test("welcome email includes the code and checkout redemption", () => {
   const mail = welcomeEmail(
     { amountUsd: 100, code: "DELIVERY100" },
     { firstName: "Landon", origin: "https://www.sitepulse.space" },
@@ -94,7 +98,78 @@ test("welcome email includes the code and redemption path", () => {
   assert.match(mail.subject, /\$100/);
   assert.match(mail.text, /DELIVERY100/);
   assert.match(mail.text, /\/plan/);
-  assert.match(mail.text, /doesn.t have a promo-code box/i);
+  assert.match(mail.text, /review step/i);
+  assert.match(mail.text, /\$50/);
   assert.match(mail.html, /DELIVERY100/);
+  assert.doesNotMatch(mail.text, /promo-code box/i);
   assert.doesNotMatch(mail.text, /% off/);
+});
+
+test("quoteDelivery applies a matching code and ignores case/space", () => {
+  const q = quoteDelivery("  delivery100 ", {
+    amountUsd: 100,
+    code: "DELIVERY100",
+  });
+  assert.equal(q.applied, true);
+  assert.equal(q.invalid, false);
+  assert.equal(q.discountUsd, 100);
+  assert.equal(q.deliveryUsd, DELIVERY_FEE_USD - 100);
+  assert.equal(q.dueTodayUsd, RENT_MONTHLY_USD + (DELIVERY_FEE_USD - 100));
+});
+
+test("quoteDelivery empty code is a no-op", () => {
+  const q = quoteDelivery("   ");
+  assert.equal(q.applied, false);
+  assert.equal(q.invalid, false);
+  assert.equal(q.deliveryUsd, DELIVERY_FEE_USD);
+  assert.equal(q.dueTodayUsd, DUE_TODAY_USD);
+});
+
+test("quoteDelivery amounts stay locked to rental.ts", () => {
+  const q = quoteDelivery("");
+  assert.equal(q.deliveryUsd, DELIVERY_FEE_USD);
+  assert.equal(q.dueTodayUsd, DUE_TODAY_USD);
+  assert.equal(RENT_MONTHLY_USD + DELIVERY_FEE_USD, DUE_TODAY_USD);
+});
+
+test("quoteDelivery invalid code still checks out at full delivery", () => {
+  const q = quoteDelivery("WRONG");
+  assert.equal(q.applied, false);
+  assert.equal(q.invalid, true);
+  assert.equal(q.deliveryUsd, DELIVERY_FEE_USD);
+  assert.equal(q.dueTodayUsd, DUE_TODAY_USD);
+});
+
+test("quoteDelivery never drops delivery below zero", () => {
+  const q = quoteDelivery("BIG", { amountUsd: 999, code: "BIG" });
+  assert.equal(q.applied, true);
+  assert.equal(q.deliveryUsd, 0);
+  assert.equal(q.dueTodayUsd, RENT_MONTHLY_USD);
+});
+
+test("promoStripeMetadata is omitted unless the code applied", () => {
+  assert.deepEqual(promoStripeMetadata(quoteDelivery("")), {});
+  assert.deepEqual(promoStripeMetadata(quoteDelivery("NOPE")), {});
+  assert.deepEqual(
+    promoStripeMetadata(
+      quoteDelivery("DELIVERY100", { amountUsd: 100, code: "DELIVERY100" }),
+    ),
+    {
+      promo_code: "DELIVERY100",
+      promo_amount_usd: "100",
+      delivery_usd: String(DELIVERY_FEE_USD - 100),
+    },
+  );
+});
+
+test("promoPaidEmailLine reads session metadata", () => {
+  assert.equal(promoPaidEmailLine({}), "(none)");
+  assert.equal(
+    promoPaidEmailLine({
+      promo_code: "DELIVERY100",
+      promo_amount_usd: "100",
+      delivery_usd: "50",
+    }),
+    "DELIVERY100 (−$100 delivery, charged $50)",
+  );
 });

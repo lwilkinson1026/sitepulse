@@ -9,8 +9,11 @@ import {
 import { formatAttributionLines, toStripeMetadata } from "@/lib/attribution";
 import { notifyTeam } from "@/lib/notify";
 import {
-  DELIVERY_FEE_USD,
-  DUE_TODAY_USD,
+  promoNotifyLine,
+  promoStripeMetadata,
+  quoteDelivery,
+} from "@/lib/newsletter";
+import {
   formatCoords,
   inServiceArea,
   mapsLink,
@@ -56,6 +59,7 @@ export async function POST(req: NextRequest) {
   const loads = str(body.loads);
   const place = str(body.place, 200);
   const fuelService = body.fuelService === true;
+  const promoCode = str(body.promoCode ?? body.promo_code, 40);
   const eventId = str(body.event_id, 200);
   const pin = { lat: Number(body.lat), lng: Number(body.lng) };
   const attr = attributionFromRequest(req);
@@ -78,6 +82,8 @@ export async function POST(req: NextRequest) {
   }
 
   const coords = formatCoords(pin);
+  // Amounts come from env + the code, never from a client-supplied total.
+  const quote = quoteDelivery(promoCode);
   const fields: ReadonlyArray<readonly [string, string]> = [
     ["Name", name],
     ["Company", company || "(none)"],
@@ -88,6 +94,8 @@ export async function POST(req: NextRequest) {
     ["Access notes", access || "(none)"],
     ["Powering", loads || "(not given)"],
     ["Fuel", fuelService ? "WANTS FUEL SERVICE QUOTE (per gallon)" : "Self-refuel"],
+    ["Promo", promoNotifyLine(quote)],
+    ["Due today", `$${quote.dueTodayUsd}`],
     ["Status", "Checkout started — not paid until Stripe confirms"],
     ...formatAttributionLines(attr),
   ];
@@ -114,6 +122,7 @@ export async function POST(req: NextRequest) {
     site_access: access.slice(0, 480) || "(none)",
     loads: loads.slice(0, 480) || "(none)",
     fuel_service: fuelService ? "quote_requested" : "self",
+    ...promoStripeMetadata(quote),
     ...toStripeMetadata(attr, clickIds),
     ...(clientIp ? { client_ip: clientIp.slice(0, 80) } : {}),
     ...(clientUserAgent
@@ -141,17 +150,23 @@ export async function POST(req: NextRequest) {
             },
           },
         },
-        {
-          quantity: 1,
-          price_data: {
-            currency: "usd",
-            unit_amount: DELIVERY_FEE_USD * 100,
-            product_data: {
-              name: "One-time delivery & setup",
-              description: `One-time. Delivered to ${coords} and online within ${ONLINE_WINDOW_LABEL}.`,
-            },
-          },
-        },
+        ...(quote.deliveryUsd > 0
+          ? [
+              {
+                quantity: 1,
+                price_data: {
+                  currency: "usd",
+                  unit_amount: quote.deliveryUsd * 100,
+                  product_data: {
+                    name: "One-time delivery & setup",
+                    description: quote.applied
+                      ? `${quote.entered} applied (−$${quote.discountUsd}). Delivered to ${coords} and online within ${ONLINE_WINDOW_LABEL}.`
+                      : `One-time. Delivered to ${coords} and online within ${ONLINE_WINDOW_LABEL}.`,
+                  },
+                },
+              },
+            ]
+          : []),
       ],
       custom_text: {
         submit: {
@@ -186,7 +201,7 @@ export async function POST(req: NextRequest) {
           clientUserAgent,
         },
         custom: {
-          value: DUE_TODAY_USD,
+          value: quote.dueTodayUsd,
           currency: PRODUCT.currency,
           content_name: PRODUCT.content_name,
           content_ids: PRODUCT.content_ids,
@@ -197,7 +212,17 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({
+      url: session.url,
+      promo: {
+        applied: quote.applied,
+        invalid: quote.invalid,
+        code: quote.entered,
+        amountUsd: quote.discountUsd,
+        deliveryUsd: quote.deliveryUsd,
+        dueTodayUsd: quote.dueTodayUsd,
+      },
+    });
   } catch (err) {
     console.error("[rent] Stripe checkout error:", err);
     const message = err instanceof Error ? err.message : "Unknown error";

@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { reverseGeocode, type PlaceInfo } from "@/lib/geocode";
 import {
+  quoteDelivery,
+  type NewsletterOffer,
+} from "@/lib/newsletter";
+import {
   DELIVERY_FEE_USD,
-  DUE_TODAY_USD,
   formatCoords,
   inServiceArea,
   isServiceState,
@@ -15,7 +18,7 @@ import {
   type LatLng,
 } from "@/lib/rental";
 import { metaIdsForRequest } from "@/lib/attribution-browser";
-import { identifyPerson, track } from "@/lib/track-client";
+import { captureEvent, identifyPerson, track } from "@/lib/track-client";
 import { newEventId, PRODUCT } from "@/lib/tracking";
 import { OnlineWindow } from "./OnlineWindow";
 import { SitePinMap } from "./SitePinMap";
@@ -34,6 +37,7 @@ type Draft = {
   phone: string;
   loads: string;
   fuelService: boolean;
+  promoCode: string;
 };
 
 const EMPTY: Draft = {
@@ -46,7 +50,12 @@ const EMPTY: Draft = {
   phone: "",
   loads: "",
   fuelService: false,
+  promoCode: "",
 };
+
+function money(n: number) {
+  return `$${n}.00`;
+}
 
 function Field({
   label,
@@ -80,7 +89,54 @@ function Row({ k, children }: { k: string; children: React.ReactNode }) {
   );
 }
 
-export function RentFlow() {
+function Totals({
+  quote,
+  compact,
+}: {
+  quote: ReturnType<typeof quoteDelivery>;
+  compact?: boolean;
+}) {
+  return (
+    <div className="text-[14px]">
+      <div className="flex justify-between py-1.5">
+        <span className="text-[var(--mute)]">
+          {compact ? "Subscription" : "First month's subscription"}
+        </span>
+        <span className="num">
+          {compact ? `$${RENT_MONTHLY_USD}/mo` : money(RENT_MONTHLY_USD)}
+        </span>
+      </div>
+      <div className="flex justify-between py-1.5">
+        <span className="text-[var(--mute)]">One-time delivery &amp; setup</span>
+        <span className="num">
+          {quote.applied ? (
+            <>
+              <span className="line-through opacity-50 mr-2">
+                {compact ? `$${DELIVERY_FEE_USD} once` : money(DELIVERY_FEE_USD)}
+              </span>
+              {compact ? `$${quote.deliveryUsd} once` : money(quote.deliveryUsd)}
+            </>
+          ) : compact ? (
+            `$${DELIVERY_FEE_USD} once`
+          ) : (
+            money(DELIVERY_FEE_USD)
+          )}
+        </span>
+      </div>
+      <div
+        className={`flex justify-between items-baseline ${compact ? "pt-4 mt-3" : "pt-4 mt-2"} border-t`}
+        style={{ borderColor: "var(--line-strong)" }}
+      >
+        <span className="font-semibold">${quote.dueTodayUsd} due today</span>
+        <span className={`num font-bold ${compact ? "text-[26px]" : "text-[30px]"}`}>
+          {compact ? `$${quote.dueTodayUsd}` : money(quote.dueTodayUsd)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function RentFlow({ offer }: { offer: NewsletterOffer }) {
   const [d, setD] = useState<Draft>(EMPTY);
   const [restored, setRestored] = useState(false);
   const [canceled, setCanceled] = useState(false);
@@ -119,6 +175,7 @@ export function RentFlow() {
 
   const { pin } = d;
   const pinInBounds = pin ? inServiceArea(pin) : false;
+  const quote = quoteDelivery(d.promoCode, offer);
 
   // Name the pin. Debounced so dragging doesn't fire a lookup per pixel.
   useEffect(() => {
@@ -191,7 +248,7 @@ export function RentFlow() {
       });
       track("InitiateCheckout", {
         event_id: eventId,
-        value: DUE_TODAY_USD,
+        value: quote.dueTodayUsd,
         currency: PRODUCT.currency,
         email: d.email.trim(),
         phone: d.phone.trim(),
@@ -212,13 +269,32 @@ export function RentFlow() {
           phone: d.phone,
           loads: d.loads,
           fuelService: d.fuelService,
+          promoCode: d.promoCode,
           event_id: eventId,
           ...metaIdsForRequest(),
         }),
       });
-      const data: { url?: string; error?: string } = await res.json();
+      const data: {
+        url?: string;
+        error?: string;
+        promo?: {
+          applied: boolean;
+          code: string;
+          amountUsd: number;
+          deliveryUsd: number;
+          dueTodayUsd: number;
+        };
+      } = await res.json();
       if (!res.ok || !data.url) {
         throw new Error(data.error || `Couldn't start checkout (${res.status})`);
+      }
+      if (data.promo?.applied) {
+        void captureEvent("promo_code_applied", {
+          code: data.promo.code,
+          amount_usd: data.promo.amountUsd,
+          delivery_usd: data.promo.deliveryUsd,
+          due_today_usd: data.promo.dueTodayUsd,
+        });
       }
       window.location.href = data.url;
     } catch (err) {
@@ -234,7 +310,7 @@ export function RentFlow() {
         ? "Review order"
         : submitting
           ? "Redirecting to secure checkout…"
-          : `Pay $${DUE_TODAY_USD} & start subscription`;
+          : `Pay $${quote.dueTodayUsd} & start subscription`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-8 lg:gap-12 items-start">
@@ -473,22 +549,40 @@ export function RentFlow() {
               </Row>
             </div>
 
-            <div className="mt-6 text-[14px]">
-              <div className="flex justify-between py-1.5">
-                <span className="text-[var(--mute)]">First month&apos;s subscription</span>
-                <span className="num">${RENT_MONTHLY_USD}.00</span>
-              </div>
-              <div className="flex justify-between py-1.5">
-                <span className="text-[var(--mute)]">One-time delivery &amp; setup</span>
-                <span className="num">${DELIVERY_FEE_USD}.00</span>
-              </div>
-              <div
-                className="flex justify-between items-baseline pt-4 mt-2 border-t"
-                style={{ borderColor: "var(--line-strong)" }}
-              >
-                <span className="font-semibold">${DUE_TODAY_USD} due today</span>
-                <span className="num text-[30px] font-bold">${DUE_TODAY_USD}.00</span>
-              </div>
+            <div className="mt-6">
+              <Field label="PROMO CODE" optional>
+                <input
+                  type="text"
+                  className="input"
+                  value={d.promoCode}
+                  onChange={(e) => set("promoCode", e.target.value)}
+                  placeholder={`e.g. ${offer.code}`}
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                />
+              </Field>
+              {quote.applied && (
+                <p
+                  className="mono text-[11px] tracking-[.08em] mt-2 m-0 leading-[1.6] text-[var(--hi)]"
+                  role="status"
+                >
+                  {quote.entered} applied — ${quote.discountUsd} off delivery.
+                </p>
+              )}
+              {quote.invalid && (
+                <p
+                  className="mono text-[11px] tracking-[.08em] mt-2 m-0 leading-[1.6] text-[var(--mute)]"
+                  role="status"
+                >
+                  That code isn&apos;t valid. You can still check out — delivery
+                  stays ${DELIVERY_FEE_USD}.
+                </p>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <Totals quote={quote} />
             </div>
 
             <p className="text-[var(--mute)] text-[12px] leading-[1.6] m-0 mt-4">
@@ -546,22 +640,8 @@ export function RentFlow() {
           <li>· Online within {ONLINE_WINDOW_LABEL} of payment</li>
         </ul>
 
-        <div className="mt-6 pt-5 border-t text-[14px]" style={{ borderColor: "var(--line)" }}>
-          <div className="flex justify-between py-1.5">
-            <span className="text-[var(--mute)]">Subscription</span>
-            <span className="num">${RENT_MONTHLY_USD}/mo</span>
-          </div>
-          <div className="flex justify-between py-1.5">
-            <span className="text-[var(--mute)]">One-time delivery &amp; setup</span>
-            <span className="num">${DELIVERY_FEE_USD} once</span>
-          </div>
-          <div
-            className="flex justify-between items-baseline pt-4 mt-3 border-t"
-            style={{ borderColor: "var(--line-strong)" }}
-          >
-            <span className="font-semibold">${DUE_TODAY_USD} due today</span>
-            <span className="num text-[26px] font-bold">${DUE_TODAY_USD}</span>
-          </div>
+        <div className="mt-6 pt-5 border-t" style={{ borderColor: "var(--line)" }}>
+          <Totals quote={quote} compact />
         </div>
 
         <div

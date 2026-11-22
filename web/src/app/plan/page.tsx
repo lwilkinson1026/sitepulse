@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
+import { newsletterOffer } from "@/lib/newsletter";
 import {
   DELIVERY_FEE_USD,
   ONLINE_WINDOW_LABEL,
@@ -49,7 +50,7 @@ export default function PlanPage() {
           </p>
 
           <div className="mt-9">
-            <RentFlow />
+            <RentFlow offer={newsletterOffer()} />
           </div>
         </div>
       </main>

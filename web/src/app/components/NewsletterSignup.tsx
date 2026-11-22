@@ -99,7 +99,7 @@ export function NewsletterSignup({
         >
           {status === "duplicate"
             ? `You're already signed up. Check your inbox if you're looking for the ${dollars} off delivery code.`
-            : `Thanks — check your inbox for the ${dollars} off delivery code.`}
+            : `Thanks — check your inbox for the ${dollars} off delivery code. Enter it on the review step when you start a subscription.`}
         </p>
       </div>
     );
@@ -116,8 +116,8 @@ export function NewsletterSignup({
             Keep up with SitePulse
           </h2>
           <p className="mt-3 text-[15px] leading-[1.6] text-zinc-400">
-            {offerHeadline(offer.amountUsd)}. We&apos;ll email the code — mention
-            it when you start a subscription.
+            {offerHeadline(offer.amountUsd)}. We&apos;ll email the code — enter
+            it at checkout.
           </p>
         </>
       )}
