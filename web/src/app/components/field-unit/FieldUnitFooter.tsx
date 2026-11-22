@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { newsletterOffer, offerHeadline } from "@/lib/newsletter";
+import { NewsletterSignup } from "../NewsletterSignup";
 
 const COLUMNS: ReadonlyArray<{
   title: string;
@@ -23,12 +25,27 @@ const COLUMNS: ReadonlyArray<{
 ];
 
 export function FieldUnitFooter() {
+  const offer = newsletterOffer();
+
   return (
     <footer
       className="border-t pt-16 pb-10"
       style={{ borderColor: "var(--line-strong)" }}
     >
       <div className="wrap">
+        <div className="mb-12 pb-12 border-b" style={{ borderColor: "var(--line)" }}>
+          <div className="eyebrow mb-3.5">UPDATES</div>
+          <p className="text-[var(--mute)] text-[14px] leading-[1.55] m-0 max-w-[520px]">
+            {offerHeadline(offer.amountUsd)}.
+          </p>
+          <div className="mt-6 max-w-[720px]">
+            <NewsletterSignup
+              offer={offer}
+              source="field-unit-footer"
+              variant="footer"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
           <div>
             <div className="flex items-center gap-3 mb-4">

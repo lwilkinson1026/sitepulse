@@ -125,6 +125,17 @@ export async function identifyPerson(
   debug("posthog identify", email);
 }
 
+/** Custom PostHog events that are not Meta pixel conversion names. */
+export async function captureEvent(
+  eventName: string,
+  properties: Record<string, unknown> = {},
+) {
+  const ph = await posthog();
+  if (!ph) return;
+  ph.capture(eventName, properties);
+  debug("posthog", eventName, properties);
+}
+
 function pixelParams(name: TrackEventName, opts: TrackOptions) {
   const params: Record<string, unknown> = {
     content_name: opts.content_name ?? PRODUCT.content_name,
