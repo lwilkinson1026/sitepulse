@@ -236,3 +236,55 @@ export function welcomeEmail(
 
   return { subject, text, html };
 }
+
+/** localStorage key + TTL for the delayed signup popup. */
+export const NEWSLETTER_POPUP_STORAGE_KEY = "sp-nl-popup";
+export const NEWSLETTER_POPUP_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+export const NEWSLETTER_POPUP_DELAY_MS = 7_000;
+export const NEWSLETTER_POPUP_SCROLL_RATIO = 0.3;
+
+/**
+ * Checkout and contact are already a conversion path — don't cover the form
+ * or the pin map with a signup sheet.
+ */
+export function isNewsletterPopupExcluded(pathname: string): boolean {
+  const path = pathname.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
+  return path === "/contact" || path.startsWith("/contact/") || path === "/plan" || path.startsWith("/plan/");
+}
+
+export function parsePopupDismissedAt(raw: string | null | undefined): number | null {
+  if (raw == null || raw === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 0;
+}
+
+export function isPopupDismissedAt(
+  storedAt: number | null,
+  now: number,
+  ttlMs: number = NEWSLETTER_POPUP_TTL_MS,
+): boolean {
+  if (storedAt == null) return false;
+  return now - storedAt < ttlMs;
+}
+
+/** 0–1 how far the page has been scrolled. Short pages that can't scroll stay 0. */
+export function scrollProgress(
+  scrollY: number,
+  viewport: number,
+  docHeight: number,
+): number {
+  const max = docHeight - viewport;
+  if (!(max > 0)) return 0;
+  return Math.min(1, Math.max(0, scrollY / max));
+}
+
+export function shouldTriggerNewsletterPopup(opts: {
+  elapsedMs: number;
+  scrollRatio: number;
+  delayMs?: number;
+  scrollThreshold?: number;
+}): boolean {
+  const delayMs = opts.delayMs ?? NEWSLETTER_POPUP_DELAY_MS;
+  const threshold = opts.scrollThreshold ?? NEWSLETTER_POPUP_SCROLL_RATIO;
+  return opts.elapsedMs >= delayMs || opts.scrollRatio >= threshold;
+}

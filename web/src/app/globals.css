@@ -619,3 +619,68 @@ body {
   font-size: 10px;
 }
 .sp-map .leaflet-control-attribution a { color: #fff; }
+
+/* Delayed newsletter sheet: fixed, so it cannot shift page layout. */
+.nl-popup {
+  position: fixed;
+  z-index: 50;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: min(85dvh, 640px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px 20px max(20px, env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line-strong);
+  background: #0a0a0a;
+  color: var(--paper);
+  transform: translate3d(0, 100%, 0);
+  transition: transform 280ms ease;
+  contain: layout style;
+  outline: none;
+}
+
+.nl-popup.nl-popup-in {
+  transform: translate3d(0, 0, 0);
+}
+
+.nl-popup-handle {
+  display: block;
+  width: 36px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.22);
+  margin: 0 auto 12px;
+}
+
+@media (min-width: 640px) {
+  .nl-popup {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+    width: 380px;
+    max-height: min(80vh, 560px);
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    transform: translate3d(0, 12px, 0);
+    opacity: 0;
+    transition: transform 280ms ease, opacity 220ms ease;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  }
+  .nl-popup.nl-popup-in {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  .nl-popup-handle {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nl-popup,
+  .nl-popup.nl-popup-in {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}
