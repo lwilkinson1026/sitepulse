@@ -4,12 +4,20 @@ import {
   DEFAULT_NEWSLETTER_DISCOUNT_AMOUNT_USD,
   DEFAULT_NEWSLETTER_DISCOUNT_CODE,
   isHoneypot,
+  isNewsletterPopupExcluded,
+  isPopupDismissedAt,
   newsletterOffer,
+  NEWSLETTER_POPUP_DELAY_MS,
+  NEWSLETTER_POPUP_SCROLL_RATIO,
+  NEWSLETTER_POPUP_TTL_MS,
   offerHeadline,
   parseNewsletterInput,
+  parsePopupDismissedAt,
   promoPaidEmailLine,
   promoStripeMetadata,
   quoteDelivery,
+  scrollProgress,
+  shouldTriggerNewsletterPopup,
   welcomeEmail,
 } from "./newsletter.ts";
 import { DELIVERY_FEE_USD, DUE_TODAY_USD, RENT_MONTHLY_USD } from "./rental.ts";
@@ -172,4 +180,48 @@ test("promoPaidEmailLine reads session metadata", () => {
     }),
     "DELIVERY100 (−$100 delivery, charged $50)",
   );
+});
+
+test("newsletter popup is excluded on plan and contact", () => {
+  assert.equal(isNewsletterPopupExcluded("/"), false);
+  assert.equal(isNewsletterPopupExcluded("/field-unit"), false);
+  assert.equal(isNewsletterPopupExcluded("/plan"), true);
+  assert.equal(isNewsletterPopupExcluded("/plan/"), true);
+  assert.equal(isNewsletterPopupExcluded("/plan/confirmed"), true);
+  assert.equal(isNewsletterPopupExcluded("/contact"), true);
+  assert.equal(isNewsletterPopupExcluded("/contact?from=ad"), true);
+});
+
+test("popup dismiss TTL is about 14 days", () => {
+  const now = 1_700_000_000_000;
+  assert.equal(isPopupDismissedAt(null, now), false);
+  assert.equal(isPopupDismissedAt(now, now), true);
+  assert.equal(isPopupDismissedAt(now - NEWSLETTER_POPUP_TTL_MS + 1, now), true);
+  assert.equal(isPopupDismissedAt(now - NEWSLETTER_POPUP_TTL_MS - 1, now), false);
+  assert.equal(parsePopupDismissedAt(""), null);
+  assert.equal(parsePopupDismissedAt("1700000000000"), 1_700_000_000_000);
+});
+
+test("popup triggers on delay or 30% scroll, whichever first", () => {
+  assert.equal(
+    shouldTriggerNewsletterPopup({ elapsedMs: 0, scrollRatio: 0 }),
+    false,
+  );
+  assert.equal(
+    shouldTriggerNewsletterPopup({
+      elapsedMs: NEWSLETTER_POPUP_DELAY_MS,
+      scrollRatio: 0,
+    }),
+    true,
+  );
+  assert.equal(
+    shouldTriggerNewsletterPopup({
+      elapsedMs: 1_000,
+      scrollRatio: NEWSLETTER_POPUP_SCROLL_RATIO,
+    }),
+    true,
+  );
+  assert.equal(scrollProgress(0, 800, 4000), 0);
+  assert.equal(scrollProgress(960, 800, 4000), 0.3);
+  assert.equal(scrollProgress(100, 800, 700), 0);
 });

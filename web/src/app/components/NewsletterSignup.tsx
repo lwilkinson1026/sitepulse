@@ -11,7 +11,7 @@ import { captureEvent, identifyPerson, track } from "@/lib/track-client";
 import { newEventId } from "@/lib/tracking";
 
 type Status = "idle" | "sending" | "sent" | "duplicate" | "error";
-type Variant = "section" | "footer";
+type Variant = "section" | "footer" | "popup";
 
 const inputClass =
   "mt-2 w-full bg-transparent border px-4 py-3 text-[15px] text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-[var(--hi)] transition-colors";
@@ -20,15 +20,18 @@ export function NewsletterSignup({
   offer,
   source,
   variant = "section",
+  onComplete,
 }: {
   offer: NewsletterOffer;
   source: string;
   variant?: Variant;
+  onComplete?: () => void;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const dollars = formatOfferUsd(offer.amountUsd);
   const compact = variant === "footer";
+  const popup = variant === "popup";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,6 +64,7 @@ export function NewsletterSignup({
       }
       if (body.duplicate) {
         setStatus("duplicate");
+        onComplete?.();
         return;
       }
       void identifyPerson(payload.email, {
@@ -81,6 +85,7 @@ export function NewsletterSignup({
         capi: false,
       });
       setStatus("sent");
+      onComplete?.();
       form.reset();
     } catch (err) {
       setStatus("error");
@@ -90,12 +95,12 @@ export function NewsletterSignup({
 
   if (status === "sent" || status === "duplicate") {
     return (
-      <div className={compact ? "py-1" : ""} role="status">
+      <div className={compact || popup ? "py-1" : ""} role="status">
         <div className="mono text-[11px] tracking-[.2em] uppercase text-[var(--hi)]">
           {status === "duplicate" ? "Already subscribed" : "You're on the list"}
         </div>
         <p
-          className={`mt-3 text-zinc-300 ${compact ? "text-[14px] leading-[1.5]" : "text-[16px] leading-[1.6]"}`}
+          className={`mt-3 text-zinc-300 ${compact || popup ? "text-[14px] leading-[1.5]" : "text-[16px] leading-[1.6]"}`}
         >
           {status === "duplicate"
             ? `You're already signed up. Check your inbox if you're looking for the ${dollars} off delivery code.`
@@ -107,7 +112,7 @@ export function NewsletterSignup({
 
   return (
     <form onSubmit={onSubmit}>
-      {!compact && (
+      {!compact && !popup && (
         <>
           <div className="mono text-[10px] tracking-[.2em] uppercase text-zinc-500">
             Occasional notes · No spam
@@ -123,7 +128,13 @@ export function NewsletterSignup({
       )}
 
       <div
-        className={`grid grid-cols-1 ${compact ? "sm:grid-cols-[1fr_1.4fr_auto] gap-3" : "sm:grid-cols-2 gap-4 mt-8"}`}
+        className={`grid grid-cols-1 ${
+          compact
+            ? "sm:grid-cols-[1fr_1.4fr_auto] gap-3"
+            : popup
+              ? "gap-3"
+              : "sm:grid-cols-2 gap-4 mt-8"
+        }`}
       >
         <label className="block">
           <span className="mono text-[10px] tracking-[.18em] uppercase text-zinc-500">
@@ -134,7 +145,7 @@ export function NewsletterSignup({
             type="text"
             autoComplete="given-name"
             placeholder="First name"
-            className={inputClass}
+            className={popup ? `${inputClass} !py-2.5 text-[14px]` : inputClass}
             style={{ borderColor: "var(--line)" }}
           />
         </label>
@@ -149,13 +160,18 @@ export function NewsletterSignup({
             autoComplete="email"
             inputMode="email"
             placeholder="you@company.com"
-            className={inputClass}
+            className={popup ? `${inputClass} !py-2.5 text-[14px]` : inputClass}
             style={{ borderColor: "var(--line)" }}
           />
         </label>
-        {compact && (
-          <div className="flex items-end">
-            <SubmitButton sending={status === "sending"} dollars={dollars} compact />
+        {(compact || popup) && (
+          <div className={`flex items-end ${popup ? "mt-1" : ""}`}>
+            <SubmitButton
+              sending={status === "sending"}
+              dollars={dollars}
+              compact={compact}
+              fullWidth={popup}
+            />
           </div>
         )}
       </div>
@@ -174,7 +190,7 @@ export function NewsletterSignup({
         </p>
       )}
 
-      {!compact && (
+      {!compact && !popup && (
         <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
           <SubmitButton sending={status === "sending"} dollars={dollars} compact={false} />
           <span className="mono text-[10px] tracking-[.18em] uppercase text-zinc-600">
@@ -190,16 +206,23 @@ function SubmitButton({
   sending,
   dollars,
   compact,
+  fullWidth,
 }: {
   sending: boolean;
   dollars: string;
   compact: boolean;
+  fullWidth?: boolean;
 }) {
+  const widthClass = fullWidth
+    ? "w-full whitespace-nowrap"
+    : compact
+      ? "w-full sm:w-auto whitespace-nowrap"
+      : "";
   return (
     <button
       type="submit"
       disabled={sending}
-      className={`btn btn-cy disabled:opacity-50 ${compact ? "w-full sm:w-auto whitespace-nowrap" : ""}`}
+      className={`btn btn-cy disabled:opacity-50 ${widthClass}`}
     >
       {sending ? "Sending…" : `Get ${dollars} off`} <span>→</span>
     </button>
